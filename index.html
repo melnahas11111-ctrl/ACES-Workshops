@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACES — نظام إدارة الورش التدريبية</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --primary: #1a3a5c;
+    --primary-light: #2563a8;
+    --accent: #0ea5e9;
+    --accent2: #10b981;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --sidebar-w: 220px;
+    --header-h: 60px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    direction: rtl;
+  }
+
+  /* ===== SCREENS ===== */
+  .screen { display: none; width: 100%; min-height: 100vh; }
+  .screen.active { display: block; }
+
+  /* ===== LOGIN ===== */
+  #loginScreen {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f2744 0%, #1a3a5c 50%, #1e4976 100%);
+  }
+  #loginScreen.active { display: flex; }
+
+  .login-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 48px 40px;
+    width: 420px;
+    text-align: center;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+  }
+
+  .login-logo {
+    font-size: 48px;
+    margin-bottom: 8px;
+  }
+
+  .login-title {
+    color: #fff;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .login-subtitle {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    margin-bottom: 36px;
+  }
+
+  .role-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .role-btn {
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 20px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: rgba(255,255,255,0.8);
+    font-family: inherit;
+    font-size: 13px;
+  }
+
+  .role-btn:hover { background: rgba(255,255,255,0.12); }
+  .role-btn.selected {
+    border-color: var(--accent);
+    background: rgba(14,165,233,0.2);
+    color: #fff;
+  }
+
+  .role-btn .icon { font-size: 30px; display: block; margin-bottom: 8px; }
+
+  .login-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+  }
+  .login-submit:hover { background: #0284c7; }
+
+  /* ===== MAIN LAYOUT ===== */
+  #dashboardScreen {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  #dashboardScreen.active { display: flex; }
+
+  .header {
+    height: var(--header-h);
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+
+  .header-logo { color: var(--accent); font-size: 22px; font-weight: 700; }
+  .header-title { color: rgba(255,255,255,0.9); font-size: 14px; flex: 1; }
+  .header-live {
+    background: var(--accent2);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .live-dot {
+    width: 7px; height: 7px;
+    background: #fff;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .header-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .header-btn:hover { background: rgba(255,255,255,0.2); }
+
+  .body-wrap {
+    display: flex;
+    flex: 1;
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--primary);
+    min-height: calc(100vh - var(--header-h));
+    padding: 16px 0;
+    flex-shrink: 0;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 20px;
+    color: rgba(255,255,255,0.65);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 13.5px;
+    border-right: 3px solid transparent;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.9); }
+  .nav-item.active {
+    background: rgba(14,165,233,0.15);
+    color: var(--accent);
+    border-right-color: var(--accent);
+    font-weight: 500;
+  }
+  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .nav-badge {
+    background: var(--danger);
+    color: #fff;
+    border-radius: 10px;
+    padding: 2px 7px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: auto;
+    min-width: 20px;
+    text-align: center;
+  }
+
+  /* ===== CONTENT ===== */
+  .content { flex: 1; padding: 24px; overflow: auto; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .page-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .stat-num { font-size: 28px; font-weight: 700; color: var(--primary); }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ===== FORM ===== */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+
+  .form-group input, .form-group select {
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--bg);
+    transition: border-color 0.15s;
+    outline: none;
+  }
+
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .btn {
+    padding: 10px 22px;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #0284c7; transform: translateY(-1px); }
+  .btn-success { background: var(--accent2); color: #fff; }
+  .btn-success:hover { background: #059669; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #dc2626; }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text-muted);
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ===== TABLE ===== */
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: var(--bg);
+    padding: 10px 14px;
+    text-align: right;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    font-size: 13.5px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fafc; }
+
+  /* ===== QR SECTION ===== */
+  .qr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    padding: 4px;
+  }
+
+  .qr-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: box-shadow 0.2s, transform 0.2s;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .qr-card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .qr-name { font-size: 13px; font-weight: 600; color: var(--primary); margin-top: 10px; }
+  .qr-id { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+  .qr-img-wrap {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    display: inline-block;
+    width: 130px;
+    height: 130px;
+    overflow: hidden;
+  }
+
+  .qr-img-wrap canvas, .qr-img-wrap img {
+    width: 114px !important;
+    height: 114px !important;
+  }
+
+  /* ===== REQUESTS ===== */
+  .request-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background: var(--bg);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .request-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .request-info { flex: 1; }
+  .request-name { font-size: 14px; font-weight: 600; }
+  .request-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .request-actions { display: flex; gap: 8px; }
+
+  /* ===== TOAST ===== */
+  .toast-wrap {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+  }
+
+  .toast {
+    background: var(--primary);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+    pointer-events: all;
+    max-width: 320px;
+  }
+
+  @keyframes toastIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes toastOut { from{opacity:1} to{opacity:0;transform:translateY(20px)} }
+
+  /* ===== EXAM SCREEN ===== */
+  #examScreen {
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f2744 0%, #1a3a5c 100%);
+    padding: 40px 20px;
+  }
+  #examScreen.active { display: flex; }
+
+  .exam-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 36px 32px;
+    max-width: 640px;
+    width: 100%;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.3);
+  }
+
+  .exam-header {
+    text-align: center;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--bg);
+  }
+
+  .exam-logo { font-size: 40px; }
+  .exam-trainee-name { font-size: 22px; font-weight: 700; color: var(--primary); margin-top: 12px; }
+  .exam-workshop { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+  .exam-date { font-size: 12px; color: var(--accent); margin-top: 4px; font-weight: 500; }
+
+  .exam-section { margin-bottom: 24px; }
+  .exam-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rating-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 9px;
+  }
+
+  .rating-label { font-size: 13.5px; font-weight: 500; }
+
+  .stars { display: flex; gap: 4px; direction: ltr; }
+  .star {
+    font-size: 22px;
+    cursor: pointer;
+    color: #d1d5db;
+    transition: color 0.1s;
+    user-select: none;
+  }
+  .star.active, .star:hover { color: #f59e0b; }
+
+  .comment-box {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .comment-box:focus { border-color: var(--accent); }
+
+  .exam-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .exam-submit:hover { background: #0284c7; transform: translateY(-1px); }
+
+  .success-msg {
+    text-align: center;
+    padding: 32px;
+    animation: fadeIn 0.5s ease;
+  }
+  .success-icon { font-size: 64px; margin-bottom: 16px; }
+  .success-title { font-size: 22px; font-weight: 700; color: var(--accent2); }
+  .success-sub { font-size: 14px; color: var(--text-muted); margin-top: 8px; }
+
+  /* ===== ATTENDANCE ===== */
+  .att-cell {
+    width: 36px; height: 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .att-none { background: #f1f5f9; color: #94a3b8; }
+  .att-present { background: #dcfce7; color: #16a34a; }
+  .att-absent { background: #fee2e2; color: #dc2626; }
+  .att-late { background: #fef9c3; color: #ca8a04; }
+
+  /* ===== PERFORMANCE ===== */
+  .score-input {
+    width: 60px;
+    padding: 5px 8px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    text-align: center;
+    outline: none;
+  }
+  .score-input:focus { border-color: var(--accent); }
+
+  .level-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .level-excellent { background: #dcfce7; color: #16a34a; }
+  .level-good { background: #dbeafe; color: #1d4ed8; }
+  .level-ok { background: #fef9c3; color: #ca8a04; }
+  .level-poor { background: #fee2e2; color: #dc2626; }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+
+  /* ===== UPDATE FLASH ===== */
+  .update-flash {
+    background: var(--accent2);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    animation: flashAnim 0.4s ease;
+  }
+  .update-flash.show { display: flex; }
+  @keyframes flashAnim { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+
+  /* print */
+  @media print {
+    .sidebar, .header, .header-btn, .btn-outline, .request-actions, .nav-item { display: none !important; }
+    .content { padding: 0; }
+    .qr-grid { grid-template-columns: repeat(4,1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="screen">
+  <div class="login-card">
+    <div class="login-logo">🧪</div>
+    <div class="login-title">ACES</div>
+    <div class="login-subtitle">نظام إدارة الورش التدريبية</div>
+    <div class="role-grid">
+      <button class="role-btn" onclick="selectRole('admin')" id="roleAdmin">
+        <span class="icon">👑</span>
+        مشرف عام<br><small style="font-size:11px;opacity:0.7">جميع الورش</small>
+      </button>
+      <button class="role-btn selected" onclick="selectRole('trainer')" id="roleTrainer">
+        <span class="icon">👨‍🏫</span>
+        مدرب<br><small style="font-size:11px;opacity:0.7">ورشتي فقط</small>
+      </button>
+    </div>
+    <button class="login-submit" onclick="doLogin()">دخول ←</button>
+  </div>
+</div>
+
+<!-- DASHBOARD SCREEN -->
+<div id="dashboardScreen" class="screen">
+  <div class="header">
+    <div class="header-logo">🧪 ACES</div>
+    <div class="header-title" id="headerWorkshop">نظام إدارة الورش التدريبية</div>
+    <div class="header-live"><span class="live-dot"></span> مباشر</div>
+    <button class="header-btn" onclick="showToast('📤','جاري الرفع على GitHub...','success')">رفع GitHub</button>
+    <button class="header-btn" onclick="exportCSV()">📥 CSV</button>
+    <button class="header-btn" onclick="showScreen('loginScreen')">خروج</button>
+  </div>
+
+  <div class="body-wrap">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="nav-item active" onclick="showTab('tab-requests')" id="nav-requests">
+        <span class="icon">🚪</span> طلبات الدخول
+        <span class="nav-badge" id="requestsBadge" style="display:none">0</span>
+      </div>
+      <div class="nav-item" onclick="showTab('tab-add')" id="nav-add">
+        <span class="icon">➕</span> إضافة متدرب
+      </div>
+      <div class="nav-item" onclick="showTab('tab-trainees')" id="nav-trainees">
+        <span class="icon">👥</span> المتدربون
+        <span class="nav-badge" id="traineeCount">0</span>
+      </div>
+      <div class="nav-item" onclick="showTab('tab-qr')" id="nav-qr">
+        <span class="icon">📱</span> رموز QR
+      </div>
+      <div class="nav-item" onclick="showTab('tab-attendance')" id="nav-attendance">
+        <span class="icon">✅</span> الحضور
+      </div>
+      <div class="nav-item" onclick="showTab('tab-performance')" id="nav-performance">
+        <span class="icon">📈</span> الأداء
+      </div>
+      <div class="nav-item" onclick="showTab('tab-ratings')" id="nav-ratings">
+        <span class="icon">⭐</span> تقييماتي
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- REQUESTS TAB -->
+      <div class="tab-panel active" id="tab-requests">
+        <div class="page-title">🚪 طلبات الدخول — الإسكان</div>
+        <div class="card">
+          <div class="card-title">
+            📲 متدربون انتظار القبول
+            <button class="btn btn-outline" style="margin-right:auto;font-size:12px;padding:6px 12px" onclick="clearProcessed()">🗑️ مسح المعالجة</button>
+          </div>
+          <div id="requestsList">
+            <div class="empty-state">
+              <div class="empty-icon">📱</div>
+              <div style="font-size:14px;font-weight:600">في انتظار المتدربين...</div>
+              <div style="font-size:12px;margin-top:8px">عندما يمسح المتدرب QR الخاص به، ستظهر بطاقته هنا</div>
+            </div>
+          </div>
+          <div style="margin-top:16px;background:#eff6ff;border-radius:10px;padding:14px;font-size:13px;color:#1d4ed8">
+            💡 <strong>كيف يعمل؟</strong><br>
+            1️⃣ أرسل QR للمتدرب • 2️⃣ يمسحه فيفتح صفحة الاختبار وطلب الدخول • 3️⃣ تقبل ✅ أو ترفض ❌
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD TRAINEE TAB -->
+      <div class="tab-panel" id="tab-add">
+        <div class="page-title">➕ إضافة متدرب جديد</div>
+        <div class="card">
+          <div id="addFlash" class="update-flash">✅ تمت إضافة المتدرب بنجاح! تم تحديث جميع الأقسام تلقائياً</div>
+          <div class="form-grid">
+            <div class="form-group" style="grid-column:1/-1">
+              <label>الاسم الكامل *</label>
+              <input type="text" id="inp-name" placeholder="أدخل الاسم الكامل">
+            </div>
+            <div class="form-group">
+              <label>الرقم الوظيفي</label>
+              <input type="text" id="inp-id" placeholder="مثال: 12345">
+            </div>
+            <div class="form-group">
+              <label>الجهة / القسم</label>
+              <input type="text" id="inp-dept" placeholder="مثال: وزارة الصحة">
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>التخصص</label>
+              <input type="text" id="inp-spec" placeholder="مثال: تحليل الأغذية">
+            </div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:10px">
+            <button class="btn btn-primary" onclick="addTrainee()">+ إضافة متدرب</button>
+            <button class="btn btn-outline" onclick="clearAddForm()">مسح</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRAINEES TAB -->
+      <div class="tab-panel" id="tab-trainees">
+        <div class="page-title">👥 المتدربون</div>
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card"><div class="stat-num" id="st-total">0</div><div class="stat-label">إجمالي المتدربين</div></div>
+          <div class="stat-card"><div class="stat-num" id="st-active">0</div><div class="stat-label">المقبولون</div></div>
+          <div class="stat-card"><div class="stat-num" id="st-avg">—</div><div class="stat-label">متوسط الأداء</div></div>
+          <div class="stat-card"><div class="stat-num" id="st-attend">—</div><div class="stat-label">نسبة الحضور</div></div>
+        </div>
+        <div class="card">
+          <div id="traineesTable">
+            <div class="empty-state">
+              <div class="empty-icon">👥</div>
+              <div>لم يتم إضافة متدربين بعد</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR TAB -->
+      <div class="tab-panel" id="tab-qr">
+        <div class="page-title">📱 رموز QR — تحديث تلقائي فوري</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <span style="font-size:13px;color:var(--text-muted)">يتحدث فور إضافة أي متدرب</span>
+          <button class="btn btn-outline" onclick="window.print()">🖨️ طباعة</button>
+        </div>
+        <div id="qrGrid">
+          <div class="empty-state">
+            <div class="empty-icon">📱</div>
+            <div>أضف متدربين وستظهر رموز QR هنا تلقائياً</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE TAB -->
+      <div class="tab-panel" id="tab-attendance">
+        <div class="page-title">✅ سجل الحضور</div>
+        <div class="card">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">اضغط على الخلية لتغيير الحالة: ◻ غير مسجل → ✅ حاضر → ❌ غائب → ⏰ متأخر</div>
+          <div style="overflow-x:auto">
+            <table id="attendanceTable">
+              <thead>
+                <tr>
+                  <th>المتدرب</th>
+                  <th>اليوم 1</th><th>اليوم 2</th><th>اليوم 3</th><th>اليوم 4</th><th>اليوم 5</th>
+                  <th>الإجمالي</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PERFORMANCE TAB -->
+      <div class="tab-panel" id="tab-performance">
+        <div class="page-title">📈 سجل الأداء</div>
+        <div class="card">
+          <div style="overflow-x:auto">
+            <table id="performanceTable">
+              <thead>
+                <tr>
+                  <th>#</th><th>المتدرب</th>
+                  <th>يوم 1</th><th>يوم 2</th><th>يوم 3</th><th>يوم 4</th><th>يوم 5</th>
+                  <th>المتوسط</th><th>المستوى</th>
+                </tr>
+              </thead>
+              <tbody id="performanceBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RATINGS TAB -->
+      <div class="tab-panel" id="tab-ratings">
+        <div class="page-title">⭐ تقييمات المتدربين</div>
+        <div class="card">
+          <div id="ratingsTable">
+            <div class="empty-state">
+              <div class="empty-icon">⭐</div>
+              <div>لا توجد تقييمات بعد</div>
+              <div style="font-size:12px;margin-top:8px">التقييمات تأتي من صفحة الاختبار عند إسكان المتدرب</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /body-wrap -->
+</div><!-- /dashboardScreen -->
+
+<!-- EXAM SCREEN (trainee page when scanning QR) -->
+<div id="examScreen" class="screen">
+  <div class="exam-card">
+    <div id="examContent">
+      <div class="exam-header">
+        <div class="exam-logo">🧪</div>
+        <div class="exam-trainee-name" id="examTraineeName">اسم المتدرب</div>
+        <div class="exam-workshop" id="examWorkshop">سحب العينات الغذائية — 5 أيام</div>
+        <div class="exam-date" id="examDate"></div>
+      </div>
+
+      <div class="exam-section">
+        <div class="exam-section-title">⭐ تقييم الورشة التدريبية</div>
+
+        <div class="rating-row">
+          <div class="rating-label">وضوح الشرح</div>
+          <div class="stars" id="stars-clarity">
+            <span class="star" data-group="clarity" data-val="1">★</span>
+            <span class="star" data-group="clarity" data-val="2">★</span>
+            <span class="star" data-group="clarity" data-val="3">★</span>
+            <span class="star" data-group="clarity" data-val="4">★</span>
+            <span class="star" data-group="clarity" data-val="5">★</span>
+          </div>
+        </div>
+
+        <div class="rating-row">
+          <div class="rating-label">التنظيم والتنسيق</div>
+          <div class="stars" id="stars-org">
+            <span class="star" data-group="org" data-val="1">★</span>
+            <span class="star" data-group="org" data-val="2">★</span>
+            <span class="star" data-group="org" data-val="3">★</span>
+            <span class="star" data-group="org" data-val="4">★</span>
+            <span class="star" data-group="org" data-val="5">★</span>
+          </div>
+        </div>
+
+        <div class="rating-row">
+          <div class="rating-label">التفاعل والمشاركة</div>
+          <div class="stars" id="stars-interact">
+            <span class="star" data-group="interact" data-val="1">★</span>
+            <span class="star" data-group="interact" data-val="2">★</span>
+            <span class="star" data-group="interact" data-val="3">★</span>
+            <span class="star" data-group="interact" data-val="4">★</span>
+            <span class="star" data-group="interact" data-val="5">★</span>
+          </div>
+        </div>
+
+        <div class="rating-row">
+          <div class="rating-label">إلمام المدرب بالمادة</div>
+          <div class="stars" id="stars-knowledge">
+            <span class="star" data-group="knowledge" data-val="1">★</span>
+            <span class="star" data-group="knowledge" data-val="2">★</span>
+            <span class="star" data-group="knowledge" data-val="3">★</span>
+            <span class="star" data-group="knowledge" data-val="4">★</span>
+            <span class="star" data-group="knowledge" data-val="5">★</span>
+          </div>
+        </div>
+
+        <div class="rating-row">
+          <div class="rating-label">الرضا العام</div>
+          <div class="stars" id="stars-overall">
+            <span class="star" data-group="overall" data-val="1">★</span>
+            <span class="star" data-group="overall" data-val="2">★</span>
+            <span class="star" data-group="overall" data-val="3">★</span>
+            <span class="star" data-group="overall" data-val="4">★</span>
+            <span class="star" data-group="overall" data-val="5">★</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-section">
+        <div class="exam-section-title">💬 تعليق / ملاحظات</div>
+        <textarea class="comment-box" id="examComment" placeholder="اكتب تعليقك هنا..."></textarea>
+      </div>
+
+      <button class="exam-submit" onclick="submitExam()">إرسال التقييم وطلب الدخول ✅</button>
+    </div>
+
+    <div id="examSuccess" style="display:none">
+      <div class="success-msg">
+        <div class="success-icon">🎉</div>
+        <div class="success-title">شكراً على تقييمك!</div>
+        <div class="success-sub">تم إرسال طلب الدخول إلى المدرب<br>يمكنك الآن الانتظار للحصول على الموافقة</div>
+        <div style="margin-top:20px;background:var(--bg);border-radius:10px;padding:16px">
+          <div style="font-size:13px;color:var(--text-muted)">اسمك في النظام</div>
+          <div style="font-size:18px;font-weight:700;color:var(--primary);margin-top:4px" id="successName"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ===== STATE =====
+let trainees = JSON.parse(localStorage.getItem('aces_trainees') || '[]');
+let attendance = JSON.parse(localStorage.getItem('aces_attendance') || '{}');
+let performance = JSON.parse(localStorage.getItem('aces_performance') || '{}');
+let ratings = JSON.parse(localStorage.getItem('aces_ratings') || '[]');
+let requests = [];
+let currentRole = 'trainer';
+let examRatings = {};
+let currentExamTrainee = null;
+
+// ===== INIT =====
+window.onload = function() {
+  // Check URL params for trainee exam
+  const params = new URLSearchParams(window.location.search);
+  const tid = params.get('trainee');
+  if (tid) {
+    const t = trainees.find(x => x.id === tid);
+    if (t) {
+      showExam(t);
+      return;
+    }
+  }
+  showScreen('loginScreen');
+};
+
+// ===== SCREEN =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ===== LOGIN =====
+function selectRole(role) {
+  currentRole = role;
+  document.getElementById('roleAdmin').classList.toggle('selected', role === 'admin');
+  document.getElementById('roleTrainer').classList.toggle('selected', role === 'trainer');
+}
+
+function doLogin() {
+  showScreen('dashboardScreen');
+  showTab('tab-requests');
+  renderAll();
+}
+
+// ===== TABS =====
+function showTab(tabId) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  const navId = 'nav-' + tabId.replace('tab-', '');
+  const nav = document.getElementById(navId);
+  if (nav) nav.classList.add('active');
+}
+
+// ===== ADD TRAINEE =====
+function addTrainee() {
+  const name = document.getElementById('inp-name').value.trim();
+  if (!name) { showToast('⚠️','الرجاء إدخال الاسم الكامل','warn'); return; }
+
+  const t = {
+    id: 'T' + Date.now(),
+    name,
+    empId: document.getElementById('inp-id').value.trim() || '—',
+    dept: document.getElementById('inp-dept').value.trim() || '—',
+    spec: document.getElementById('inp-spec').value.trim() || '—',
+    status: 'pending',
+    addedAt: new Date().toLocaleString('ar')
+  };
+
+  trainees.push(t);
+  saveData();
+  renderAll();
+  clearAddForm();
+
+  // Flash notification
+  const flash = document.getElementById('addFlash');
+  flash.classList.add('show');
+  setTimeout(() => flash.classList.remove('show'), 3500);
+
+  showToast('✅', `تمت إضافة ${name} — QR جاهز`, 'success');
+  showTab('tab-qr');
+}
+
+function clearAddForm() {
+  ['inp-name','inp-id','inp-dept','inp-spec'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
+// ===== RENDER ALL =====
+function renderAll() {
+  renderStats();
+  renderTraineesTable();
+  renderQR();
+  renderAttendance();
+  renderPerformance();
+  renderRatings();
+  renderRequests();
+  updateBadges();
+}
+
+// ===== STATS =====
+function renderStats() {
+  document.getElementById('st-total').textContent = trainees.length;
+  document.getElementById('st-active').textContent = trainees.filter(t => t.status === 'accepted').length;
+
+  const allScores = trainees.map(t => {
+    const scores = performance[t.id] || [];
+    const valid = scores.filter(s => s !== null && s !== '');
+    return valid.length ? valid.reduce((a,b)=>a+Number(b),0)/valid.length : null;
+  }).filter(s => s !== null);
+
+  document.getElementById('st-avg').textContent = allScores.length
+    ? (allScores.reduce((a,b)=>a+b,0)/allScores.length).toFixed(1) : '—';
+
+  const attPcts = trainees.map(t => {
+    const days = attendance[t.id] || [];
+    const present = days.filter(d => d === 'present').length;
+    return days.length ? Math.round(present/days.length*100) : null;
+  }).filter(x => x !== null);
+
+  document.getElementById('st-attend').textContent = attPcts.length
+    ? Math.round(attPcts.reduce((a,b)=>a+b,0)/attPcts.length) + '%' : '—';
+}
+
+// ===== TRAINEES TABLE =====
+function renderTraineesTable() {
+  document.getElementById('traineeCount').textContent = trainees.length;
+  const wrap = document.getElementById('traineesTable');
+  if (!trainees.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><div>لم يتم إضافة متدربين بعد</div></div>`;
+    return;
+  }
+  wrap.innerHTML = `<table>
+    <thead><tr>
+      <th>#</th><th>الاسم</th><th>الرقم</th><th>الجهة</th><th>الحضور</th><th>المتوسط</th>
+      <th>الحالة</th><th>حذف</th>
+    </tr></thead>
+    <tbody>${trainees.map((t,i) => {
+      const att = attendance[t.id] || [];
+      const pct = att.length ? Math.round(att.filter(d=>d==='present').length/att.length*100)+'%' : '—';
+      const scores = (performance[t.id]||[]).filter(s=>s!==null&&s!=='');
+      const avg = scores.length ? (scores.reduce((a,b)=>a+Number(b),0)/scores.length).toFixed(1) : '—';
+      const statusBadge = t.status === 'accepted'
+        ? `<span style="background:#dcfce7;color:#16a34a;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600">مقبول</span>`
+        : t.status === 'rejected'
+        ? `<span style="background:#fee2e2;color:#dc2626;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600">مرفوض</span>`
+        : `<span style="background:#fef9c3;color:#ca8a04;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600">في الانتظار</span>`;
+      return `<tr>
+        <td style="color:var(--text-muted)">${i+1}</td>
+        <td><strong>${t.name}</strong><br><small style="color:var(--text-muted)">${t.spec}</small></td>
+        <td>${t.empId}</td>
+        <td>${t.dept}</td>
+        <td>${pct}</td>
+        <td><strong>${avg}</strong></td>
+        <td>${statusBadge}</td>
+        <td><button class="btn btn-outline" style="padding:4px 10px;font-size:12px" onclick="deleteTrainee('${t.id}')">🗑️</button></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+// ===== QR =====
+function renderQR() {
+  const wrap = document.getElementById('qrGrid');
+  if (!trainees.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">📱</div><div>أضف متدربين وستظهر رموز QR هنا تلقائياً</div></div>`;
+    return;
+  }
+
+  wrap.innerHTML = `<div class="qr-grid">${trainees.map(t =>
+    `<div class="qr-card">
+      <div class="qr-img-wrap" id="qr-wrap-${t.id}"></div>
+      <div class="qr-name">${t.name}</div>
+      <div class="qr-id">${t.empId}</div>
+      <div style="margin-top:8px;display:flex;gap:6px;justify-content:center">
+        <button class="btn btn-outline" style="padding:4px 10px;font-size:11px" onclick="simulateScan('${t.id}')">📲 محاكاة المسح</button>
+      </div>
+    </div>`
+  ).join('')}</div>`;
+
+  // Generate QR codes
+  trainees.forEach(t => {
+    const wrap2 = document.getElementById(`qr-wrap-${t.id}`);
+    if (!wrap2) return;
+    const examUrl = window.location.origin + window.location.pathname + `?trainee=${t.id}`;
+    try {
+      new QRCode(wrap2, {
+        text: examUrl,
+        width: 114,
+        height: 114,
+        colorDark: '#1a3a5c',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } catch(e) {
+      wrap2.innerHTML = `<div style="font-size:10px;color:var(--text-muted);padding:10px">QR<br>${t.id}</div>`;
+    }
+  });
+}
+
+// ===== SIMULATE SCAN (opens exam) =====
+function simulateScan(tid) {
+  const t = trainees.find(x => x.id === tid);
+  if (t) showExam(t);
+}
+
+// ===== EXAM =====
+function showExam(trainee) {
+  currentExamTrainee = trainee;
+  examRatings = {};
+  document.getElementById('examTraineeName').textContent = trainee.name;
+  document.getElementById('examWorkshop').textContent = 'سحب العينات الغذائية — 5 أيام';
+  document.getElementById('examDate').textContent = new Date().toLocaleDateString('ar-SA', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('examComment').value = '';
+  document.getElementById('examContent').style.display = '';
+  document.getElementById('examSuccess').style.display = 'none';
+
+  // Reset stars
+  document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+
+  // Bind star clicks
+  document.querySelectorAll('.star').forEach(star => {
+    star.onclick = function() {
+      const group = this.dataset.group;
+      const val = parseInt(this.dataset.val);
+      examRatings[group] = val;
+      document.querySelectorAll(`.star[data-group="${group}"]`).forEach(s => {
+        s.classList.toggle('active', parseInt(s.dataset.val) <= val);
+      });
+    };
+  });
+
+  showScreen('examScreen');
+}
+
+function submitExam() {
+  if (!currentExamTrainee) return;
+
+  const rating = {
+    traineeId: currentExamTrainee.id,
+    traineeName: currentExamTrainee.name,
+    ratings: {...examRatings},
+    comment: document.getElementById('examComment').value.trim(),
+    submittedAt: new Date().toLocaleString('ar')
+  };
+
+  ratings.push(rating);
+  saveData();
+
+  // Add to requests for trainer to accept/reject
+  requests.push({
+    id: 'R' + Date.now(),
+    trainee: currentExamTrainee,
+    rating,
+    status: 'pending'
+  });
+
+  document.getElementById('examContent').style.display = 'none';
+  document.getElementById('examSuccess').style.display = '';
+  document.getElementById('successName').textContent = currentExamTrainee.name;
+
+  // Update badge if dashboard open
+  updateBadges();
+  renderRequests();
+}
+
+// ===== REQUESTS =====
+function renderRequests() {
+  const wrap = document.getElementById('requestsList');
+  const badge = document.getElementById('requestsBadge');
+  const pending = requests.filter(r => r.status === 'pending');
+
+  badge.style.display = pending.length ? '' : 'none';
+  badge.textContent = pending.length;
+
+  if (!requests.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">📱</div><div style="font-size:14px;font-weight:600">في انتظار المتدربين...</div></div>`;
+    return;
+  }
+
+  wrap.innerHTML = requests.map(r => {
+    const avg = r.rating.ratings ? (Object.values(r.rating.ratings).reduce((a,b)=>a+b,0)/Object.keys(r.rating.ratings).length).toFixed(1) : '—';
+    const initials = r.trainee.name.split(' ').slice(0,2).map(w=>w[0]).join('');
+    const statusBadge = r.status !== 'pending'
+      ? `<span style="background:${r.status==='accepted'?'#dcfce7':'#fee2e2'};color:${r.status==='accepted'?'#16a34a':'#dc2626'};padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600">${r.status==='accepted'?'✅ مقبول':'❌ مرفوض'}</span>`
+      : `<div class="request-actions">
+          <button class="btn btn-success" style="padding:6px 14px;font-size:12px" onclick="handleRequest('${r.id}','accepted')">✅ قبول</button>
+          <button class="btn btn-danger" style="padding:6px 14px;font-size:12px" onclick="handleRequest('${r.id}','rejected')">❌ رفض</button>
+        </div>`;
+    return `<div class="request-item">
+      <div class="request-avatar">${initials}</div>
+      <div class="request-info">
+        <div class="request-name">${r.trainee.name}</div>
+        <div class="request-sub">${r.trainee.dept} • تقييم: ${avg}/5 • ${r.rating.submittedAt}</div>
+        ${r.rating.comment ? `<div style="font-size:12px;color:var(--text-muted);margin-top:4px">💬 ${r.rating.comment}</div>` : ''}
+      </div>
+      ${statusBadge}
+    </div>`;
+  }).join('');
+}
+
+function handleRequest(rid, status) {
+  const req = requests.find(r => r.id === rid);
+  if (!req) return;
+  req.status = status;
+
+  const t = trainees.find(x => x.id === req.trainee.id);
+  if (t) {
+    t.status = status;
+    saveData();
+    renderAll();
+  }
+
+  showToast(status === 'accepted' ? '✅' : '❌',
+    status === 'accepted' ? `تم قبول ${req.trainee.name}` : `تم رفض ${req.trainee.name}`,
+    status === 'accepted' ? 'success' : 'danger');
+  renderRequests();
+}
+
+function clearProcessed() {
+  requests = requests.filter(r => r.status === 'pending');
+  renderRequests();
+}
+
+// ===== ATTENDANCE =====
+const ATT_STATES = [null, 'present', 'absent', 'late'];
+const ATT_LABELS = { present: '✅', absent: '❌', late: '⏰' };
+const ATT_CLASSES = { present: 'att-present', absent: 'att-absent', late: 'att-late' };
+
+function renderAttendance() {
+  const tbody = document.getElementById('attendanceBody');
+  if (!trainees.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:32px">لا يوجد متدربون</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = trainees.map(t => {
+    const days = attendance[t.id] || [null,null,null,null,null];
+    const present = days.filter(d=>d==='present').length;
+    const total = days.filter(d=>d!==null).length;
+    return `<tr>
+      <td><strong>${t.name}</strong></td>
+      ${days.map((d, i) => {
+        const cls = d ? ATT_CLASSES[d] : 'att-none';
+        const lbl = d ? ATT_LABELS[d] : '◻';
+        return `<td><button class="att-cell ${cls}" onclick="toggleAtt('${t.id}',${i})">${lbl}</button></td>`;
+      }).join('')}
+      <td><strong>${present}</strong><span style="color:var(--text-muted);font-size:12px">/${total} أيام</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function toggleAtt(tid, dayIdx) {
+  if (!attendance[tid]) attendance[tid] = [null,null,null,null,null];
+  const curr = attendance[tid][dayIdx];
+  const idx = ATT_STATES.indexOf(curr);
+  attendance[tid][dayIdx] = ATT_STATES[(idx + 1) % ATT_STATES.length];
+  saveData();
+  renderAttendance();
+  renderStats();
+}
+
+// ===== PERFORMANCE =====
+function renderPerformance() {
+  const tbody = document.getElementById('performanceBody');
+  if (!trainees.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:32px">لا يوجد متدربون</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = trainees.map((t, i) => {
+    const scores = performance[t.id] || [null,null,null,null,null];
+    const valid = scores.filter(s=>s!==null&&s!=='');
+    const avg = valid.length ? valid.reduce((a,b)=>a+Number(b),0)/valid.length : null;
+    const level = avg === null ? '' : avg >= 90 ? 'excellent' : avg >= 75 ? 'good' : avg >= 60 ? 'ok' : 'poor';
+    const levelLabel = { excellent:'ممتاز', good:'جيد', ok:'مقبول', poor:'ضعيف' };
+    return `<tr>
+      <td style="color:var(--text-muted)">${i+1}</td>
+      <td><strong>${t.name}</strong></td>
+      ${scores.map((s, di) =>
+        `<td><input class="score-input" type="number" min="0" max="100"
+          value="${s !== null ? s : ''}"
+          placeholder="—"
+          onchange="setScore('${t.id}',${di},this.value)"></td>`
+      ).join('')}
+      <td><strong>${avg !== null ? avg.toFixed(1) : '—'}</strong></td>
+      <td>${avg !== null ? `<span class="level-badge level-${level}">${levelLabel[level]}</span>` : ''}</td>
+    </tr>`;
+  }).join('');
+}
+
+function setScore(tid, dayIdx, val) {
+  if (!performance[tid]) performance[tid] = [null,null,null,null,null];
+  performance[tid][dayIdx] = val === '' ? null : Math.min(100, Math.max(0, Number(val)));
+  saveData();
+  renderStats();
+}
+
+// ===== RATINGS =====
+function renderRatings() {
+  const wrap = document.getElementById('ratingsTable');
+  if (!ratings.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">⭐</div><div>لا توجد تقييمات بعد</div><div style="font-size:12px;margin-top:8px">التقييمات تأتي من صفحة الاختبار</div></div>`;
+    return;
+  }
+  wrap.innerHTML = `<table>
+    <thead><tr>
+      <th>#</th><th>المتدرب</th><th>وضوح الشرح</th><th>التنظيم</th><th>التفاعل</th><th>الإلمام</th><th>الرضا</th><th>المتوسط</th><th>تعليق</th>
+    </tr></thead>
+    <tbody>${ratings.map((r, i) => {
+      const rv = r.ratings || {};
+      const vals = Object.values(rv);
+      const avg = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : '—';
+      const star = v => v ? '★'.repeat(v)+'☆'.repeat(5-v) : '—';
+      return `<tr>
+        <td>${i+1}</td>
+        <td><strong>${r.traineeName}</strong><br><small style="color:var(--text-muted)">${r.submittedAt}</small></td>
+        <td>${star(rv.clarity)}</td>
+        <td>${star(rv.org)}</td>
+        <td>${star(rv.interact)}</td>
+        <td>${star(rv.knowledge)}</td>
+        <td>${star(rv.overall)}</td>
+        <td><strong style="color:var(--accent)">${avg}</strong></td>
+        <td style="font-size:12px;color:var(--text-muted);max-width:160px">${r.comment||'—'}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+// ===== HELPERS =====
+function updateBadges() {
+  const pending = requests.filter(r => r.status === 'pending').length;
+  const badge = document.getElementById('requestsBadge');
+  badge.textContent = pending;
+  badge.style.display = pending ? '' : 'none';
+  document.getElementById('traineeCount').textContent = trainees.length;
+}
+
+function deleteTrainee(tid) {
+  if (!confirm('هل تريد حذف هذا المتدرب؟')) return;
+  trainees = trainees.filter(t => t.id !== tid);
+  delete attendance[tid];
+  delete performance[tid];
+  saveData();
+  renderAll();
+  showToast('🗑️', 'تم حذف المتدرب', 'warn');
+}
+
+function saveData() {
+  localStorage.setItem('aces_trainees', JSON.stringify(trainees));
+  localStorage.setItem('aces_attendance', JSON.stringify(attendance));
+  localStorage.setItem('aces_performance', JSON.stringify(performance));
+  localStorage.setItem('aces_ratings', JSON.stringify(ratings));
+}
+
+function exportCSV() {
+  const rows = [['#','الاسم','الرقم الوظيفي','الجهة','التخصص','الحضور','متوسط الأداء']];
+  trainees.forEach((t, i) => {
+    const att = attendance[t.id] || [];
+    const pct = att.length ? Math.round(att.filter(d=>d==='present').length/att.length*100)+'%' : '—';
+    const scores = (performance[t.id]||[]).filter(s=>s!==null&&s!=='');
+    const avg = scores.length ? (scores.reduce((a,b)=>a+Number(b),0)/scores.length).toFixed(1) : '—';
+    rows.push([i+1, t.name, t.empId, t.dept, t.spec, pct, avg]);
+  });
+  const csv = '\uFEFF' + rows.map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+  a.download = 'ACES-Workshop.csv';
+  a.click();
+  showToast('📥','تم تصدير CSV بنجاح','success');
+}
+
+function showToast(icon, msg, type) {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  const bg = {success:'#10b981', warn:'#f59e0b', danger:'#ef4444'}[type] || '#1a3a5c';
+  t.className = 'toast';
+  t.style.background = bg;
+  t.innerHTML = `<span style="font-size:18px">${icon}</span> ${msg}`;
+  wrap.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+</script>
+</body>
+</html>
