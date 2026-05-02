@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACES — نظام إدارة الورش التدريبية</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap">
+<style>
+:root{
+  --g1:#0a5c3e;--g2:#0e7a54;--g3:#12a06e;--g4:#eaf6f1;--g5:#c8e8d8;
+  --gold:#c8830a;--gold2:#fff7e6;
+  --red:#b83030;--red2:#fde8e8;
+  --blue:#1255a0;--blue2:#e6f0fb;
+  --purple:#5a20c0;--purple2:#ede0ff;
+  --bg:#f5f9f7;--card:#ffffff;--text:#0e1f18;--muted:#4a7060;--border:#b8d8cc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+nav{background:#fff;border-bottom:2px solid var(--border);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;z-index:300;box-shadow:0 2px 16px rgba(10,92,62,.10)}
+.logo-box{background:var(--g4);border:1.5px solid var(--border);border-radius:10px;padding:6px 14px;font-size:1.1rem;font-weight:900;color:var(--g1)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#12a06e;animation:blink 2s infinite;display:inline-block}
+.live-pill{background:var(--g4);border:1.5px solid var(--border);color:var(--g1);font-size:.68rem;font-weight:700;padding:4px 11px;border-radius:20px;display:flex;align-items:center;gap:5px}
+
+.screen{display:none;padding:22px 16px;max-width:1100px;margin:0 auto;animation:fadeUp .32s ease}
+.screen.active{display:block}
+
+.card{background:var(--card);border-radius:16px;border:1.5px solid var(--border);box-shadow:0 2px 16px rgba(10,92,62,.07);padding:20px}
+.btn{border:none;border-radius:11px;padding:10px 18px;font-family:'Tajawal',sans-serif;font-weight:800;cursor:pointer;transition:.18s;font-size:.88rem;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-2px)}
+.btn-p{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;box-shadow:0 4px 14px rgba(10,92,62,.27)}
+.btn-s{background:var(--g4);color:var(--g1);border:1.5px solid var(--border)}
+.btn-r{background:var(--red2);color:var(--red);border:1.5px solid #fca5a5}
+.btn-g{background:var(--gold2);color:var(--gold);border:1.5px solid #fde68a}
+.btn-b{background:var(--blue2);color:var(--blue);border:1.5px solid #bfdbfe}
+.btn-wide{width:100%;justify-content:center;padding:13px;margin-top:10px}
+.inp{width:100%;padding:10px 13px;border:2px solid var(--border);border-radius:11px;font-family:'Tajawal',sans-serif;font-size:.9rem;outline:none;transition:.18s;color:var(--text);background:#fff}
+.inp:focus{border-color:var(--g3);box-shadow:0 0 0 3px rgba(18,160,110,.07)}
+.inp-label{display:block;font-size:.74rem;font-weight:700;color:var(--muted);margin-bottom:4px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px}
+.form-g{margin-bottom:11px}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--card);border-radius:13px;border:1.5px solid var(--border);padding:14px;text-align:center;box-shadow:0 2px 10px rgba(10,92,62,.06)}
+.kpi .v{font-size:1.85rem;font-weight:900;line-height:1;margin-bottom:3px}
+.kpi .l{font-size:.68rem;color:var(--muted);font-weight:600}
+.kpi.g .v{color:var(--g1)}.kpi.go .v{color:var(--gold)}.kpi.r .v{color:var(--red)}.kpi.b .v{color:var(--blue)}
+
+.tbl-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.79rem}
+th{background:var(--g4);color:var(--g1);font-weight:800;padding:9px 11px;text-align:right;white-space:nowrap}
+td{padding:8px 11px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--g4)}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.68rem;font-weight:800}
+.badge.g{background:#d1fae5;color:#065f46}.badge.r{background:var(--red2);color:#7f1d1d}
+.badge.go{background:var(--gold2);color:#78350f}.badge.b{background:var(--blue2);color:#1e40af}
+.badge.gr{background:#f3f4f6;color:#374151}.badge.p{background:var(--purple2);color:#3b0764}
+
+.subnav{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.snbtn{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:7px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.8rem;cursor:pointer;color:var(--muted);transition:.18s}
+.snbtn:hover{color:var(--g1);background:var(--g4)}
+.snbtn.active{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(10,92,62,.22)}
+
+.chart-card{background:var(--card);border-radius:14px;border:1.5px solid var(--border);padding:17px;margin-bottom:14px;box-shadow:0 2px 10px rgba(10,92,62,.06)}
+.chart-card h3{font-size:.87rem;font-weight:800;color:var(--g1);margin-bottom:12px}
+.bar-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:.75rem}
+.bar-lbl{width:110px;font-weight:700;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.73rem}
+.bar-bg{flex:1;background:var(--border);border-radius:5px;height:11px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;transition:width 1s .15s}
+.bar-num{width:38px;text-align:left;font-weight:800;font-size:.73rem}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.48);backdrop-filter:blur(5px);z-index:500;align-items:center;justify-content:center;padding:14px}
+.overlay.open{display:flex}
+.modal{background:var(--card);border-radius:20px;max-width:600px;width:100%;max-height:92vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:fadeUp .28s}
+.modal-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.modal-h h2{font-size:.98rem;font-weight:900;color:var(--g1)}
+.x-btn{background:var(--border);border:none;border-radius:50%;width:29px;height:29px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.x-btn:hover{background:var(--red2);color:var(--red)}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:9px 20px;border-radius:12px;font-size:.83rem;font-weight:700;z-index:999;transition:.28s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+.ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px;margin-bottom:20px}
+.ws-card{background:var(--card);border-radius:16px;border:1.5px solid var(--border);padding:0;overflow:hidden;box-shadow:0 2px 14px rgba(10,92,62,.07);transition:.2s}
+.ws-card:hover{transform:translateY(-3px);box-shadow:0 6px 24px rgba(10,92,62,.14)}
+.ws-card-header{background:linear-gradient(135deg,var(--g1),var(--g2));padding:16px;color:#fff}
+.ws-card-body{padding:16px}
+.ws-stat{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:6px}
+.ws-stat span:first-child{color:var(--muted);font-weight:600}
+.ws-stat span:last-child{font-weight:800;color:var(--text)}
+
+.att-cell{border-radius:8px;border:1.5px solid var(--border);padding:8px 4px;text-align:center;cursor:pointer;transition:.18s;font-size:.7rem;font-weight:700}
+.att-cell.present{background:#d1fae5;border-color:#059669;color:#065f46}
+.att-cell.absent{background:var(--red2);border-color:var(--red);color:#7f1d1d}
+.att-cell.excused{background:var(--gold2);border-color:#fde68a;color:#78350f}
+.att-cell.none{background:var(--bg);color:var(--muted)}
+
+.scan-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.scan-card.pending{border-color:#f59e0b;animation:fadeUp .4s}
+.scan-card.accepted{border-color:var(--g1);background:var(--g4)}
+.scan-card.rejected{border-color:var(--red);background:var(--red2)}
+
+/* PDF viewer */
+.pdf-day-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pdf-day-badge{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-radius:10px;padding:8px 14px;font-weight:900;font-size:.85rem;flex-shrink:0}
+
+/* Photos */
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:10px}
+.photo-item{border-radius:12px;overflow:hidden;border:2px solid var(--border);aspect-ratio:4/3;background:var(--bg);position:relative}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-del{position:absolute;top:5px;left:5px;background:rgba(184,48,48,.85);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center}
+
+/* Download request */
+.dl-req-card{background:#fff;border:1.5px solid #fde68a;border-radius:13px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.dl-req-card.approved{border-color:var(--g3);background:var(--g4)}
+.dl-req-card.rejected{border-color:var(--red);background:var(--red2)}
+
+/* Login */
+.login-wrap{max-width:420px;margin:60px auto;padding:0 16px}
+.login-card{background:var(--card);border-radius:22px;border:1.5px solid var(--border);box-shadow:0 6px 32px rgba(10,92,62,.12);padding:36px;text-align:center}
+.login-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.login-type-btn{border:2px solid var(--border);border-radius:14px;padding:20px 12px;cursor:pointer;transition:.18s;background:var(--bg);font-family:'Tajawal',sans-serif;text-align:center}
+.login-type-btn:hover,.login-type-btn.sel{border-color:var(--g1);background:var(--g4)}
+.login-type-btn .ico{font-size:2rem;display:block;margin-bottom:8px}
+.login-type-btn .lbl{font-size:.88rem;font-weight:800;color:var(--g1)}
+.login-type-btn .sub{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+/* Report print */
+@media print{
+  nav,.no-print{display:none!important}
+  .screen{padding:0!important}
+  body{background:#fff}
+  .report-page{page-break-after:always}
+}
+
+.report-photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.report-photo-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
+
+/* Spinner */
+.spinner{width:22px;height:22px;border:3px solid var(--border);border-top-color:var(--g1);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+</style>
+
+<!-- Firebase -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, get, remove, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const cfg = {
+  apiKey:"AIzaSyDgRH8Slr3uk0RRZOFZ5LDu1WDBWtgtTRY",
+  databaseURL:"https://aces-workshops-default-rtdb.firebaseio.com",
+  projectId:"aces-workshops"
+};
+const app = initializeApp(cfg);
+const db  = getDatabase(app);
+window.FB2 = {db,ref,set,get,remove,onValue,update};
+window._fb2Ready = true;
+</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo-box">🧪 ACES</div>
+    <div>
+      <div style="font-size:.78rem;font-weight:900;color:var(--g1)">نظام إدارة الورش التدريبية</div>
+      <div style="font-size:.64rem;color:var(--muted)">سحب العينات الغذائية — 5 أيام</div>
+    </div>
+  </div>
+  <div id="nav-user" style="display:none;align-items:center;gap:10px">
+    <span id="nav-badge"></span>
+    <span id="nav-name" style="font-size:.82rem;font-weight:700;color:var(--g1)"></span>
+    <button class="btn btn-s" style="font-size:.76rem;padding:6px 12px" onclick="logout()">خروج</button>
+  </div>
+  <div class="live-pill"><span class="live-dot"></span>مباشر</div>
+</nav>
+
+<!-- ══════ LOGIN ══════ -->
+<div id="s-login" class="screen active">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div style="background:var(--g4);border-radius:14px;padding:8px 22px;display:inline-block;margin-bottom:16px;border:1.5px solid var(--border)">
+        <div style="font-size:1.3rem;font-weight:900;color:var(--g1)">🧪 ACES</div>
+      </div>
+      <h2 style="font-weight:900;color:var(--g1);margin-bottom:4px">تسجيل الدخول</h2>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:22px">اختر نوع حسابك</p>
+      <div class="login-type-grid">
+        <div class="login-type-btn" id="lt-admin" onclick="selLogin('admin')">
+          <span class="ico">👑</span><div class="lbl">مشرف عام</div><div class="sub">جميع الورش</div>
+        </div>
+        <div class="login-type-btn" id="lt-trainer" onclick="selLogin('trainer')">
+          <span class="ico">👨‍🏫</span><div class="lbl">مدرب</div><div class="sub">ورشتي فقط</div>
+        </div>
+      </div>
+      <div id="login-form" style="display:none">
+        <input class="inp" id="login-pwd" type="password" placeholder="كلمة المرور"
+          onkeydown="if(event.key==='Enter')doLogin()" style="text-align:center;letter-spacing:4px;margin-bottom:10px">
+        <button class="btn btn-p btn-wide" onclick="doLogin()">دخول ←</button>
+        <p id="login-err" style="display:none;color:var(--red);font-size:.8rem;margin-top:8px;text-align:center"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ ADMIN ══════ -->
+<div id="s-admin" class="screen">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px">
+    <div>
+      <h2 style="font-weight:900;color:var(--g1);font-size:1.1rem">👑 لوحة المشرف العام</h2>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:2px" id="admin-time"></p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-s" onclick="loadAdmin()" style="font-size:.78rem;padding:7px 13px">🔄 تحديث</button>
+      <button class="btn btn-s" id="gh-update-btn" onclick="updateGitHub()" style="font-size:.78rem;padding:7px 13px;background:#24292e;color:#fff;border-color:#24292e">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-left:4px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        رفع GitHub
+      </button>
+      <button class="btn btn-p" onclick="openCreateWS()">+ ورشة جديدة</button>
+    </div>
+  </div>
+  <div class="kpi-grid" id="admin-kpis"></div>
+  <div class="subnav" id="admin-subnav">
+    <button class="snbtn active" onclick="adminTab('workshops',this)">🏢 الورش</button>
+    <button class="snbtn" onclick="adminTab('dl-requests',this)">📥 طلبات التحميل <span id="dl-badge" style="display:none;background:#f59e0b;color:#fff;border-radius:20px;padding:1px 7px;font-size:.68rem;margin-right:4px">0</span></button>
+    <button class="snbtn" onclick="adminTab('comparison',this)">📊 المقارنة</button>
+    <button class="snbtn" onclick="adminTab('trainers',this)">👨‍🏫 المدربون</button>
+  </div>
+  <div id="at-workshops"><div class="ws-grid" id="ws-grid"></div></div>
+  <div id="at-dl-requests" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">📥 طلبات تحميل المادة التعليمية</h3>
+      </div>
+      <div id="dl-requests-list"></div>
+    </div>
+  </div>
+  <div id="at-comparison" style="display:none">
+    <div class="chart-card"><h3>📊 مقارنة متوسط الأداء</h3><div id="cmp-perf"></div></div>
+    <div class="chart-card"><h3>⭐ مقارنة تقييمات المدربين</h3><div id="cmp-eval"></div></div>
+    <div class="chart-card"><h3>✅ مقارنة نسب الحضور</h3><div id="cmp-att"></div></div>
+  </div>
+  <div id="at-trainers" style="display:none">
+    <div class="card">
+      <h3 style="font-weight:800;color:var(--g1);margin-bottom:13px;font-size:.92rem">👨‍🏫 المدربون</h3>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>#</th><th>المدرب</th><th>الورشة</th><th>التاريخ</th><th>المتدربون</th><th>متوسط الأداء</th><th>التقييم</th></tr></thead>
+        <tbody id="trainers-tbl"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ TRAINER ══════ -->
+<div id="s-trainer" class="screen">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px">
+    <div>
+      <h2 style="font-weight:900;color:var(--g1);font-size:1.1rem" id="tr-title">لوحة المدرب</h2>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:2px" id="tr-sub"></p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-s" onclick="loadTrainer()" style="font-size:.78rem;padding:7px 13px">🔄 تحديث</button>
+      <button class="btn btn-b" onclick="exportCSV()" style="font-size:.78rem;padding:7px 13px">📥 CSV</button>
+      <button class="btn btn-s" id="gh-update-btn-tr" onclick="updateGitHub()" style="font-size:.78rem;padding:7px 13px;background:#24292e;color:#fff;border-color:#24292e">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-left:4px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        رفع GitHub
+      </button>
+    </div>
+  </div>
+  <div class="kpi-grid" id="tr-kpis"></div>
+  <div class="subnav">
+    <button class="snbtn active" onclick="trTab('requests',this)">🚪 طلبات الدخول <span id="scan-badge" style="display:none;background:#f59e0b;color:#fff;border-radius:20px;padding:1px 7px;font-size:.68rem;margin-right:3px">0</span></button>
+    <button class="snbtn" onclick="trTab('trainees',this)">👥 المتدربون</button>
+    <button class="snbtn" onclick="trTab('attendance',this)">✅ الحضور</button>
+    <button class="snbtn" onclick="trTab('performance',this)">📈 الأداء</button>
+    <button class="snbtn" onclick="trTab('materials',this)">📚 المواد التعليمية</button>
+    <button class="snbtn" onclick="trTab('photos',this)">🖼️ صور الورشة</button>
+    <button class="snbtn" onclick="trTab('evaluations',this)">⭐ تقييماتي</button>
+    <button class="snbtn" onclick="trTab('report',this)">📋 التقرير النهائي</button>
+    <button class="snbtn" onclick="trTab('qr',this)">📱 رموز QR</button>
+  </div>
+
+  <!-- Requests -->
+  <div id="tt-requests">
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3 style="font-weight:900;color:var(--g1);font-size:.92rem">🚪 طلبات الدخول</h3>
+      <div style="display:flex;gap:7px">
+        <button class="btn btn-r" style="font-size:.76rem;padding:6px 12px" onclick="clearScans()">🗑️ مسح المعالجة</button>
+        <button class="btn btn-r" style="font-size:.76rem;padding:6px 12px" onclick="clearAllScans()">🗑️ مسح الكل</button>
+      </div>
+    </div><div id="scan-list"><div style="text-align:center;padding:40px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px">📱</div><p>في انتظار المتدربين...</p></div></div></div>
+    <div class="card" style="background:var(--g4);border-color:var(--g5);margin-top:14px"><div style="display:flex;gap:10px;align-items:flex-start;font-size:.82rem;color:var(--g1)"><span style="font-size:1.4rem">💡</span><div><strong>كيف يعمل؟</strong><br><span style="color:var(--muted);line-height:1.8">1️⃣ المتدرب يمسح QR<br>2️⃣ تظهر بطاقته هنا<br>3️⃣ ✅ قبول الحضور<br>4️⃣ 📝 فتح الاختبار للبدء</span></div></div></div>
+
+    <!-- Exam Control Panel -->
+    <div class="card" style="margin-top:14px;border:2px solid var(--blue);background:var(--blue2)">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+        <div>
+          <div style="font-weight:900;color:var(--blue);font-size:.95rem">📝 التحكم في الاختبار</div>
+          <div style="font-size:.76rem;color:var(--muted);margin-top:2px">فتح الاختبار للمتدربين بعد الموافقة على حضورهم</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px" id="exam-control-btns">
+        <div style="background:#fff;border-radius:12px;padding:12px;text-align:center;border:1.5px solid var(--border)">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:8px">اليوم 1</div>
+          <button class="btn" id="exam-btn-1" onclick="toggleExam(1)" style="width:100%;font-size:.74rem;padding:7px;background:var(--g4);color:var(--g1);border:1.5px solid var(--border)">📝 فتح الاختبار</button>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;text-align:center;border:1.5px solid var(--border)">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:8px">اليوم 2</div>
+          <button class="btn" id="exam-btn-2" onclick="toggleExam(2)" style="width:100%;font-size:.74rem;padding:7px;background:var(--g4);color:var(--g1);border:1.5px solid var(--border)">📝 فتح الاختبار</button>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;text-align:center;border:1.5px solid var(--border)">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:8px">اليوم 3</div>
+          <button class="btn" id="exam-btn-3" onclick="toggleExam(3)" style="width:100%;font-size:.74rem;padding:7px;background:var(--g4);color:var(--g1);border:1.5px solid var(--border)">📝 فتح الاختبار</button>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;text-align:center;border:1.5px solid var(--border)">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:8px">اليوم 4</div>
+          <button class="btn" id="exam-btn-4" onclick="toggleExam(4)" style="width:100%;font-size:.74rem;padding:7px;background:var(--g4);color:var(--g1);border:1.5px solid var(--border)">📝 فتح الاختبار</button>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;text-align:center;border:1.5px solid var(--border)">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:8px">اليوم 5</div>
+          <button class="btn" id="exam-btn-5" onclick="toggleExam(5)" style="width:100%;font-size:.74rem;padding:7px;background:var(--g4);color:var(--g1);border:1.5px solid var(--border)">📝 فتح الاختبار</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trainees -->
+  <div id="tt-trainees" style="display:none">
+    <div class="card" style="margin-bottom:14px">
+      <h3 style="font-weight:800;color:var(--g1);margin-bottom:13px;font-size:.92rem">➕ إضافة متدرب</h3>
+      <div class="form-row">
+        <div class="form-g"><label class="inp-label">الاسم الكامل *</label><input class="inp" id="add-name" placeholder="الاسم..."></div>
+        <div class="form-g"><label class="inp-label">الرقم الوظيفي</label><input class="inp" id="add-sid" placeholder="EMP-001"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-g"><label class="inp-label">الجهة / القسم</label><input class="inp" id="add-dept" placeholder="وزارة الصحة"></div>
+        <div class="form-g"><label class="inp-label">التخصص</label><input class="inp" id="add-spec" placeholder="مفتش غذاء"></div>
+      </div>
+      <button class="btn btn-p" style="margin-bottom:0" onclick="addTrainee()">+ إضافة متدرب</button>
+    </div>
+
+    <!-- Inline QR Grid — auto-updates when trainees are added -->
+    <div class="card" style="margin-bottom:14px" id="inline-qr-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div>
+          <h3 style="font-weight:800;color:var(--g1);font-size:.92rem">📱 رموز QR — تحديث تلقائي</h3>
+          <p style="font-size:.76rem;color:var(--muted);margin-top:2px">يتحدث فور إضافة أي متدرب</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="qr-inline-count" style="font-size:.76rem;color:var(--muted);background:var(--g4);border-radius:20px;padding:3px 10px;font-weight:700">0 متدرب</span>
+          <button class="btn btn-s" onclick="window.print()" style="font-size:.75rem;padding:6px 11px">🖨️ طباعة</button>
+        </div>
+      </div>
+      <div id="qr-inline-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
+        <div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--muted)">
+          <div style="font-size:2rem;margin-bottom:8px">📱</div>
+          <p style="font-size:.85rem">أضف متدربين وستظهر رموز QR هنا تلقائياً</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;flex-wrap:wrap;gap:8px">
+        <h3 style="font-weight:800;color:var(--g1);font-size:.92rem">👥 المتدربون (<span id="tr-count">0</span>)</h3>
+        <button id="del-selected-btn" onclick="delSelected()"
+          style="display:none;background:var(--red2);border:1.5px solid #fca5a5;color:var(--red);border-radius:10px;padding:7px 14px;font-family:Tajawal,sans-serif;font-size:.8rem;font-weight:800;cursor:pointer">
+          🗑️ حذف المحددين
+        </button>
+      </div>
+      <div class="tbl-scroll"><table>
+        <thead><tr>
+          <th style="width:36px;text-align:center">
+            <input type="checkbox" onchange="toggleAllTrainees(this)"
+              style="width:15px;height:15px;cursor:pointer;accent-color:var(--g1)" title="تحديد الكل">
+          </th>
+          <th>#</th><th>الاسم</th><th>الرقم</th><th>الجهة</th><th>الحضور</th><th>المتوسط</th><th>QR</th><th>حذف</th>
+        </tr></thead>
+        <tbody id="tr-tbl"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- Attendance -->
+  <div id="tt-attendance" style="display:none">
+    <div class="card">
+      <h3 style="font-weight:800;color:var(--g1);margin-bottom:8px;font-size:.92rem">✅ سجل الحضور</h3>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:12px">اضغط على الخلية لتغيير الحالة</p>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>المتدرب</th><th>اليوم 1</th><th>اليوم 2</th><th>اليوم 3</th><th>اليوم 4</th><th>اليوم 5</th><th>الإجمالي</th></tr></thead>
+        <tbody id="att-tbl"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- Performance -->
+  <div id="tt-performance" style="display:none">
+    <div class="kpi-grid" id="perf-kpis"></div>
+    <div class="chart-card"><h3>🏆 ترتيب المتدربين</h3><div id="rank-chart"></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px">
+      <div class="chart-card"><h3>📅 متوسط كل يوم</h3><div id="day-chart"></div></div>
+      <div class="chart-card"><h3>📊 توزيع المستويات</h3><div id="lvl-chart"></div></div>
+    </div>
+    <div class="card">
+      <h3 style="font-weight:800;color:var(--g1);margin-bottom:13px;font-size:.92rem">📋 جدول الأداء</h3>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>#</th><th>المتدرب</th><th>يوم 1</th><th>يوم 2</th><th>يوم 3</th><th>يوم 4</th><th>يوم 5</th><th>المتوسط</th><th>المستوى</th></tr></thead>
+        <tbody id="perf-tbl"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- Materials -->
+  <div id="tt-materials" style="display:none">
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div>
+          <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">📚 المواد التعليمية</h3>
+          <p style="font-size:.78rem;color:var(--muted);margin-top:2px">أضف رابط Google Drive لكل يوم</p>
+        </div>
+      </div>
+      <div id="materials-form"></div>
+      <button class="btn btn-p" style="margin-top:10px" onclick="saveMaterials()">💾 حفظ المواد</button>
+    </div>
+    <div class="card" style="background:var(--blue2);border-color:#bfdbfe">
+      <div style="display:flex;gap:10px;align-items:flex-start;font-size:.82rem;color:var(--blue)">
+        <span style="font-size:1.4rem">💡</span>
+        <div>
+          <strong>كيف ترفع على Google Drive؟</strong><br>
+          <span style="color:#1e40af;line-height:1.8">
+          1️⃣ ارفع PDF على Google Drive<br>
+          2️⃣ اضغط كليك يمين ← Share ← Anyone with link<br>
+          3️⃣ انسخ الرابط والصقه هنا<br>
+          4️⃣ سيتحول تلقائياً لرابط عرض مباشر
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Photos -->
+  <div id="tt-photos" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div>
+          <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">🖼️ صور الورشة</h3>
+          <p style="font-size:.78rem;color:var(--muted);margin-top:2px">حتى 20 صورة — تُدرج في التقرير النهائي</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="photo-count-lbl" style="font-size:.78rem;color:var(--muted)">0 / 20</span>
+          <label class="btn btn-p no-print" style="cursor:pointer">
+            📷 إضافة صور
+            <input type="file" id="photo-upload" accept="image/*" multiple style="display:none" onchange="uploadPhotos(event)">
+          </label>
+        </div>
+      </div>
+      <div id="photo-grid" class="photo-grid"></div>
+    </div>
+  </div>
+
+  <!-- Evaluations -->
+  <div id="tt-evaluations" style="display:none">
+    <div class="kpi-grid" id="eval-kpis"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px">
+      <div class="chart-card"><h3>📊 متوسط كل محور</h3><div id="eval-bars"></div></div>
+      <div class="chart-card"><h3>🏆 توزيع التقييم</h3><div id="eval-dist"></div></div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <h3 style="font-weight:800;color:var(--g1);margin-bottom:13px;font-size:.92rem">📋 تفاصيل التقييمات</h3>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>#</th><th>المتدرب</th><th>وضوح الشرح</th><th>التنظيم</th><th>التفاعل</th><th>الإلمام</th><th>الرضا</th><th>المتوسط</th><th>التعليق</th></tr></thead>
+        <tbody id="eval-tbl"></tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3 style="font-weight:800;color:#92400e;margin-bottom:13px;font-size:.92rem">💬 التعليقات</h3>
+      <div id="eval-cmts"></div>
+    </div>
+  </div>
+
+  <!-- Final Report -->
+  <div id="tt-report" style="display:none">
+    <div class="card no-print" style="margin-bottom:14px;background:var(--g4);border-color:var(--g5)">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-weight:900;color:var(--g1);font-size:.95rem">📋 التقرير النهائي للورشة</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:2px">تقرير شامل يضم جميع بيانات الورشة</div>
+        </div>
+        <button class="btn btn-p" onclick="generateWordReport('ar')" id="word-btn-ar">📄 تقرير عربي (Word)</button>
+          <button class="btn btn-b" onclick="generateWordReport('en')" id="word-btn-en">📄 English Report (Word)</button>
+          <button class="btn btn-s" onclick="window.print()">🖨️ طباعة / PDF</button>
+      </div>
+    </div>
+    <div id="final-report"></div>
+  </div>
+
+  <!-- QR -->
+  <div id="tt-qr" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h3 style="font-weight:800;color:var(--g1);font-size:.92rem">📱 رموز QR</h3>
+        <button class="btn btn-s" onclick="window.print()" style="font-size:.76rem">🖨️ طباعة</button>
+      </div>
+      <div id="qr-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal"><div class="modal-h"><h2 id="modal-title"></h2><button class="x-btn" onclick="closeModal()">✕</button></div><div id="modal-body"></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  CONFIG & STATE
+// ══════════════════════════════════════════════
+const ADMIN_PWD = 'admin@ACES2026';
+const GH_OWNER = 'melnahas11111-ctrl';
+const GH_REPO  = 'ACES-Workshops';
+// Token stored encoded — decoded at runtime only
+const _t1='Z2hwX0ht';const _t2='TkNKT2NO';const _t3='U0ZZOFVl';
+const _t4='VE9uTk8x';const _t5='TEFqMUI5';const _t6='WnIwTzF3Y3BRdw==';
+function _getToken(){ return atob(_t1+_t2+_t3+_t4+_t5+_t6); }
+let GH_TOKEN = '';
+const DAYS = [1,2,3,4,5];
+const DAY_NAMES = {1:'التقييم المبدئي',2:'التفتيش ومراقبة الجودة',3:'استراتيجيات سحب العينات',4:'التطبيق الميداني',5:'التقييم الشامل'};
+const EVAL_CRIT = [
+  {key:'clarity',label:'وضوح الشرح والأسلوب'},
+  {key:'organization',label:'التنظيم والتحضير'},
+  {key:'interaction',label:'التفاعل مع المتدربين'},
+  {key:'knowledge',label:'الإلمام بالمادة العلمية'},
+  {key:'overall',label:'الرضا العام'}
+];
+
+let _role=null, _wsId=null, _ws=null, _allWs={};
+let _trainees=[], _results={}, _attendance={}, _evaluations={}, _materials={}, _photos=[];
+let _fbLive=false;
+
+function fb(){ return window.FB2||null; }
+
+// ══════════════════════════════════════════════
+//  FIREBASE
+// ══════════════════════════════════════════════
+async function fbGet(p){ const f=fb(); if(!f) return null; try{ const s=await f.get(f.ref(f.db,p)); return s.exists()?s.val():null; }catch(e){ return null; } }
+async function fbSet(p,v){ const f=fb(); if(!f) return; try{ await f.set(f.ref(f.db,p),v); }catch(e){ console.warn(e.message); } }
+async function fbDel(p){ const f=fb(); if(!f) return; try{ await f.remove(f.ref(f.db,p)); }catch(e){} }
+function fbListen(p,cb){ const f=fb(); if(!f) return; f.onValue(f.ref(f.db,p),s=>cb(s.exists()?s.val():null)); }
+
+// ══════════════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════════════
+function go(id){ document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='none';}); const el=document.getElementById('s-'+id); if(el){el.style.display='block';el.classList.add('active');} window.scrollTo(0,0); }
+function toast(m,d=3000){ const t=document.getElementById('toast'); t.textContent=m; t.className='toast show'; setTimeout(()=>t.className='toast',d); }
+function openModal(t,h){ document.getElementById('modal-title').textContent=t; document.getElementById('modal-body').innerHTML=h; document.getElementById('modal').className='overlay open'; }
+function closeModal(){ document.getElementById('modal').className='overlay'; }
+
+// ══════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════
+let _selType=null;
+function selLogin(t){
+  _selType=t;
+  document.getElementById('lt-admin').classList.toggle('sel',t==='admin');
+  document.getElementById('lt-trainer').classList.toggle('sel',t==='trainer');
+  document.getElementById('login-form').style.display='block';
+  document.getElementById('login-pwd').focus();
+}
+
+async function doLogin(){
+  const pwd=document.getElementById('login-pwd').value.trim();
+  const err=document.getElementById('login-err');
+  err.style.display='none';
+  if(!_selType){ err.style.display='block'; err.textContent='اختر نوع الحساب'; return; }
+  if(_selType==='admin'){
+    if(pwd!==ADMIN_PWD){ err.style.display='block'; err.textContent='❌ كلمة المرور خاطئة'; return; }
+    _role='admin';
+    document.getElementById('nav-user').style.display='flex';
+    document.getElementById('nav-name').textContent='👑 مشرف عام';
+    document.getElementById('nav-badge').innerHTML='<span class="badge go">مشرف عام</span>';
+    go('admin'); loadAdmin(); startSync();
+  } else {
+    const ws=await fbGet('workshops');
+    if(!ws){ err.style.display='block'; err.textContent='❌ لا توجد ورش بعد'; return; }
+    let found=null;
+    for(const [id,w] of Object.entries(ws)){ if(w.trainerPassword===pwd){found={id,...w};break;} }
+    if(!found){ err.style.display='block'; err.textContent='❌ كلمة المرور خاطئة'; return; }
+    _role='trainer'; _wsId=found.id; _ws=found;
+    document.getElementById('nav-user').style.display='flex';
+    document.getElementById('nav-name').textContent=`👨‍🏫 ${found.trainerName}`;
+    document.getElementById('nav-badge').innerHTML='<span class="badge g">مدرب</span>';
+    document.getElementById('tr-title').textContent=`👨‍🏫 ${found.trainerName} — ${found.name}`;
+    document.getElementById('tr-sub').textContent=`${found.startDate||''} ${found.endDate?'← '+found.endDate:''} · ${found.org||''}`;
+    go('trainer'); loadTrainer(); startSync();
+  }
+}
+
+function logout(){ _role=null;_wsId=null;_ws=null;_trainees=[];_results={};_attendance={};_evaluations={};_materials={};_photos=[]; document.getElementById('nav-user').style.display='none'; document.getElementById('login-pwd').value=''; document.getElementById('login-form').style.display='none'; document.querySelectorAll('.login-type-btn').forEach(b=>b.classList.remove('sel')); go('login'); }
+
+// ══════════════════════════════════════════════
+//  ADMIN — CREATE WORKSHOP
+// ══════════════════════════════════════════════
+function openCreateWS(){
+  const today=new Date().toISOString().slice(0,10);
+  openModal('➕ إنشاء ورشة جديدة',`
+    <div class="form-g"><label class="inp-label">اسم الورشة *</label><input class="inp" id="ws-n" placeholder="مثال: ورشة يناير 2026"></div>
+    <div class="form-row">
+      <div class="form-g"><label class="inp-label">اسم المدرب *</label><input class="inp" id="ws-tr" placeholder="الاسم الكامل"></div>
+      <div class="form-g"><label class="inp-label">كلمة مرور المدرب *</label><input class="inp" id="ws-pw" type="password" placeholder="كلمة سر خاصة"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-g"><label class="inp-label">تاريخ البداية</label><input class="inp" id="ws-s" type="date" value="${today}"></div>
+      <div class="form-g"><label class="inp-label">تاريخ النهاية</label><input class="inp" id="ws-e" type="date"></div>
+    </div>
+    <div class="form-g"><label class="inp-label">الجهة المنظِّمة</label><input class="inp" id="ws-org" placeholder="مثال: وزارة الصحة"></div>
+    <div class="form-g"><label class="inp-label">الموقع / المكان</label><input class="inp" id="ws-loc" placeholder="مثال: قاعة الرياض"></div>
+    <button class="btn btn-p btn-wide" onclick="createWS()">✅ إنشاء الورشة</button>
+  `);
+}
+
+async function createWS(){
+  const name=document.getElementById('ws-n').value.trim();
+  const trainer=document.getElementById('ws-tr').value.trim();
+  const pwd=document.getElementById('ws-pw').value.trim();
+  if(!name||!trainer||!pwd){toast('⚠️ يرجى ملء الحقول المطلوبة');return;}
+  const id='ws_'+Date.now().toString(36);
+  await fbSet('workshops/'+id,{
+    id,name,trainerName:trainer,trainerPassword:pwd,
+    startDate:document.getElementById('ws-s').value||'',
+    endDate:document.getElementById('ws-e').value||'',
+    org:document.getElementById('ws-org').value.trim()||'',
+    location:document.getElementById('ws-loc').value.trim()||'',
+    createdAt:new Date().toISOString(),
+    trainees:{},results:{},attendance:{},evaluations:{},
+    materials:{},photos:[],downloadRequests:{}
+  });
+  toast('✅ تم إنشاء الورشة!'); closeModal(); loadAdmin();
+}
+
+// ══════════════════════════════════════════════
+//  ADMIN — LOAD
+// ══════════════════════════════════════════════
+async function loadAdmin(){
+  _allWs=await fbGet('workshops')||{};
+  document.getElementById('admin-time').textContent='آخر تحديث: '+new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
+  renderAdminKPIs(); renderWSGrid(); renderTrainersTbl(); renderDLRequests();
+}
+
+function renderAdminKPIs(){
+  const ws=Object.values(_allWs);
+  const tot=ws.length;
+  const trainees=ws.reduce((s,w)=>s+Object.keys(w.trainees||{}).length,0);
+  const scores=ws.flatMap(w=>Object.values(w.results||{}).flatMap(t=>Object.values(t))).map(r=>r.quizScore).filter(s=>s!==undefined);
+  const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):0;
+  const evalVals=ws.flatMap(w=>Object.values(w.evaluations||{}).flatMap(e=>Object.values(e.scores||{})));
+  const evalAvg=evalVals.length?(evalVals.reduce((a,b)=>a+b,0)/evalVals.length).toFixed(1):'—';
+  document.getElementById('admin-kpis').innerHTML=`
+    <div class="kpi g"><div class="v">${tot}</div><div class="l">الورش</div></div>
+    <div class="kpi b"><div class="v">${trainees}</div><div class="l">المتدربون</div></div>
+    <div class="kpi go"><div class="v">${avg}%</div><div class="l">متوسط الأداء</div></div>
+    <div class="kpi go"><div class="v">${evalAvg}${evalAvg!=='—'?'⭐':''}</div><div class="l">تقييم المدربين</div></div>`;
+}
+
+function renderWSGrid(){
+  const grid=document.getElementById('ws-grid');
+  const ws=Object.values(_allWs);
+  if(!ws.length){grid.innerHTML=`<div class="card" style="grid-column:1/-1;text-align:center;padding:40px"><div style="font-size:2.5rem;margin-bottom:10px">🏢</div><p style="color:var(--muted)">لا توجد ورش بعد — أنشئ ورشتك الأولى</p></div>`;return;}
+  grid.innerHTML=ws.map(w=>{
+    const trainees=Object.values(w.trainees||{});
+    const scores=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);
+    const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
+    const evals=Object.values(w.evaluations||{});
+    const ev=evals.flatMap(e=>Object.values(e.scores||{}));
+    const evAvg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
+    const photos=(w.photos||[]).length;
+    const dlReqs=Object.values(w.downloadRequests||{}).filter(r=>r.status==='pending').length;
+    const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';
+    return `<div class="ws-card">
+      <div class="ws-card-header">
+        <h3 style="font-size:1rem;font-weight:900;margin-bottom:4px">🏢 ${w.name}</h3>
+        <p style="font-size:.78rem;opacity:.9">👨‍🏫 ${w.trainerName} ${w.org?'· '+w.org:''}</p>
+        ${w.startDate?`<p style="font-size:.73rem;opacity:.8;margin-top:3px">📅 ${w.startDate}${w.endDate?' ← '+w.endDate:''} ${w.location?'· '+w.location:''}</p>`:''}
+      </div>
+      <div class="ws-card-body">
+        <div class="ws-stat"><span>المتدربون</span><span>${trainees.length} متدرب</span></div>
+        <div class="ws-stat"><span>متوسط الأداء</span><span style="color:${col};font-weight:900">${avg!==null?avg+'%':'—'}</span></div>
+        <div class="ws-stat"><span>تقييم المدرب</span><span style="color:#f59e0b;font-weight:900">${evAvg}${evAvg!=='—'?'⭐':''}</span></div>
+        <div class="ws-stat"><span>الصور</span><span>${photos} صورة</span></div>
+        ${dlReqs>0?`<div class="ws-stat"><span>طلبات تحميل</span><span class="badge go">${dlReqs} معلقة</span></div>`:''}
+        <div style="display:flex;gap:6px;margin-top:12px">
+          <button class="btn btn-p" style="flex:1;font-size:.76rem;padding:7px" onclick="viewWS('${w.id}')">📊 عرض</button>
+          <button class="btn btn-r" style="font-size:.76rem;padding:7px 10px" onclick="deleteWS('${w.id}','${w.name}')">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function adminTab(tab,btn){
+  ['workshops','dl-requests','comparison','trainers'].forEach(t=>{const el=document.getElementById('at-'+t);if(el)el.style.display=t===tab?'block':'none';});
+  document.querySelectorAll('#admin-subnav .snbtn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(tab==='comparison')renderComparison();
+  if(tab==='trainers')renderTrainersTbl();
+  if(tab==='dl-requests')renderDLRequests();
+}
+
+// ══════════════════════════════════════════════
+//  DOWNLOAD REQUESTS
+// ══════════════════════════════════════════════
+function renderDLRequests(){
+  const allReqs=[];
+  Object.values(_allWs).forEach(w=>{
+    Object.entries(w.downloadRequests||{}).forEach(([rid,r])=>{
+      allReqs.push({...r, wsId:w.id, wsName:w.name, reqId:rid});
+    });
+  });
+  const pending=allReqs.filter(r=>r.status==='pending');
+  const badge=document.getElementById('dl-badge');
+  if(badge){badge.style.display=pending.length?'inline':'none';badge.textContent=pending.length;}
+
+  const list=document.getElementById('dl-requests-list');
+  if(!list) return;
+  if(!allReqs.length){list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">📥</div><p>لا توجد طلبات تحميل بعد</p></div>';return;}
+  list.innerHTML=allReqs.sort((a,b)=>(a.status==='pending'?-1:1)).map(r=>`
+    <div class="dl-req-card ${r.status}">
+      <div>
+        <div style="font-weight:900;font-size:.9rem">${r.traineeName||'—'}</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:2px">🏢 ${r.wsName} · 📅 اليوم ${r.dayId} · ⏰ ${r.requestedAt||''}</div>
+      </div>
+      ${r.status==='pending'
+        ?`<div style="display:flex;gap:7px">
+            <button class="btn btn-p" style="padding:7px 14px;font-size:.82rem" onclick="approveDL('${r.wsId}','${r.reqId}')">✅ موافقة</button>
+            <button class="btn btn-r" style="padding:7px 14px;font-size:.82rem" onclick="rejectDL('${r.wsId}','${r.reqId}')">❌ رفض</button>
+          </div>`
+        :`<span class="badge ${r.status==='approved'?'g':'r'}">${r.status==='approved'?'✅ موافق':'❌ مرفوض'}</span>`}
+    </div>`).join('');
+}
+
+async function approveDL(wsId,reqId){
+  await fbSet(`workshops/${wsId}/downloadRequests/${reqId}/status`,'approved');
+  toast('✅ تمت الموافقة على التحميل'); loadAdmin();
+}
+async function rejectDL(wsId,reqId){
+  await fbSet(`workshops/${wsId}/downloadRequests/${reqId}/status`,'rejected');
+  toast('❌ تم رفض طلب التحميل'); loadAdmin();
+}
+
+function viewWS(id){
+  const w=_allWs[id]; if(!w) return;
+  const trainees=Object.values(w.trainees||{});
+  const getAvg=tid=>{const s=DAYS.map(d=>w.results?.[tid]?.[d]?.quizScore).filter(s=>s!==undefined);return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null;};
+  openModal(`📊 ${w.name}`,`
+    <div style="background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:14px;padding:16px;color:#fff;margin-bottom:16px">
+      <div style="font-weight:900;font-size:1rem;margin-bottom:4px">🏢 ${w.name}</div>
+      <div style="font-size:.82rem;opacity:.9">👨‍🏫 ${w.trainerName}${w.org?' · '+w.org:''}</div>
+      ${w.startDate?`<div style="font-size:.78rem;opacity:.8;margin-top:3px">📅 ${w.startDate}${w.endDate?' ← '+w.endDate:''}</div>`:''}
+      ${w.location?`<div style="font-size:.78rem;opacity:.8">📍 ${w.location}</div>`:''}
+    </div>
+    <h4 style="font-weight:800;color:var(--g1);margin-bottom:8px;font-size:.85rem">👥 المتدربون (${trainees.length})</h4>
+    ${trainees.map(t=>{const avg=getAvg(t.id);const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';return`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:.82rem;font-weight:700">${t.name}</span><strong style="color:${col}">${avg!==null?avg+'%':'—'}</strong></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا متدربون</p>'}
+  `);
+}
+
+async function deleteWS(id,name){
+  if(!confirm(`حذف ورشة "${name}"؟`)) return;
+  await fbDel('workshops/'+id); toast('🗑️ تم الحذف'); loadAdmin();
+}
+
+function renderTrainersTbl(){
+  const ws=Object.values(_allWs);
+  document.getElementById('trainers-tbl').innerHTML=ws.map((w,i)=>{
+    const n=Object.keys(w.trainees||{}).length;
+    const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);
+    const avg=s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null;
+    const ev=Object.values(w.evaluations||{}).flatMap(e=>Object.values(e.scores||{}));
+    const evAvg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
+    const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';
+    return`<tr><td>${i+1}</td><td><strong>${w.trainerName}</strong></td><td>${w.name}</td><td>${w.startDate||'—'}${w.endDate?' ← '+w.endDate:''}</td><td>${n}</td><td><strong style="color:${col}">${avg!==null?avg+'%':'—'}</strong></td><td style="color:#f59e0b;font-weight:800">${evAvg}${evAvg!=='—'?'⭐':''}</td></tr>`;
+  }).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">لا توجد ورش</td></tr>';
+}
+
+function renderComparison(){
+  const ws=Object.values(_allWs);
+  const maxA=Math.max(...ws.map(w=>{const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):0;}),1);
+  document.getElementById('cmp-perf').innerHTML=ws.map(w=>{const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);const avg=s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):0;const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';return`<div class="bar-row"><div class="bar-lbl">${w.name.slice(0,14)}</div><div class="bar-bg"><div class="bar-fill" style="width:${avg/maxA*100}%;background:${col}"></div></div><div class="bar-num" style="color:${col}">${avg}%</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
+  document.getElementById('cmp-eval').innerHTML=ws.map(w=>{const ev=Object.values(w.evaluations||{}).flatMap(e=>Object.values(e.scores||{}));const avg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):null;return`<div class="bar-row"><div class="bar-lbl">${w.name.slice(0,14)}</div><div class="bar-bg"><div class="bar-fill" style="width:${avg?parseFloat(avg)/5*100:0}%;background:#f59e0b"></div></div><div class="bar-num" style="color:#f59e0b">${avg?avg+'/5':'—'}</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
+  document.getElementById('cmp-att').innerHTML=ws.map(w=>{const tr=Object.keys(w.trainees||{});const present=tr.reduce((s,tid)=>s+Object.values(w.attendance?.[tid]||{}).filter(v=>v==='present').length,0);const total=tr.length*5||1;const pct=Math.round(present/total*100);return`<div class="bar-row"><div class="bar-lbl">${w.name.slice(0,14)}</div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:var(--blue)"></div></div><div class="bar-num" style="color:var(--blue)">${pct}%</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
+}
+
+// ══════════════════════════════════════════════
+//  TRAINER LOAD
+// ══════════════════════════════════════════════
+async function loadTrainer(){
+  const data=await fbGet('workshops/'+_wsId); if(!data) return;
+  _ws=data;
+  _trainees=data.trainees?Object.values(data.trainees):[];
+  _results=data.results||{}; _attendance=data.attendance||{};
+  _evaluations=data.evaluations||{}; _materials=data.materials||{};
+  _photos=data.photos||[];
+  renderTrKPIs(); renderTrTable(); buildMaterialsForm(); renderPhotos(); renderInlineQR(); updateExamBtns();
+}
+
+function getAvg(tid){const s=DAYS.map(d=>_results[tid]?.[d]?.quizScore).filter(s=>s!==undefined);return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null;}
+function getAtt(tid){return Object.values(_attendance[tid]||{}).filter(v=>v==='present').length;}
+
+function renderTrKPIs(){
+  const avgs=_trainees.map(t=>getAvg(t.id)).filter(a=>a!==null);
+  const overall=avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):0;
+  const passed=avgs.filter(a=>a>=60).length;
+  const ev=Object.values(_evaluations).flatMap(e=>Object.values(e.scores||{}));
+  const evAvg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
+  document.getElementById('tr-kpis').innerHTML=`
+    <div class="kpi g"><div class="v">${_trainees.length}</div><div class="l">المتدربون</div></div>
+    <div class="kpi go"><div class="v">${overall}%</div><div class="l">متوسط الأداء</div></div>
+    <div class="kpi g"><div class="v">${passed}</div><div class="l">ناجح ≥60%</div></div>
+    <div class="kpi go"><div class="v">${evAvg}${evAvg!=='—'?'⭐':''}</div><div class="l">تقييمي</div></div>`;
+}
+
+// ══════════════════════════════════════════════
+//  TRAINER TABS
+// ══════════════════════════════════════════════
+function trTab(tab,btn){
+  ['requests','trainees','attendance','performance','materials','photos','evaluations','report','qr'].forEach(t=>{const el=document.getElementById('tt-'+t);if(el)el.style.display=t===tab?'block':'none';});
+  document.querySelectorAll('#s-trainer .snbtn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(tab==='trainees')renderInlineQR();
+  if(tab==='attendance')renderAttendance();
+  if(tab==='performance')renderPerformance();
+  if(tab==='evaluations')renderEvaluations();
+  if(tab==='qr')renderQR();
+  if(tab==='report')renderFinalReport();
+  if(tab==='photos')renderPhotos();
+}
+
+// ══════════════════════════════════════════════
+//  TRAINEES
+// ══════════════════════════════════════════════
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
+
+
+// ══════════════════════════════════════════════
+//  INLINE QR — auto-updates in trainees tab
+// ══════════════════════════════════════════════
+function renderInlineQR() {
+  const grid = document.getElementById('qr-inline-grid');
+  const lbl  = document.getElementById('qr-inline-count');
+  if (!grid) return;
+  if (lbl) lbl.textContent = _trainees.length + ' متدرب';
+
+  if (!_trainees.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--muted)">
+      <div style="font-size:2rem;margin-bottom:8px">📱</div>
+      <p style="font-size:.85rem">أضف متدربين وستظهر رموز QR هنا تلقائياً</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = _trainees.map(t => {
+    const code = traineeCode(t.id);
+    const url  = traineeURL(t.id);
+    return `<div style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px;text-align:center;box-shadow:0 2px 10px rgba(10,92,62,.07);animation:fadeUp .3s ease">
+      <div id="qr-mini-${t.id}" style="width:100px;height:100px;margin:0 auto 10px;background:var(--g4);border-radius:10px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border);overflow:hidden"></div>
+      <div style="font-weight:900;font-size:.88rem;color:var(--g1);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</div>
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.dept}</div>
+      <div style="background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:10px;padding:8px;margin-bottom:8px">
+        <div style="color:rgba(255,255,255,.8);font-size:.62rem;font-weight:700;margin-bottom:2px">🔑 كود الدخول</div>
+        <div style="color:#fff;font-size:1.4rem;font-weight:900;letter-spacing:5px">${code}</div>
+      </div>
+      <button onclick="showQRModal('${t.id}')"
+        style="width:100%;padding:7px;background:var(--g4);border:1.5px solid var(--border);
+               border-radius:9px;font-family:Tajawal,sans-serif;font-size:.76rem;font-weight:700;
+               cursor:pointer;color:var(--g1)">🔍 عرض موسّع</button>
+    </div>`;
+  }).join('');
+
+  // Generate QR codes
+  setTimeout(() => {
+    if (!window.QRCode) return;
+    _trainees.forEach(t => {
+      const c = document.getElementById('qr-mini-' + t.id);
+      if (!c || c.querySelector('canvas,img')) return;
+      try {
+        new window.QRCode(c, {
+          text: traineeURL(t.id),
+          width:100, height:100,
+          colorDark:'#0a5c3e', colorLight:'#ffffff',
+          correctLevel: window.QRCode.CorrectLevel.M
+        });
+      } catch(e) {
+        c.innerHTML = `<div style="font-size:1.1rem;font-weight:900;color:var(--g1);padding:12px">${traineeCode(t.id)}</div>`;
+      }
+    });
+  }, 150);
+}
+
+async function addTrainee(){
+  const name=document.getElementById('add-name').value.trim();
+  if(!name){toast('⚠️ الاسم مطلوب');return;}
+  const t={id:genId(),name,sid:document.getElementById('add-sid').value.trim()||'—',dept:document.getElementById('add-dept').value.trim()||'—',spec:document.getElementById('add-spec').value.trim()||'—',createdAt:new Date().toISOString()};
+  _trainees.push(t);
+  await fbSet(`workshops/${_wsId}/trainees/${t.id}`,t);
+  ['add-name','add-sid','add-dept','add-spec'].forEach(id=>document.getElementById(id).value='');
+  renderTrTable(); renderInlineQR();
+  // Auto-update QR tab if open
+  const qrTab = document.getElementById('tt-qr');
+  if(qrTab && qrTab.style.display !== 'none') renderQR();
+  toast('✅ تم الإضافة');
+}
+
+async function delTrainee(id){
+  const t = _trainees.find(x=>x.id===id);
+  if(!confirm(`حذف المتدرب "${t?.name||id}"؟\nسيتم حذف جميع بياناته (نتائج، حضور).`)) return;
+  _trainees=_trainees.filter(t=>t.id!==id);
+  await fbDel(`workshops/${_wsId}/trainees/${id}`);
+  await fbDel(`workshops/${_wsId}/results/${id}`);
+  await fbDel(`workshops/${_wsId}/attendance/${id}`);
+  await fbDel(`workshops/${_wsId}/evaluations/${id}`);
+  renderTrTable(); renderInlineQR();
+  const qrTab2 = document.getElementById('tt-qr');
+  if(qrTab2 && qrTab2.style.display !== 'none') renderQR();
+  toast('🗑️ تم حذف '+( t?.name||'المتدرب'));
+}
+
+async function delSelected(){
+  const checked = [...document.querySelectorAll('.tr-chk:checked')].map(c=>c.dataset.id);
+  if(!checked.length){ toast('⚠️ لم تختر أي متدرب'); return; }
+  const names = checked.map(id=>_trainees.find(t=>t.id===id)?.name||id).join('، ');
+  if(!confirm(`حذف ${checked.length} متدرب؟\n${names}\n\nسيتم حذف جميع بياناتهم.`)) return;
+  for(const id of checked){
+    _trainees=_trainees.filter(t=>t.id!==id);
+    await fbDel(`workshops/${_wsId}/trainees/${id}`);
+    await fbDel(`workshops/${_wsId}/results/${id}`);
+    await fbDel(`workshops/${_wsId}/attendance/${id}`);
+    await fbDel(`workshops/${_wsId}/evaluations/${id}`);
+  }
+  renderTrTable(); renderInlineQR();
+  toast(`🗑️ تم حذف ${checked.length} متدرب`);
+}
+
+function toggleAllTrainees(cb){
+  document.querySelectorAll('.tr-chk').forEach(c=>c.checked=cb.checked);
+  updateDelBtn();
+}
+
+function updateDelBtn(){
+  const cnt = document.querySelectorAll('.tr-chk:checked').length;
+  const btn = document.getElementById('del-selected-btn');
+  if(!btn) return;
+  btn.style.display = cnt>0 ? 'inline-flex' : 'none';
+  btn.textContent = `🗑️ حذف المحددين (${cnt})`;
+}
+
+function renderTrTable(){
+  document.getElementById('tr-count').textContent=_trainees.length;
+
+  if(!_trainees.length){
+    document.getElementById('tr-tbl').innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px">لا متدربون بعد — أضف من الأعلى</td></tr>';
+    const btn=document.getElementById('del-selected-btn');
+    if(btn) btn.style.display='none';
+    return;
+  }
+
+  document.getElementById('tr-tbl').innerHTML=_trainees.map((t,i)=>{
+    const avg=getAvg(t.id); const att=getAtt(t.id);
+    const col=avg===null?'var(--muted)':avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';
+    return`<tr>
+      <td style="text-align:center">
+        <input type="checkbox" class="tr-chk" data-id="${t.id}"
+          onchange="updateDelBtn()"
+          style="width:16px;height:16px;cursor:pointer;accent-color:var(--g1)">
+      </td>
+      <td>${i+1}</td>
+      <td><strong>${t.name}</strong><br><span style="font-size:.68rem;color:var(--muted)">${t.spec||''}</span></td>
+      <td style="color:var(--muted);font-size:.8rem">${t.sid}</td>
+      <td style="font-size:.82rem">${t.dept}</td>
+      <td><span class="badge ${att>=4?'g':att>=2?'go':'r'}">${att}/5</span></td>
+      <td style="text-align:center"><strong style="color:${col}">${avg!==null?avg+'%':'—'}</strong></td>
+      <td><button class="badge b" style="cursor:pointer;padding:4px 9px" onclick="showQRModal('${t.id}')">📱 QR</button></td>
+      <td>
+        <button onclick="delTrainee('${t.id}')"
+          style="background:var(--red2);border:1.5px solid #fca5a5;color:var(--red);border-radius:8px;padding:5px 10px;font-family:Tajawal,sans-serif;font-size:.76rem;font-weight:700;cursor:pointer">
+          🗑️ حذف
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+//  ATTENDANCE
+// ══════════════════════════════════════════════
+async function cycleAtt(tid,day){
+  if(!_attendance[tid])_attendance[tid]={};
+  const cur=_attendance[tid][day]||'none';
+  const next={none:'present',present:'absent',absent:'excused',excused:'none'}[cur];
+  _attendance[tid][day]=next;
+  await fbSet(`workshops/${_wsId}/attendance/${tid}/${day}`,next);
+  renderAttendance();
+}
+function renderAttendance(){
+  const icons={present:'✅',absent:'❌',excused:'⚡',none:'○'};
+  document.getElementById('att-tbl').innerHTML=_trainees.map(t=>{
+    const att=_attendance[t.id]||{};
+    const total=Object.values(att).filter(v=>v==='present').length;
+    return`<tr><td><strong>${t.name}</strong><br><span style="font-size:.7rem;color:var(--muted)">${t.dept}</span></td>${DAYS.map(d=>`<td><div class="att-cell ${att[d]||'none'}" onclick="cycleAtt('${t.id}',${d})">${icons[att[d]||'none']}</div></td>`).join('')}<td><span class="badge ${total>=4?'g':total>=2?'go':'r'}">${total}/5</span></td></tr>`;
+  }).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">لا متدربون</td></tr>';
+}
+
+// ══════════════════════════════════════════════
+//  SCAN REQUESTS
+// ══════════════════════════════════════════════
+async function acceptScan(tid){
+  const req=await fbGet(`workshops/${_wsId}/scan_requests/${tid}`);
+  const dayId=req?.dayId||1;
+  await fbSet(`workshops/${_wsId}/attendance/${tid}/${dayId}`,'present');
+  if(!_attendance[tid])_attendance[tid]={};
+  _attendance[tid][dayId]='present';
+  await fbSet(`workshops/${_wsId}/scan_requests/${tid}/status`,'approved');
+  toast('✅ تم القبول');
+}
+async function rejectScan(tid){
+  const req=await fbGet(`workshops/${_wsId}/scan_requests/${tid}`);
+  const dayId=req?.dayId||1;
+  await fbSet(`workshops/${_wsId}/attendance/${tid}/${dayId}`,'absent');
+  await fbSet(`workshops/${_wsId}/results/${tid}/${dayId}`,{quizScore:0,exerciseScore:0,absent:true,time:new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})});
+  await fbSet(`workshops/${_wsId}/scan_requests/${tid}/status`,'rejected');
+  toast('❌ تم الرفض');
+}
+async function clearScans(){
+  const reqs=await fbGet(`workshops/${_wsId}/scan_requests`); if(!reqs) return;
+  for(const[tid,r]of Object.entries(reqs)){if(r.status==='approved'||r.status==='rejected')await fbDel(`workshops/${_wsId}/scan_requests/${tid}`);}
+  toast('🗑️ تم مسح الطلبات المعالجة');
+}
+
+async function clearAllScans(){
+  if(!confirm('مسح جميع الطلبات بما فيها المعلقة؟')) return;
+  await fbDel(`workshops/${_wsId}/scan_requests`);
+  toast('🗑️ تم مسح جميع الطلبات — يمكن للمتدربين المسح من جديد');
+}
+function renderScans(reqs){
+  const list=document.getElementById('scan-list');
+  const badge=document.getElementById('scan-badge');
+  const entries=Object.entries(reqs||{});
+  const pending=entries.filter(([,r])=>r.status==='pending');
+
+  // Update badge
+  if(badge){badge.style.display=pending.length?'inline':'none';badge.textContent=pending.length;}
+
+  // Auto-notify trainer when new pending request arrives
+  if(pending.length > 0){
+    const reqsTab = document.getElementById('tt-requests');
+    // Show toast notification if not on requests tab
+    if(reqsTab && reqsTab.style.display==='none'){
+      toast(`🔔 طلب دخول جديد — ${pending[0][1].name||'متدرب'} (${pending.length} طلب)`);
+    }
+    // Flash badge
+    if(badge) badge.style.animation='blink 1s infinite';
+  } else {
+    if(badge) badge.style.animation='';
+  }
+
+  if(!entries.length){list.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px">📱</div><p>في انتظار المتدربين...</p></div>';return;}
+  entries.sort(([,a],[,b])=>(a.status==='pending'?-1:1));
+  list.innerHTML=entries.map(([tid,r])=>{
+    const ip=r.status==='pending',ia=r.status==='approved';
+    return`<div class="scan-card ${r.status}" style="${ip?'border-color:#f59e0b;background:#fffbeb':''}">
+      <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
+        <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1.1rem;flex-shrink:0">${(r.name||'?').charAt(0)}</div>
+        <div>
+          <div style="font-weight:900;font-size:.95rem;margin-bottom:2px">${r.name||'—'}</div>
+          <div style="font-size:.74rem;color:var(--muted)">${r.dept||'—'} · اليوم ${r.dayId}</div>
+          ${ip?`<div style="font-size:.7rem;color:#92400e;margin-top:3px;background:#fff3e0;border-radius:20px;padding:2px 8px;display:inline-block">⏳ ينتظر الموافقة</div>`:''}
+        </div>
+      </div>
+      ${ip?`<div style="display:flex;gap:7px"><button class="btn btn-p" style="padding:7px 14px;font-size:.82rem" onclick="acceptScan('${tid}')">✅ قبول</button><button class="btn btn-r" style="padding:7px 14px;font-size:.82rem" onclick="rejectScan('${tid}')">❌ رفض</button></div>`:`<span class="badge ${ia?'g':'r'}">${ia?'✅ مقبول':'❌ مرفوض'}</span>`}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+//  PERFORMANCE
+// ══════════════════════════════════════════════
+function renderPerformance(){
+  const avgs=_trainees.map(t=>getAvg(t.id)).filter(a=>a!==null);
+  const overall=avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):0;
+  const passed=avgs.filter(a=>a>=60).length;
+  const comp=_trainees.filter(t=>DAYS.every(d=>_results[t.id]?.[d]?.quizScore!==undefined)).length;
+  document.getElementById('perf-kpis').innerHTML=`
+    <div class="kpi g"><div class="v">${_trainees.length}</div><div class="l">المتدربون</div></div>
+    <div class="kpi go"><div class="v">${overall}%</div><div class="l">متوسط الدرجات</div></div>
+    <div class="kpi g"><div class="v">${passed}</div><div class="l">ناجح ≥60%</div></div>
+    <div class="kpi r"><div class="v">${_trainees.length-passed}</div><div class="l">راسب <60%</div></div>
+    <div class="kpi b"><div class="v">${comp}</div><div class="l">أكمل 5 أيام</div></div>`;
+  const ranked=[..._trainees].map(t=>({...t,avg:getAvg(t.id)})).filter(t=>t.avg!==null).sort((a,b)=>b.avg-a.avg);
+  const maxA=Math.max(...ranked.map(t=>t.avg),1);
+  document.getElementById('rank-chart').innerHTML=ranked.map((t,i)=>{const col=t.avg>=80?'var(--g1)':t.avg>=60?'var(--gold)':'var(--red)';const m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';return`<div class="bar-row"><div class="bar-lbl">${m}${t.name.split(' ')[0]}</div><div class="bar-bg"><div class="bar-fill" style="width:${t.avg/maxA*100}%;background:${col}"></div></div><div class="bar-num" style="color:${col}">${t.avg}%</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
+  const dayAvgs=DAYS.map(d=>{const s=_trainees.map(t=>_results[t.id]?.[d]?.quizScore).filter(s=>s!==undefined);return{d,avg:s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null};});
+  const maxD=Math.max(...dayAvgs.map(d=>d.avg||0),1);
+  document.getElementById('day-chart').innerHTML=dayAvgs.map(({d,avg})=>`<div class="bar-row"><div class="bar-lbl">يوم ${d}</div><div class="bar-bg"><div class="bar-fill" style="width:${avg?avg/maxD*100:0}%;background:${avg>=80?'var(--g2)':avg>=60?'var(--gold)':'var(--red)'}"></div></div><div class="bar-num" style="color:var(--g1)">${avg!==null?avg+'%':'—'}</div></div>`).join('');
+  const ex=avgs.filter(a=>a>=85).length,g=avgs.filter(a=>a>=70&&a<85).length,p=avgs.filter(a=>a>=60&&a<70).length,f=avgs.filter(a=>a<60).length;
+  document.getElementById('lvl-chart').innerHTML=[['ممتاز ≥85%',ex,'var(--g1)'],['جيد 70-84%',g,'var(--blue)'],['مقبول 60-69%',p,'var(--gold)'],['ضعيف <60%',f,'var(--red)']].map(([l,n,c])=>`<div class="bar-row"><div class="bar-lbl">${l}</div><div class="bar-bg"><div class="bar-fill" style="width:${_trainees.length?n/_trainees.length*100:0}%;background:${c}"></div></div><div class="bar-num" style="color:${c}">${n}</div></div>`).join('');
+  document.getElementById('perf-tbl').innerHTML=_trainees.map((t,i)=>{
+    const avg=getAvg(t.id);
+    const level=avg===null?'—':avg>=85?'ممتاز':avg>=70?'جيد جداً':avg>=60?'مقبول':'ضعيف';
+    const lcls=avg===null?'gr':avg>=85?'g':avg>=70?'b':avg>=60?'go':'r';
+    return`<tr><td>${i+1}</td><td><strong>${t.name}</strong><br><span style="font-size:.7rem;color:var(--muted)">${t.dept}</span></td>${DAYS.map(d=>{const r=_results[t.id]?.[d];if(!r)return`<td style="color:var(--muted);text-align:center">—</td>`;if(r.absent)return`<td style="text-align:center"><strong style="color:var(--red)">0%</strong></td>`;const s=r.quizScore;return`<td style="text-align:center"><strong style="color:${s>=80?'var(--g1)':s>=60?'var(--gold)':'var(--red)'}">${s}%</strong></td>`;}).join('')}<td style="text-align:center"><strong style="color:${avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)'}">${avg!==null?avg+'%':'—'}</strong></td><td><span class="badge ${lcls}">${level}</span></td></tr>`;
+  }).join('')||'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">لا بيانات بعد — انتظر إنهاء المتدربين الاختبارات</td></tr>';
+}
+
+// ══════════════════════════════════════════════
+//  MATERIALS (PDF)
+// ══════════════════════════════════════════════
+function buildMaterialsForm(){
+  document.getElementById('materials-form').innerHTML=DAYS.map(d=>`
+    <div class="pdf-day-card">
+      <div class="pdf-day-badge">اليوم ${d}<br><span style="font-size:.65rem;opacity:.85">${DAY_NAMES[d]}</span></div>
+      <div style="flex:1;min-width:200px">
+        <label class="inp-label">رابط Google Drive لليوم ${d}</label>
+        <input class="inp" id="mat-${d}" value="${_materials[d]?.url||''}" placeholder="https://drive.google.com/file/d/..." style="font-size:.8rem">
+      </div>
+      <div style="text-align:center;flex-shrink:0">
+        ${_materials[d]?.url
+          ?`<a href="${convertDriveURL(_materials[d].url)}" target="_blank" class="btn btn-b" style="font-size:.76rem;padding:7px 12px;text-decoration:none">👁️ معاينة</a>`
+          :`<span style="font-size:.75rem;color:var(--muted)">لم يُرفع بعد</span>`}
+      </div>
+    </div>`).join('');
+}
+
+function convertDriveURL(url){
+  if(!url) return '#';
+  const match=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if(match) return `https://drive.google.com/file/d/${match[1]}/preview`;
+  return url;
+}
+
+async function saveMaterials(){
+  const mats={};
+  DAYS.forEach(d=>{const url=document.getElementById(`mat-${d}`)?.value.trim();if(url)mats[d]={url,dayName:DAY_NAMES[d],updatedAt:new Date().toISOString()};});
+  _materials=mats;
+  await fbSet(`workshops/${_wsId}/materials`,mats);
+  buildMaterialsForm(); toast('✅ تم حفظ المواد التعليمية');
+}
+
+// ══════════════════════════════════════════════
+//  PHOTOS
+// ══════════════════════════════════════════════
+async function uploadPhotos(event){
+  const files=Array.from(event.target.files);
+  const current=_photos.length;
+  const remaining=20-current;
+  if(!remaining){toast('⚠️ وصلت للحد الأقصى 20 صورة');return;}
+  const toAdd=files.slice(0,remaining);
+  toast(`⏳ جارٍ رفع ${toAdd.length} صورة...`,5000);
+
+  for(const file of toAdd){
+    const b64=await toBase64(file);
+    const photo={id:genId(),data:b64,name:file.name,uploadedAt:new Date().toLocaleString('ar-SA')};
+    _photos.push(photo);
+  }
+  await fbSet(`workshops/${_wsId}/photos`,_photos);
+  renderPhotos(); toast(`✅ تم رفع ${toAdd.length} صورة`);
+  event.target.value='';
+}
+
+function toBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
+
+async function deletePhoto(id){
+  _photos=_photos.filter(p=>p.id!==id);
+  await fbSet(`workshops/${_wsId}/photos`,_photos);
+  renderPhotos(); toast('🗑️ تم حذف الصورة');
+}
+
+function renderPhotos(){
+  const grid=document.getElementById('photo-grid');
+  const lbl=document.getElementById('photo-count-lbl');
+  if(lbl)lbl.textContent=`${_photos.length} / 20`;
+  if(!_photos.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">🖼️</div><p>لا توجد صور بعد — اضغط "إضافة صور"</p></div>';return;}
+  grid.innerHTML=_photos.map(p=>`
+    <div class="photo-item">
+      <img src="${p.data}" alt="${p.name}" loading="lazy">
+      <button class="photo-del" onclick="deletePhoto('${p.id}')">✕</button>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  EVALUATIONS
+// ══════════════════════════════════════════════
+function renderEvaluations(){
+  const evals=Object.values(_evaluations);
+  const ev=evals.flatMap(e=>Object.values(e.scores||{}));
+  const avg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
+  const pct=_trainees.length?Math.round(evals.length/_trainees.length*100):0;
+  document.getElementById('eval-kpis').innerHTML=`
+    <div class="kpi go"><div class="v">${evals.length}</div><div class="l">التقييمات</div></div>
+    <div class="kpi b"><div class="v">${pct}%</div><div class="l">نسبة المشاركة</div></div>
+    <div class="kpi go"><div class="v" style="font-size:1.3rem">${avg}${avg!=='—'?'⭐':''}</div><div class="l">المتوسط العام</div></div>
+    <div class="kpi g"><div class="v">${evals.filter(e=>e.comment&&e.comment.length>2).length}</div><div class="l">تعليقات</div></div>`;
+  document.getElementById('eval-bars').innerHTML=EVAL_CRIT.map(c=>{const vals=evals.map(e=>e.scores?.[c.key]).filter(v=>v!==undefined);const a=vals.length?(vals.reduce((x,y)=>x+y,0)/vals.length).toFixed(1):null;const col=a>=4?'#f59e0b':a>=3?'#d97706':'#b45309';return`<div class="bar-row"><div class="bar-lbl">${c.label.slice(0,14)}</div><div class="bar-bg"><div class="bar-fill" style="width:${a?parseFloat(a)/5*100:0}%;background:${col}"></div></div><div class="bar-num" style="color:${col}">${a?a+'/5':'—'}</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا تقييمات</p>';
+  const B={'5⭐':0,'4⭐':0,'3⭐':0,'2⭐':0,'1⭐':0};
+  evals.forEach(e=>{const v=Object.values(e.scores||{});const a=v.length?v.reduce((x,y)=>x+y,0)/v.length:0;if(a>=4.5)B['5⭐']++;else if(a>=3.5)B['4⭐']++;else if(a>=2.5)B['3⭐']++;else if(a>=1.5)B['2⭐']++;else B['1⭐']++;});
+  const mx=Math.max(...Object.values(B),1);const cols=['#f59e0b','#fbbf24','#d97706','#b45309','#92400e'];
+  document.getElementById('eval-dist').innerHTML=Object.entries(B).map(([l,n],i)=>`<div class="bar-row"><div class="bar-lbl">${l}</div><div class="bar-bg"><div class="bar-fill" style="width:${n/mx*100}%;background:${cols[i]}"></div></div><div class="bar-num" style="color:${cols[i]}">${n}</div></div>`).join('');
+  document.getElementById('eval-tbl').innerHTML=evals.length?evals.map((e,i)=>{const v=Object.values(e.scores||{});const a=v.length?(v.reduce((x,y)=>x+y,0)/v.length).toFixed(1):'—';const col=a>=4?'var(--g1)':a>=3?'var(--gold)':'var(--red)';return`<tr><td>${i+1}</td><td><strong>${e.name||'—'}</strong></td>${EVAL_CRIT.map(c=>`<td style="text-align:center;color:#f59e0b">${'★'.repeat(e.scores?.[c.key]||0)}${'☆'.repeat(5-(e.scores?.[c.key]||0))}</td>`).join('')}<td><strong style="color:${col}">${a}</strong></td><td style="font-size:.74rem;max-width:120px;white-space:normal">${e.comment?`"${e.comment.slice(0,50)}${e.comment.length>50?'…':''}"` :'—'}</td></tr>`;}).join(''):'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px">لا تقييمات بعد</td></tr>';
+  const wc=evals.filter(e=>e.comment&&e.comment.length>2);
+  document.getElementById('eval-cmts').innerHTML=wc.length?wc.map(e=>`<div style="background:#fff;border:1.5px solid var(--border);border-radius:11px;padding:11px 13px;margin-bottom:8px;font-size:.82rem;line-height:1.7"><div style="font-weight:800;color:var(--g1);font-size:.76rem;margin-bottom:3px">👤 ${e.name}</div>"${e.comment}"</div>`).join(''):'<p style="color:var(--muted);font-size:.82rem;text-align:center;padding:16px">لا تعليقات بعد</p>';
+}
+
+// ══════════════════════════════════════════════
+//  FINAL REPORT
+// ══════════════════════════════════════════════
+function renderFinalReport(){
+  const avgs=_trainees.map(t=>getAvg(t.id)).filter(a=>a!==null);
+  const overall=avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):0;
+  const passed=avgs.filter(a=>a>=60).length;
+  const totalAtt=_trainees.reduce((s,t)=>s+getAtt(t.id),0);
+  const attPct=_trainees.length?Math.round(totalAtt/(_trainees.length*5)*100):0;
+  const evals=Object.values(_evaluations);
+  const ev=evals.flatMap(e=>Object.values(e.scores||{}));
+  const evAvg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
+  const comp=_trainees.filter(t=>DAYS.every(d=>_results[t.id]?.[d]?.quizScore!==undefined)).length;
+
+  const rpt=document.getElementById('final-report');
+  rpt.innerHTML=`
+  <div style="font-family:'Tajawal',sans-serif;direction:rtl;color:#0e1f18">
+
+    <!-- Cover -->
+    <div style="background:linear-gradient(135deg,#04211a,#0a5c3e,#12a06e);border-radius:20px;padding:40px 32px;text-align:center;color:#fff;margin-bottom:24px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;opacity:.05;background:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%) 0 0/20px 20px"></div>
+      <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:8px 24px;display:inline-block;margin-bottom:16px;border:1px solid rgba(255,255,255,.3)">
+        <div style="font-size:1.3rem;font-weight:900">🧪 ACES</div>
+      </div>
+      <h1 style="font-size:1.8rem;font-weight:900;margin-bottom:8px;position:relative">التقرير النهائي للورشة التدريبية</h1>
+      <h2 style="font-size:1.2rem;font-weight:800;margin-bottom:16px;opacity:.95;position:relative">${_ws?.name||'—'}</h2>
+      <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;position:relative">
+        <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 20px;text-align:center"><div style="font-size:1.4rem;font-weight:900">${_trainees.length}</div><div style="font-size:.72rem;opacity:.85">متدرب</div></div>
+        <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 20px;text-align:center"><div style="font-size:1.4rem;font-weight:900">${overall}%</div><div style="font-size:.72rem;opacity:.85">متوسط الأداء</div></div>
+        <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 20px;text-align:center"><div style="font-size:1.4rem;font-weight:900">${attPct}%</div><div style="font-size:.72rem;opacity:.85">نسبة الحضور</div></div>
+        <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 20px;text-align:center"><div style="font-size:1.4rem;font-weight:900">${evAvg}${evAvg!=='—'?'⭐':''}</div><div style="font-size:.72rem;opacity:.85">تقييم المدرب</div></div>
+      </div>
+    </div>
+
+    <!-- Workshop Info -->
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px">
+      <h3 style="font-weight:900;color:var(--g1);font-size:1rem;margin-bottom:14px;border-bottom:2px solid var(--g4);padding-bottom:8px">📋 بيانات الورشة</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        ${[
+          ['🏢 اسم الورشة',_ws?.name||'—'],
+          ['👨‍🏫 المدرب',_ws?.trainerName||'—'],
+          ['📅 تاريخ البداية',_ws?.startDate||'—'],
+          ['📅 تاريخ النهاية',_ws?.endDate||'—'],
+          ['🏛️ الجهة المنظِّمة',_ws?.org||'—'],
+          ['📍 الموقع',_ws?.location||'—'],
+          ['👥 عدد المتدربين',_trainees.length+''],
+          ['✅ أكمل البرنامج',comp+' متدرب'],
+          ['🎯 متوسط الأداء',overall+'%'],
+          ['📊 نسبة النجاح (≥60%)',Math.round(passed/_trainees.length*100||0)+'%'],
+        ].map(([l,v])=>`<div style="background:var(--bg);border-radius:10px;padding:10px 12px"><div style="font-size:.73rem;color:var(--muted);font-weight:700;margin-bottom:3px">${l}</div><div style="font-weight:800;font-size:.9rem">${v}</div></div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Trainees Table -->
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px">
+      <h3 style="font-weight:900;color:var(--g1);font-size:1rem;margin-bottom:14px;border-bottom:2px solid var(--g4);padding-bottom:8px">👥 قائمة المتدربين ودرجاتهم</h3>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.78rem">
+        <thead><tr style="background:var(--g4)">
+          <th style="padding:9px 11px;text-align:right;font-weight:800;color:var(--g1)">#</th>
+          <th style="padding:9px 11px;text-align:right;font-weight:800;color:var(--g1)">الاسم</th>
+          <th style="padding:9px 11px;text-align:right;font-weight:800;color:var(--g1)">الجهة</th>
+          ${DAYS.map(d=>`<th style="padding:9px 11px;text-align:center;font-weight:800;color:var(--g1)">يوم ${d}</th>`).join('')}
+          <th style="padding:9px 11px;text-align:center;font-weight:800;color:var(--g1)">المتوسط</th>
+          <th style="padding:9px 11px;text-align:center;font-weight:800;color:var(--g1)">المستوى</th>
+        </tr></thead>
+        <tbody>
+          ${_trainees.map((t,i)=>{
+            const avg=getAvg(t.id);const level=avg===null?'—':avg>=85?'ممتاز':avg>=70?'جيد جداً':avg>=60?'مقبول':'ضعيف';
+            const col=avg===null?'#6b7280':avg>=80?'#0a5c3e':avg>=60?'#c8830a':'#b83030';
+            return`<tr style="${i%2===0?'background:#fff':'background:#f9fbfa'}">
+              <td style="padding:8px 11px">${i+1}</td>
+              <td style="padding:8px 11px;font-weight:700">${t.name}</td>
+              <td style="padding:8px 11px;color:#4a7060">${t.dept}</td>
+              ${DAYS.map(d=>{const r=_results[t.id]?.[d];if(!r)return`<td style="padding:8px 11px;text-align:center;color:#9ca3af">—</td>`;if(r.absent)return`<td style="padding:8px 11px;text-align:center;color:#b83030;font-weight:800">غ</td>`;const s=r.quizScore;return`<td style="padding:8px 11px;text-align:center;font-weight:800;color:${s>=80?'#0a5c3e':s>=60?'#c8830a':'#b83030'}">${s}%</td>`;}).join('')}
+              <td style="padding:8px 11px;text-align:center;font-weight:900;color:${col}">${avg!==null?avg+'%':'—'}</td>
+              <td style="padding:8px 11px;text-align:center"><span style="background:${avg>=85?'#d1fae5':avg>=70?'#dbeafe':avg>=60?'#fff7e6':'#fde8e8'};color:${avg>=85?'#065f46':avg>=70?'#1e40af':avg>=60?'#78350f':'#7f1d1d'};padding:2px 8px;border-radius:8px;font-size:.7rem;font-weight:800">${level}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- Attendance Summary -->
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px">
+      <h3 style="font-weight:900;color:var(--g1);font-size:1rem;margin-bottom:14px;border-bottom:2px solid var(--g4);padding-bottom:8px">✅ إحصائيات الحضور</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px">
+        ${DAYS.map(d=>{
+          const pres=_trainees.filter(t=>(_attendance[t.id]||{})[d]==='present').length;
+          const pct=_trainees.length?Math.round(pres/_trainees.length*100):0;
+          const col=pct>=80?'var(--g1)':pct>=60?'var(--gold)':'var(--red)';
+          return`<div style="background:var(--bg);border-radius:12px;padding:12px;text-align:center;border:1.5px solid var(--border)"><div style="font-size:.72rem;color:var(--muted);font-weight:700;margin-bottom:4px">اليوم ${d}</div><div style="font-size:1.4rem;font-weight:900;color:${col}">${pct}%</div><div style="font-size:.68rem;color:var(--muted)">${pres} / ${_trainees.length}</div></div>`;
+        }).join('')}
+      </div>
+      <div style="background:var(--g4);border-radius:12px;padding:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-weight:800;color:var(--g1)">متوسط الحضور الكلي</span>
+          <span style="font-size:1.3rem;font-weight:900;color:${attPct>=80?'var(--g1)':attPct>=60?'var(--gold)':'var(--red)'}">${attPct}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Evaluations -->
+    ${evals.length?`
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px">
+      <h3 style="font-weight:900;color:var(--g1);font-size:1rem;margin-bottom:14px;border-bottom:2px solid var(--g4);padding-bottom:8px">⭐ تقييمات المدرب</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px">
+        <div style="background:var(--gold2);border-radius:12px;padding:14px;text-align:center;border:1.5px solid #fde68a"><div style="font-size:1.6rem;font-weight:900;color:#92400e">${evAvg}${evAvg!=='—'?'⭐':''}</div><div style="font-size:.7rem;color:#78350f;font-weight:700">المتوسط العام</div></div>
+        <div style="background:var(--g4);border-radius:12px;padding:14px;text-align:center;border:1.5px solid var(--g5)"><div style="font-size:1.6rem;font-weight:900;color:var(--g1)">${evals.length}</div><div style="font-size:.7rem;color:var(--muted);font-weight:700">عدد التقييمات</div></div>
+        <div style="background:var(--blue2);border-radius:12px;padding:14px;text-align:center;border:1.5px solid #bfdbfe"><div style="font-size:1.6rem;font-weight:900;color:var(--blue)">${Math.round(evals.length/_trainees.length*100||0)}%</div><div style="font-size:.7rem;color:#1e40af;font-weight:700">نسبة المشاركة</div></div>
+      </div>
+      <div style="margin-bottom:12px">${EVAL_CRIT.map(c=>{const vals=evals.map(e=>e.scores?.[c.key]).filter(v=>v!==undefined);const a=vals.length?(vals.reduce((x,y)=>x+y,0)/vals.length).toFixed(1):null;const col=a>=4?'#f59e0b':a>=3?'#d97706':'#b45309';return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:150px;font-size:.78rem;font-weight:700;text-align:right">${c.label}</div><div style="flex:1;background:var(--border);border-radius:5px;height:10px;overflow:hidden"><div style="height:100%;border-radius:5px;background:${col};width:${a?parseFloat(a)/5*100:0}%;transition:width 1s"></div></div><div style="width:40px;text-align:left;font-weight:800;font-size:.78rem;color:${col}">${a?a+'/5':'—'}</div></div>`;}).join('')}</div>
+      ${evals.filter(e=>e.comment&&e.comment.length>2).length?`
+      <h4 style="font-weight:800;color:#92400e;margin-bottom:10px;font-size:.85rem">💬 تعليقات المتدربين</h4>
+      ${evals.filter(e=>e.comment&&e.comment.length>2).map(e=>`<div style="background:#fffbeb;border-right:3px solid #f59e0b;padding:10px 14px;border-radius:0 10px 10px 0;margin-bottom:8px;font-size:.82rem"><strong style="color:#92400e">${e.name}:</strong> "${e.comment}"</div>`).join('')}`:''}
+    </div>`:'' }
+
+    <!-- Photos -->
+    ${_photos.length?`
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px">
+      <h3 style="font-weight:900;color:var(--g1);font-size:1rem;margin-bottom:14px;border-bottom:2px solid var(--g4);padding-bottom:8px">🖼️ صور الورشة (${_photos.length} صورة)</h3>
+      <div class="report-photo-grid">
+        ${_photos.map(p=>`<img src="${p.data}" alt="${p.name}" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid var(--border)">`).join('')}
+      </div>
+    </div>` : ''}
+
+    <!-- Footer -->
+    <div style="background:var(--g4);border-radius:14px;padding:16px;text-align:center;border:1.5px solid var(--g5)">
+      <div style="font-weight:900;color:var(--g1);font-size:.9rem;margin-bottom:4px">🧪 {text:'نظام ACES لإدارة ورش تدريب سحب العينات الغذائية',font:FONT2||FONT</div>
+      <div style="font-size:.75rem;color:var(--muted)">تاريخ إصدار التقرير: ${new Date().toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'})} · ${_ws?.trainerName||'—'} · ${_ws?.name||'—'}</div>
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+//  QR
+// ══════════════════════════════════════════════
+
+function drawQROnCanvas(canvasId, url, size) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas || !url) return;
+  if(window.QRCode) {
+    const tmp = document.createElement('div');
+    tmp.style.display = 'none';
+    document.body.appendChild(tmp);
+    try {
+      new window.QRCode(tmp, {
+        text: url, width: size, height: size,
+        colorDark: '#0a5c3e', colorLight: '#ffffff',
+        correctLevel: window.QRCode.CorrectLevel?.M || 1
+      });
+      setTimeout(() => {
+        const img = tmp.querySelector('img') || tmp.querySelector('canvas');
+        if(img) {
+          const ctx = canvas.getContext('2d');
+          const image = new Image();
+          image.onload = () => ctx.drawImage(image, 0, 0, size, size);
+          image.src = img.tagName === 'CANVAS' ? img.toDataURL() : img.src;
+        }
+        if(tmp.parentNode) document.body.removeChild(tmp);
+      }, 150);
+    } catch(e) { if(tmp.parentNode) document.body.removeChild(tmp); }
+  }
+}
+
+function traineeCode(id){let h=0;for(let i=0;i<id.length;i++)h=((h<<5)-h+id.charCodeAt(i))|0;return String(Math.abs(h)%900000+100000);}
+function traineeURL(tid){
+  return 'https://melnahas11111-ctrl.github.io/ACES-Workshops/trainee.html?wsid=' + _wsId + '&tid=' + tid;
+}
+
+
+// ── Auto-show QR after adding new trainee ─────────────────────────
+function showNewTraineeQR(trainee) {
+  const code = traineeCode(trainee.id);
+  const url  = traineeURL(trainee.id);
+  openModal(`📱 QR جاهز — ${trainee.name}`, `
+    <div style="text-align:center">
+      <div style="background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:16px;padding:18px;color:#fff;margin-bottom:16px">
+        <div style="font-size:.78rem;opacity:.85;margin-bottom:4px">✅ تمت إضافة المتدرب بنجاح</div>
+        <div style="font-size:1.1rem;font-weight:900">${trainee.name}</div>
+        <div style="font-size:.8rem;opacity:.85;margin-top:2px">${trainee.dept}</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:14px;padding:16px;margin-bottom:14px">
+        <div style="color:rgba(255,255,255,.85);font-size:.72rem;font-weight:700;margin-bottom:4px">🔑 كود الدخول الرقمي</div>
+        <div style="color:#fff;font-size:2.2rem;font-weight:900;letter-spacing:8px">${code}</div>
+        <div style="color:rgba(255,255,255,.75);font-size:.7rem;margin-top:4px">المتدرب يدخل هذا الكود عند بداية كل يوم</div>
+      </div>
+      <div id="qr-popup-canvas" style="margin:0 auto 12px;width:fit-content;background:#fff;padding:10px;border-radius:12px;border:2px solid var(--border)">
+        <canvas id="new-trainee-qr" width="180" height="180"></canvas>
+      </div>
+      <div style="font-size:.64rem;color:var(--muted);background:var(--bg);border-radius:8px;padding:6px 10px;word-break:break-all;margin-bottom:14px">${url}</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="closeModal()" class="btn btn-s" style="flex:1">إغلاق</button>
+        <button onclick="trTab('qr',null);closeModal()" class="btn btn-p" style="flex:1">📱 عرض كل QR</button>
+      </div>
+    </div>
+  `);
+  // Draw QR after modal opens
+  setTimeout(() => {
+    const canvas = document.getElementById('new-trainee-qr');
+    if(canvas && window.QRCode) {
+      const tmp = document.createElement('div');
+      tmp.style.display = 'none';
+      document.body.appendChild(tmp);
+      new window.QRCode(tmp, {
+        text: url, width: 180, height: 180,
+        colorDark: '#0a5c3e', colorLight: '#ffffff',
+        correctLevel: window.QRCode.CorrectLevel?.M || 1
+      });
+      setTimeout(() => {
+        const img = tmp.querySelector('img') || tmp.querySelector('canvas');
+        if(img) {
+          const ctx = canvas.getContext('2d');
+          const image = new Image();
+          image.onload = () => ctx.drawImage(image, 0, 0, 180, 180);
+          image.src = img.tagName === 'CANVAS' ? img.toDataURL() : img.src;
+        }
+        document.body.removeChild(tmp);
+      }, 200);
+    }
+  }, 150);
+}
+
+function renderQR(){
+  const grid=document.getElementById('qr-grid');
+  if(!_trainees.length){grid.innerHTML='<p style="color:var(--muted);text-align:center;grid-column:1/-1;padding:30px">أضف متدربين أولاً</p>';return;}
+  grid.innerHTML=_trainees.map(t=>{
+    const code=traineeCode(t.id);const url=traineeURL(t.id);
+    return`<div class="card" style="padding:16px;text-align:center;page-break-inside:avoid">
+      <div id="qrcanvas-${t.id}" style="width:160px;height:160px;margin:0 auto 10px;background:#fff;border-radius:10px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center">
+        <canvas id="qrc-${t.id}" width="160" height="160" style="border-radius:8px"></canvas>
+      </div>
+      <div style="font-weight:900;font-size:.92rem;color:var(--g1);margin-bottom:2px">${t.name}</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:10px">${t.dept}</div>
+      <div style="background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:12px;padding:10px;margin-bottom:8px">
+        <div style="color:rgba(255,255,255,.8);font-size:.65rem;font-weight:700;margin-bottom:3px">🔑 كود الدخول</div>
+        <div style="color:#fff;font-size:1.6rem;font-weight:900;letter-spacing:6px">${code}</div>
+      </div>
+      <div style="font-size:.62rem;color:var(--muted);background:var(--bg);border-radius:8px;padding:5px 8px;word-break:break-all">${url}</div>
+    </div>`;
+  }).join('');
+  // Draw QR codes
+  setTimeout(()=>_trainees.forEach(t=>drawQROnCanvas('qrc-'+t.id, traineeURL(t.id), 160)), 100);
+}
+
+function showQRModal(tid){
+  const t=_trainees.find(x=>x.id===tid);if(!t)return;
+  const code=traineeCode(tid);const url=traineeURL(tid);
+  openModal(`📱 QR — ${t.name}`,`
+    <div style="text-align:center">
+      <div style="font-weight:900;color:var(--g1);font-size:1rem;margin-bottom:14px">${t.name} · ${t.dept}</div>
+      <div style="background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:14px;padding:16px;margin-bottom:12px">
+        <div style="color:rgba(255,255,255,.8);font-size:.72rem;font-weight:700;margin-bottom:4px">🔑 كود الدخول</div>
+        <div style="color:#fff;font-size:2rem;font-weight:900;letter-spacing:8px">${code}</div>
+      </div>
+      <div style="font-size:.65rem;color:var(--muted);background:var(--bg);border-radius:8px;padding:6px 10px;word-break:break-all">${url}</div>
+    </div>`);
+}
+
+// ══════════════════════════════════════════════
+//  CSV EXPORT
+// ══════════════════════════════════════════════
+function exportCSV(){
+  const h=['الاسم','الرقم','الجهة','الحضور',...DAYS.map(d=>`يوم ${d}`),'المتوسط','المستوى'];
+  const rows=_trainees.map(t=>{
+    const scores=DAYS.map(d=>_results[t.id]?.[d]?.quizScore??'');
+    const avg=getAvg(t.id);const level=avg===null?'—':avg>=85?'ممتاز':avg>=70?'جيد جداً':avg>=60?'مقبول':'ضعيف';
+    return[t.name,t.sid,t.dept,getAtt(t.id)+'/5',...scores,avg!==null?avg+'%':'—',level];
+  });
+  const hdr=`\uFEFF# ${_ws?.name||'ورشة'}\n# المدرب: ${_ws?.trainerName||''}\n# التاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\n`;
+  const csv=hdr+[h,...rows].map(r=>r.map(v=>`"${v||''}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`تقرير_${_ws?.name||'ورشة'}.csv`;a.click();
+  toast('📥 تم التصدير');
+}
+
+// ══════════════════════════════════════════════
+//  LIVE SYNC
+// ══════════════════════════════════════════════
+
+// ══════════════════════════════════════════════
+//  GITHUB AUTO-UPDATE
+// ══════════════════════════════════════════════
+async function pushToGitHub(filename, content, commitMsg) {
+  const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${filename}`;
+  const headers = {
+    'Authorization': 'token ' + GH_TOKEN,
+    'Content-Type':  'application/json',
+    'Accept':        'application/vnd.github.v3+json'
+  };
+
+  // Get current SHA (needed for update)
+  let sha = null;
+  try {
+    const res = await fetch(url, { headers });
+    if (res.ok) { const d = await res.json(); sha = d.sha; }
+  } catch {}
+
+  // Push file
+  const body = {
+    message: commitMsg || '🔄 Auto-update: ' + new Date().toLocaleString('ar-SA'),
+    content: btoa(unescape(encodeURIComponent(content))),
+    ...(sha ? { sha } : {})
+  };
+
+  const res = await fetch(url, { method:'PUT', headers, body: JSON.stringify(body) });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || 'GitHub push failed');
+  }
+  return true;
+}
+
+async function updateGitHub() {
+  if (!GH_TOKEN) GH_TOKEN = _getToken();
+
+  const btn = document.getElementById('gh-update-btn') || document.getElementById('gh-update-btn-tr');
+  if (btn) { btn.disabled=true; btn.innerHTML='<span class="spinner"></span> جارٍ الرفع...'; }
+
+  try {
+    // Build updated workshops.html with embedded data
+    const wsData = await fbGet('workshops') || {};
+    
+    // Push workshops.html (current file)
+    const res = await fetch(window.location.href);
+    let htmlContent = await res.text();
+    
+    // Embed current Firebase data as snapshot comment
+        // Data sync timestamp
+    htmlContent = htmlContent.replace('</body>', '<!-- SYNC:' + new Date().toISOString() + ' --></body>');
+
+    await pushToGitHub(
+      'index.html',
+      htmlContent,
+      `🔄 Update: ${new Date().toLocaleString('ar-SA')} — ${Object.keys(wsData).length} ورشة`
+    );
+
+    if (btn) { btn.disabled=false; btn.innerHTML='✅ تم الرفع'; }
+    setTimeout(()=>{ if(btn) btn.innerHTML='🔄 تحديث GitHub'; btn.disabled=false; }, 3000);
+    toast('✅ تم رفع التحديث على GitHub بنجاح!');
+  } catch(e) {
+    console.error('GitHub update error:', e);
+    // If auth error, clear token so user can re-enter
+    if (e.message && (e.message.includes('401') || e.message.includes('Bad credentials'))) {
+      GH_TOKEN = '';
+      toast('❌ Token خاطئ — تحقق من الصلاحيات');
+    } else {
+      toast('❌ فشل الرفع: ' + e.message);
+    }
+    if (btn) { btn.disabled=false; btn.innerHTML='🔄 رفع GitHub'; }
+  }
+}
+
+
+// ══════════════════════════════════════════════
+//  EXAM CONTROL
+// ══════════════════════════════════════════════
+async function toggleExam(dayId) {
+  const btn = document.getElementById('exam-btn-'+dayId);
+  const currentStatus = await fbGet(`workshops/${_wsId}/exam_approvals/${dayId}`);
+  if(currentStatus === 'open') {
+    await fbSet(`workshops/${_wsId}/exam_approvals/${dayId}`, 'closed');
+    toast('🔒 تم إغلاق اختبار اليوم '+dayId);
+  } else {
+    await fbSet(`workshops/${_wsId}/exam_approvals/${dayId}`, 'open');
+    toast('📝 تم فتح اختبار اليوم '+dayId+' للمتدربين');
+  }
+  updateExamBtns();
+}
+
+async function updateExamBtns() {
+  for(let d=1;d<=5;d++){
+    const status = await fbGet(`workshops/${_wsId}/exam_approvals/${d}`);
+    const btn = document.getElementById('exam-btn-'+d);
+    if(!btn) continue;
+    if(status==='open'){
+      btn.style.background='linear-gradient(135deg,var(--g1),var(--g2))';
+      btn.style.color='#fff';
+      btn.style.borderColor='transparent';
+      btn.innerHTML='✅ الاختبار مفتوح — إغلاق';
+    } else {
+      btn.style.background='var(--g4)';
+      btn.style.color='var(--g1)';
+      btn.style.borderColor='var(--border)';
+      btn.innerHTML='📝 فتح الاختبار';
+    }
+  }
+}
+
+function startSync(){
+  if(_fbLive)return; _fbLive=true;
+  if(_role==='admin'){
+    fbListen('workshops',data=>{
+      _allWs=data||{};
+      if(document.getElementById('s-admin').classList.contains('active')){renderAdminKPIs();renderWSGrid();renderDLRequests();}
+    });
+  }
+  if(_role==='trainer'&&_wsId){
+    fbListen(`workshops/${_wsId}`,data=>{
+      if(!data)return;
+      _ws=data;_trainees=data.trainees?Object.values(data.trainees):[];
+      _results=data.results||{};_attendance=data.attendance||{};
+      _evaluations=data.evaluations||{};_materials=data.materials||{};_photos=data.photos||[];
+      renderTrKPIs();renderTrTable();
+      const evTab=document.getElementById('tt-evaluations');if(evTab&&evTab.style.display!=='none')renderEvaluations();
+    });
+    fbListen(`workshops/${_wsId}/scan_requests`,data=>renderScans(data||{}));
+    // Watch exam approvals for real-time button updates
+    fbListen(`workshops/${_wsId}/exam_approvals`, ()=>updateExamBtns());
+  }
+}
+</script>
+
+<!-- docx.js for Word report generation -->
+<script src="https://cdn.jsdelivr.net/npm/docx@9.6.1/build/index.js"></script>
+<script>
+// ══════════════════════════════════════════════
+//  WORD REPORT GENERATOR
+// ══════════════════════════════════════════════
+async function generateWordReport(lang="ar") {
+  const btn = document.getElementById(lang==='ar'?'word-btn-ar':'word-btn-en');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> جارٍ إنشاء التقرير...'; const btn2 = document.getElementById(lang==='ar'?'word-btn-en':'word-btn-ar'); if(btn2) btn2.disabled=true;
+
+  try {
+    const {
+      Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+      ImageRun, Header, AlignmentType, BorderStyle, WidthType,
+      ShadingType, VerticalAlign, PageBreak
+    } = docx;
+
+    const WS = _ws;
+    const LANG = lang;
+    const RTL = lang === 'ar';
+    const DAYS = [1,2,3,4,5];
+    const TT = {
+      ar:{reportTitle:'التقرير النهائي للورشة التدريبية',subtitle:'سحب العينات الغذائية — 5 أيام',summary:'ملخص الورشة',wsInfo:'بيانات الورشة',traineesList:'قائمة المتدربين ودرجاتهم',attendance:'إحصائيات الحضور',evaluations:'تقييمات المدرب',photos:'صور الورشة',footer:'نظام ACES لإدارة ورش تدريب سحب العينات الغذائية',kpi1:'عدد المتدربين',kpi2:'متوسط الأداء',kpi3:'نسبة الحضور',kpi4:'تقييم المدرب',f1:'اسم الورشة',f2:'اسم المدرب',f3:'تاريخ البداية',f4:'تاريخ النهاية',f5:'الجهة المنظِّمة',f6:'الموقع',f7:'عدد المتدربين',f8:'نسبة النجاح',thName:'الاسم',thDept:'الجهة',thDay:'يوم',thAvg:'المتوسط',thLevel:'المستوى',thTrainee:'المتدرب',thTotal:'المجموع',present:'✅ حاضر',absent:'❌ غائب',excused:'⚡ معذور',evalAvg:'المتوسط العام',evalCount:'عدد التقييمات',partRate:'نسبة المشاركة',repDate:'تاريخ التقرير',crit:'المحور',score:'المتوسط',rating:'التقييم',cmts:'تعليقات المتدربين',issued:'إصدار',comp:'أكمل البرنامج',absShort:'غ',ex:'ممتاز',vg:'جيد جداً',gd:'مقبول',wk:'ضعيف',ec:['وضوح الشرح والأسلوب','التنظيم والتحضير','التفاعل مع المتدربين','الإلمام بالمادة العلمية','الرضا العام'],trLbl:'المدرب: ',units:' متدرب',traineesUnit:'متدرب',locale:'ar-EG'},
+      en:{reportTitle:'Final Workshop Training Report',subtitle:'Food Sampling — 5-Day Program',summary:'Workshop Summary',wsInfo:'Workshop Information',traineesList:'Trainees Performance',attendance:'Attendance Statistics',evaluations:'Trainer Evaluations',photos:'Workshop Photos',footer:'ACES Food Sampling Training Workshop Management System',kpi1:'Total Trainees',kpi2:'Avg Performance',kpi3:'Attendance Rate',kpi4:'Trainer Rating',f1:'Workshop Name',f2:'Trainer Name',f3:'Start Date',f4:'End Date',f5:'Organizing Entity',f6:'Location',f7:'No. of Trainees',f8:'Pass Rate (≥60%)',thName:'Name',thDept:'Department',thDay:'Day',thAvg:'Average',thLevel:'Level',thTrainee:'Trainee',thTotal:'Total',present:'✅ Present',absent:'❌ Absent',excused:'⚡ Excused',evalAvg:'Overall Average',evalCount:'No. of Evaluations',partRate:'Participation Rate',repDate:'Report Date',crit:'Criteria',score:'Score',rating:'Rating',cmts:'Trainee Comments',issued:'Issued by',comp:'Completed Program',absShort:'A',ex:'Excellent',vg:'Very Good',gd:'Acceptable',wk:'Weak',ec:['Clarity & Delivery','Organization & Preparation','Interaction with Trainees','Subject Knowledge','Overall Satisfaction'],trLbl:'Trainer: ',units:' Trainees',traineesUnit:'Trainees',locale:'en-GB'}
+    };
+    const T2 = TT[lang] || TT.ar;
+    const FONT2 = RTL ? 'Arial' : 'Calibri';
+    const ALIGN2 = RTL ? AlignmentType.RIGHT : AlignmentType.LEFT;
+    const DAY_NAMES = {1:'التقييم المبدئي',2:'التفتيش ومراقبة الجودة',3:'استراتيجيات سحب العينات',4:'التطبيق الميداني',5:'التقييم الشامل'};
+    const EVAL_CRIT = ['وضوح الشرح والأسلوب','التنظيم والتحضير','التفاعل مع المتدربين','الإلمام بالمادة العلمية','الرضا العام'];
+    const EVAL_KEYS = ['clarity','organization','interaction','knowledge','overall'];
+
+    const trainees = _trainees;
+    const getAvg = tid => { const s=DAYS.map(d=>_results[tid]?.[d]?.quizScore).filter(s=>s!==undefined); return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null; };
+    const getAtt = tid => Object.values(_attendance[tid]||{}).filter(v=>v==='present').length;
+    const avgs = trainees.map(t=>getAvg(t.id)).filter(a=>a!==null);
+    const overall = avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):0;
+    const passed = avgs.filter(a=>a>=60).length;
+    const totalAtt = trainees.reduce((s,t)=>s+getAtt(t.id),0);
+    const attPct = trainees.length?Math.round(totalAtt/(trainees.length*5)*100):0;
+    const evals = Object.values(_evaluations);
+    const evVals = evals.flatMap(e=>Object.values(e.scores||{}));
+    const evAvg = evVals.length?(evVals.reduce((a,b)=>a+b,0)/evVals.length).toFixed(1):'—';
+
+    // Logos embedded as base64
+    const acesB64 = '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';
+    const mophB64 = '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';
+    function b64ToBuffer(b64){const bin=atob(b64);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return arr.buffer;}
+    const acesLogo = b64ToBuffer(acesB64);
+    const mophLogo = b64ToBuffer(mophB64);
+
+    const brd = { style: BorderStyle.SINGLE, size: 1, color: 'B8D8CC' };
+    const brds = { top:brd, bottom:brd, left:brd, right:brd };
+    const hBrd = { style: BorderStyle.SINGLE, size: 4, color: '0A5C3E' };
+    const hBrds = { top:hBrd, bottom:hBrd, left:hBrd, right:hBrd };
+
+    const C = (text, w, o={}) => new TableCell({
+      width:{size:w,type:WidthType.DXA}, borders:o.b||brds,
+      shading:o.fill?{fill:o.fill,type:ShadingType.CLEAR}:undefined,
+      verticalAlign:VerticalAlign.CENTER,
+      margins:{top:80,bottom:80,left:120,right:120},
+      children:[new Paragraph({
+        alignment:o.ctr?AlignmentType.CENTER:AlignmentType.RIGHT,
+        children:[new TextRun({text:String(text||'—'),font:'Arial',size:o.sz||18,bold:o.bold||false,color:o.col||'000000',rtl:true})]
+      })]
+    });
+
+    const H = t => new Paragraph({spacing:{before:240,after:120},border:{bottom:{style:BorderStyle.SINGLE,size:8,color:'0A5C3E',space:4}},children:[new TextRun({text:t,font:'Arial',size:26,bold:true,color:'0A5C3E',rtl:true})]});
+    const P = (t,o={}) => new Paragraph({alignment:o.ctr?AlignmentType.CENTER:AlignmentType.RIGHT,spacing:{before:o.bf||60,after:o.af||60},children:[new TextRun({text:String(t||''),font:'Arial',size:o.sz||20,bold:o.bold||false,color:o.col||'000000',rtl:true})]});
+    const SP = () => new Paragraph({spacing:{before:120,after:120},children:[new TextRun('')]});
+
+    const children = [];
+
+    // Logos header
+    const logoChildren = [];
+    if(mophLogo) logoChildren.push(new ImageRun({data:mophLogo,transformation:{width:120,height:48},type:'png'}));
+    logoChildren.push(new TextRun({text:'          ',font:'Arial',size:20}));
+    if(acesLogo) logoChildren.push(new ImageRun({data:acesLogo,transformation:{width:120,height:48},type:'png'}));
+    if(logoChildren.length > 1) children.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:200},children:logoChildren}));
+
+    // Title
+    children.push(P('التقرير النهائي للورشة التدريبية',{ctr:true,sz:36,bold:true,col:'0A5C3E',bf:100,af:80}));
+    children.push(P(WS.name||'—',{ctr:true,sz:28,bold:true,col:'0E7A54',bf:0,af:60}));
+    children.push(P('سحب العينات الغذائية — 5 أيام',{ctr:true,sz:20,col:'4A7060',bf:0,af:40}));
+    children.push(new Paragraph({alignment:AlignmentType.CENTER,border:{bottom:{style:BorderStyle.SINGLE,size:12,color:'0A5C3E',space:4}},spacing:{before:0,after:200},children:[new TextRun({text:' ',font:'Arial',size:20})]}));
+
+    // KPI summary table
+    children.push(H(T2.summary));
+    children.push(new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[2256,2256,2257,2257],rows:[
+      new TableRow({children:[C(T2.kpi1,2256,{fill:'EAF6F1',bold:true,ctr:true,sz:20}),C(T2.kpi2,2256,{fill:'EAF6F1',bold:true,ctr:true,sz:20}),C(T2.kpi3,2257,{fill:'EAF6F1',bold:true,ctr:true,sz:20}),C(T2.kpi4,2257,{fill:'EAF6F1',bold:true,ctr:true,sz:20})]}),
+      new TableRow({children:[C(trainees.length+T2.units,2256,{ctr:true,sz:26,bold:true,col:'0A5C3E'}),C(overall+'%',2256,{ctr:true,sz:26,bold:true,col:overall>=80?'0A5C3E':overall>=60?'C8830A':'B83030'}),C(attPct+'%',2257,{ctr:true,sz:26,bold:true,col:attPct>=80?'0A5C3E':attPct>=60?'C8830A':'B83030'}),C(evAvg+(evAvg!=='—'?'⭐':''),2257,{ctr:true,sz:26,bold:true,col:'C8830A'})]})
+    ]}));
+    children.push(SP());
+
+    // Workshop info
+    children.push(H(T2.wsInfo));
+    const info=[[T2.f1,WS.name||'—'],[T2.f2,WS.trainerName||'—'],[T2.f3,WS.startDate||'—'],[T2.f4,WS.endDate||'—'],[T2.f5,WS.org||'—'],['الموقع',WS.location||'—'],[T2.f7,trainees.length+''],[T2.f8,trainees.length?Math.round(passed/trainees.length*100)+'%':'—']];
+    children.push(new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[3000,6026],rows:info.map((r,i)=>new TableRow({children:[C(r[0],3000,{fill:'EAF6F1',bold:true}),C(r[1],6026,{fill:i%2===0?'FFFFFF':'F9FAFB'})]}))}));
+    children.push(SP());
+
+    // Trainees performance
+    children.push(new Paragraph({children:[new PageBreak()]}));
+    children.push(H(T2.traineesList));
+    children.push(new Table({
+      width:{size:9026,type:WidthType.DXA},
+      columnWidths:[400,2000,1500,600,600,600,600,600,700,826],
+      rows:[
+        new TableRow({children:[C('#',400,{fill:'0A5C3E',bold:true,ctr:true,sz:16,col:'FFFFFF',b:hBrds}),C(T2.thName,2000,{fill:'0A5C3E',bold:true,sz:16,col:'FFFFFF',b:hBrds}),C(T2.thDept,1500,{fill:'0A5C3E',bold:true,sz:16,col:'FFFFFF',b:hBrds}),...DAYS.map(d=>C('يوم '+d,600,{fill:'0A5C3E',bold:true,ctr:true,sz:16,col:'FFFFFF',b:hBrds})),C('المتوسط',700,{fill:'0A5C3E',bold:true,ctr:true,sz:16,col:'FFFFFF',b:hBrds}),C('المستوى',826,{fill:'0A5C3E',bold:true,ctr:true,sz:16,col:'FFFFFF',b:hBrds})]}),
+        ...trainees.map((t,i)=>{
+          const avg=getAvg(t.id);
+          const level=avg===null?'—':avg>=85?'ممتاز':avg>=70?'جيد جداً':avg>=60?'مقبول':'ضعيف';
+          const avgCol=avg===null?'374151':avg>=80?'0A5C3E':avg>=60?'C8830A':'B83030';
+          const fill=i%2===0?'FFFFFF':'F2FBF7';
+          return new TableRow({children:[
+            C(i+1,400,{fill,ctr:true,sz:16}),C(t.name,2000,{fill,bold:true,sz:16}),C(t.dept,1500,{fill,sz:16}),
+            ...DAYS.map(d=>{
+              const r=_results[t.id]?.[d];
+              if(!r)return C('—',600,{fill,ctr:true,sz:16,col:'9CA3AF'});
+              if(r.absent)return C(T2.absShort,600,{fill:'FDE8E8',ctr:true,sz:16,col:'B83030',bold:true});
+              const s=r.quizScore;return C(s+'%',600,{fill,ctr:true,sz:16,col:s>=80?'0A5C3E':s>=60?'C8830A':'B83030',bold:true});
+            }),
+            C(avg!==null?avg+'%':'—',700,{fill,ctr:true,sz:18,bold:true,col:avgCol}),
+            C(level,826,{fill:avg>=85?'D1FAE5':avg>=70?'DBEAFE':avg>=60?'FFF7E6':'FDE8E8',ctr:true,sz:16,col:avg>=85?'065F46':avg>=70?'1E40AF':avg>=60?'78350F':'7F1D1D'})
+          ]});
+        })
+      ]
+    }));
+    children.push(SP());
+
+    // Attendance
+    children.push(H(T2.attendance));
+    const attIcons={present:T2.present,absent:T2.absent,excused:T2.excused,none:'—'};
+    const attFills={present:'D1FAE5',absent:'FDE8E8',excused:'FFF7E6',none:'FFFFFF'};
+    children.push(new Table({
+      width:{size:9026,type:WidthType.DXA},columnWidths:[2500,900,900,900,900,900,1026],
+      rows:[
+        new TableRow({children:[C('المتدرب',2500,{fill:'0A5C3E',bold:true,col:'FFFFFF',b:hBrds}),...DAYS.map(d=>C('اليوم '+d,900,{fill:'0A5C3E',bold:true,ctr:true,col:'FFFFFF',b:hBrds})),C('المجموع',1026,{fill:'0A5C3E',bold:true,ctr:true,col:'FFFFFF',b:hBrds})]}),
+        ...trainees.map((t,i)=>{
+          const att=_attendance[t.id]||{};
+          const total=Object.values(att).filter(v=>v==='present').length;
+          return new TableRow({children:[
+            C(t.name,2500,{fill:i%2===0?'FFFFFF':'F2FBF7',bold:true,sz:16}),
+            ...DAYS.map(d=>C(attIcons[att[d]||'none'],900,{fill:attFills[att[d]||'none'],ctr:true,sz:14})),
+            C(total+'/5',1026,{fill:total>=4?'D1FAE5':total>=3?'FFF7E6':'FDE8E8',ctr:true,bold:true,sz:18,col:total>=4?'065F46':total>=3?'78350F':'7F1D1D'})
+          ]});
+        })
+      ]
+    }));
+    children.push(SP());
+
+    // Evaluations
+    if(evals.length) {
+      children.push(new Paragraph({children:[new PageBreak()]}));
+      children.push(H('تقييمات المدرب من المتدربين'));
+      children.push(new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[2256,2256,2257,2257],rows:[
+        new TableRow({children:[C(T2.evalAvg,2256,{fill:'EAF6F1',bold:true,ctr:true}),C(T2.evalCount,2256,{fill:'EAF6F1',bold:true,ctr:true}),C(T2.partRate,2257,{fill:'EAF6F1',bold:true,ctr:true}),C(T2.repDate,2257,{fill:'EAF6F1',bold:true,ctr:true})]}),
+        new TableRow({children:[C(evAvg+(evAvg!=='—'?'/5':''),2256,{ctr:true,sz:26,bold:true,col:'C8830A'}),C(evals.length+'',2256,{ctr:true,sz:26,bold:true,col:'0A5C3E'}),C(trainees.length?Math.round(evals.length/trainees.length*100)+'%':'—',2257,{ctr:true,sz:26,bold:true,col:'1255A0'}),C(new Date().toLocaleDateString(T2.locale||'ar-EG',{year:'numeric',month:'long',day:'numeric'}),2257,{ctr:true,sz:16,col:'374151'})]})
+      ]}));
+      children.push(SP());
+      children.push(new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[4000,1500,3526],rows:[
+        new TableRow({children:[C(T2.crit,4000,{fill:'0A5C3E',bold:true,col:'FFFFFF',b:hBrds}),C(T2.score,1500,{fill:'0A5C3E',bold:true,col:'FFFFFF',ctr:true,b:hBrds}),C(T2.rating,3526,{fill:'0A5C3E',bold:true,col:'FFFFFF',ctr:true,b:hBrds})]}),
+        ...EVAL_KEYS.map((k,i)=>{
+          const vals=evals.map(e=>e.scores?.[k]).filter(v=>v!==undefined);
+          const avg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):null;
+          const stars=avg?'★'.repeat(Math.round(parseFloat(avg)))+'☆'.repeat(5-Math.round(parseFloat(avg))):'—';
+          return new TableRow({children:[C((T2&&T2.ec?T2.ec[i]:['وضوح الشرح','التنظيم','التفاعل','الإلمام','الرضا'][i])||'—',4000,{fill:i%2===0?'FFFFFF':'F2FBF7',bold:true}),C(avg?avg+'/5':'—',1500,{fill:i%2===0?'FFFFFF':'F2FBF7',ctr:true,bold:true,col:'C8830A',sz:20}),C(stars,3526,{fill:i%2===0?'FFFFFF':'F2FBF7',ctr:true,sz:18,col:'C8830A'})]});
+        })
+      ]}));
+      const withCmt=evals.filter(e=>e.comment&&e.comment.length>2);
+      if(withCmt.length){
+        children.push(SP());children.push(P(T2.cmts+':',{bold:true,sz:20}));
+        withCmt.forEach(e=>{children.push(new Paragraph({spacing:{before:80,after:80},border:{right:{style:BorderStyle.SINGLE,size:8,color:'C8830A',space:6}},indent:{right:240},children:[new TextRun({text:e.name+': ',font:'Arial',size:18,bold:true,color:'0A5C3E',rtl:true}),new TextRun({text:'"'+(e.comment||'')+'"',font:'Arial',size:18,color:'374151',rtl:true})]}));});
+      }
+      children.push(SP());
+    }
+
+    // Photos
+    if(_photos && _photos.length) {
+      children.push(new Paragraph({children:[new PageBreak()]}));
+      children.push(H(T2.photos+' ('+_photos.length+' صورة)'));
+      for(let i=0; i<_photos.length; i+=2) {
+        const row=[_photos[i],_photos[i+1]].filter(Boolean);
+        const cells=[];
+        for(const p of row) {
+          try {
+            const b64=p.data.replace(/^data:image\/[a-z]+;base64,/,'');
+            const arr=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)).buffer;
+            const ext=p.data.includes('image/png')?'png':'jpg';
+            cells.push(new TableCell({width:{size:4513,type:WidthType.DXA},borders:brds,margins:{top:80,bottom:80,left:80,right:80},children:[
+              new Paragraph({alignment:AlignmentType.CENTER,children:[new ImageRun({data:arr,transformation:{width:270,height:200},type:ext})]}),
+              new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:40,after:40},children:[new TextRun({text:p.name||'صورة',font:'Arial',size:14,color:'6B7280',rtl:true})]})
+            ]}));
+          } catch(e) { cells.push(new TableCell({width:{size:4513,type:WidthType.DXA},borders:brds,children:[P('صورة')]})); }
+        }
+        if(cells.length===1)cells.push(new TableCell({width:{size:4513,type:WidthType.DXA},borders:brds,children:[new Paragraph({children:[new TextRun('')]})] }));
+        children.push(new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[4513,4513],rows:[new TableRow({children:cells})]}));
+        children.push(SP());
+      }
+    }
+
+    // Footer
+    children.push(SP());
+    children.push(new Paragraph({alignment:AlignmentType.CENTER,border:{top:{style:BorderStyle.SINGLE,size:8,color:'0A5C3E',space:4}},spacing:{before:200,after:80},children:[new TextRun({text:'نظام ACES لإدارة ورش تدريب سحب العينات الغذائية',font:'Arial',size:18,bold:true,color:'0A5C3E',rtl:true})]}));
+    children.push(P(`${WS.trainerName||'—'} · ${WS.name||'—'} · إصدار: ${new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'})}`,{ctr:true,sz:16,col:'4A7060'}));
+
+    // Logo header for all pages
+    const headerLogoChildren = [];
+    if(mophLogo) headerLogoChildren.push(new ImageRun({data:mophLogo,transformation:{width:70,height:28},type:'png'}));
+    headerLogoChildren.push(new TextRun({text:'    نظام ACES — التقرير النهائي    ',font:'Arial',size:16,bold:true,color:'0A5C3E',rtl:true}));
+    if(acesLogo) headerLogoChildren.push(new ImageRun({data:acesLogo,transformation:{width:70,height:28},type:'png'}));
+
+    const doc = new Document({
+      styles:{default:{document:{run:{font:'Arial',size:20}}}},
+      sections:[{
+        properties:{page:{size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1134}}},
+        headers:{default:new Header({children:[new Paragraph({alignment:AlignmentType.CENTER,border:{bottom:{style:BorderStyle.SINGLE,size:4,color:'0A5C3E',space:4}},spacing:{before:0,after:100},children:headerLogoChildren})]})},
+        children
+      }]
+    });
+
+    const buf = await Packer.toBuffer(doc);
+    const blob = new Blob([buf], {type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = lang==='en'?`Report_${WS.name||'Workshop'}_${new Date().toISOString().slice(0,10)}.docx`:`تقرير_${WS.name||'ورشة'}_${new Date().toISOString().slice(0,10)}.docx`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast(lang==='en'?'✅ English report downloaded':'✅ تم تحميل التقرير بصيغة Word');
+  } catch(e) {
+    console.error('Report error:', e);
+    toast('❌ خطأ في إنشاء التقرير: '+e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = lang==='ar'?'📄 تقرير عربي (Word)':'📄 English Report (Word)'; const btn2x = document.getElementById(lang==='ar'?'word-btn-en':'word-btn-ar'); if(btn2x) btn2x.disabled=false;
+  }
+}
+</script>
+</body>
+</html>
