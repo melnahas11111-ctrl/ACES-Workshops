@@ -533,7 +533,7 @@ async function finishQuiz(){
   const total=_qzQuestions.length; const score=Math.round(correct/total*100);
   const dateAr=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const timeAr=new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
-  await fbSet(`workshops/${wsId}/results/${tid}/${_qzDayId}`,{quizScore:score,exerciseScore:score,correct,total,dayId:_qzDayId,dayTitle:QUIZ_DATA[_qzDayId]?.title||'يوم '+_qzDayId,completedAt:new Date().toISOString(),dateAr,timeAr,displayLabel:`${QUIZ_DATA[_qzDayId]?.title||'يوم '+_qzDayId} — ${dateAr}`});
+  await fbSet(`workshops/${wsId}/results/${tid}/${_qzDayId}`,{quizScore:score,exerciseScore:score,correct,total,answers:finalAnswers,dayId:_qzDayId,dayTitle:QUIZ_DATA[_qzDayId]?.title||'يوم '+_qzDayId,completedAt:new Date().toISOString(),dateAr,timeAr,displayLabel:`${QUIZ_DATA[_qzDayId]?.title||'يوم '+_qzDayId} — ${dateAr}`});
   await clearQuizProgress();
   const level=score>=85?'🏆 ممتاز':score>=70?'🎯 جيد جداً':score>=60?'✅ مقبول':'❌ يحتاج مراجعة';
   const levelCol=score>=85?'#d1fae5':score>=70?'var(--blue2)':score>=60?'var(--gold2)':'var(--red2)';
