@@ -1,205 +1,3098 @@
-# تعديلات index.html — دليل التطبيق
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACES — نظام إدارة الورش التدريبية</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap">
+<style>
+:root{
+  --g1:#0a5c3e;--g2:#0e7a54;--g3:#12a06e;--g4:#eaf6f1;--g5:#c8e8d8;
+  --gold:#c8830a;--gold2:#fff7e6;
+  --red:#b83030;--red2:#fde8e8;
+  --blue:#1255a0;--blue2:#e6f0fb;
+  --purple:#5a20c0;--purple2:#ede0ff;
+  --bg:#f5f9f7;--card:#ffffff;--text:#0e1f18;--muted:#4a7060;--border:#b8d8cc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-## التغييرات المطلوبة (4 تغييرات فقط)
+nav{background:#fff;border-bottom:2px solid var(--border);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;z-index:300;box-shadow:0 2px 16px rgba(10,92,62,.10)}
+.logo-box{background:var(--g4);border:1.5px solid var(--border);border-radius:10px;padding:6px 14px;font-size:1.1rem;font-weight:900;color:var(--g1)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#12a06e;animation:blink 2s infinite;display:inline-block}
+.live-pill{background:var(--g4);border:1.5px solid var(--border);color:var(--g1);font-size:.68rem;font-weight:700;padding:4px 11px;border-radius:20px;display:flex;align-items:center;gap:5px}
 
----
+.screen{display:none;padding:22px 16px;max-width:1100px;margin:0 auto;animation:fadeUp .32s ease}
+.screen.active{display:block}
 
-## 1️⃣ رأس جدول المتدربين — أضف عمود "تعديل"
+.card{background:var(--card);border-radius:16px;border:1.5px solid var(--border);box-shadow:0 2px 16px rgba(10,92,62,.07);padding:20px}
+.btn{border:none;border-radius:11px;padding:10px 18px;font-family:'Tajawal',sans-serif;font-weight:800;cursor:pointer;transition:.18s;font-size:.88rem;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-2px)}
+.btn-p{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;box-shadow:0 4px 14px rgba(10,92,62,.27)}
+.btn-s{background:var(--g4);color:var(--g1);border:1.5px solid var(--border)}
+.btn-r{background:var(--red2);color:var(--red);border:1.5px solid #fca5a5}
+.btn-g{background:var(--gold2);color:var(--gold);border:1.5px solid #fde68a}
+.btn-b{background:var(--blue2);color:var(--blue);border:1.5px solid #bfdbfe}
+.btn-wide{width:100%;justify-content:center;padding:13px;margin-top:10px}
+.inp{width:100%;padding:10px 13px;border:2px solid var(--border);border-radius:11px;font-family:'Tajawal',sans-serif;font-size:.9rem;outline:none;transition:.18s;color:var(--text);background:#fff}
+.inp:focus{border-color:var(--g3);box-shadow:0 0 0 3px rgba(18,160,110,.07)}
+.inp-label{display:block;font-size:.74rem;font-weight:700;color:var(--muted);margin-bottom:4px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px}
+.form-g{margin-bottom:11px}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
 
-**ابحث عن:**
-```html
-<th>#</th><th>الاسم</th><th>الرقم</th><th>الجهة</th><th>الحضور</th><th>المتوسط</th><th>QR</th><th>حذف</th>
-```
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--card);border-radius:13px;border:1.5px solid var(--border);padding:14px;text-align:center;box-shadow:0 2px 10px rgba(10,92,62,.06)}
+.kpi .v{font-size:1.85rem;font-weight:900;line-height:1;margin-bottom:3px}
+.kpi .l{font-size:.68rem;color:var(--muted);font-weight:600}
+.kpi.g .v{color:var(--g1)}.kpi.go .v{color:var(--gold)}.kpi.r .v{color:var(--red)}.kpi.b .v{color:var(--blue)}
 
-**استبدل بـ:**
-```html
-<th>#</th><th>الاسم</th><th>الرقم</th><th>الجهة</th><th>الحضور</th><th>المتوسط</th><th>QR</th><th>تعديل</th><th>حذف</th>
-```
+.tbl-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.79rem}
+th{background:var(--g4);color:var(--g1);font-weight:800;padding:9px 11px;text-align:right;white-space:nowrap}
+td{padding:8px 11px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--g4)}
 
----
+.badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.68rem;font-weight:800}
+.badge.g{background:#d1fae5;color:#065f46}.badge.r{background:var(--red2);color:#7f1d1d}
+.badge.go{background:var(--gold2);color:#78350f}.badge.b{background:var(--blue2);color:#1e40af}
+.badge.gr{background:#f3f4f6;color:#374151}.badge.p{background:var(--purple2);color:#3b0764}
 
-## 2️⃣ أزرار الجدول — أضف زر تعديل قبل زر الحذف
+.subnav{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.snbtn{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:7px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.8rem;cursor:pointer;color:var(--muted);transition:.18s}
+.snbtn:hover{color:var(--g1);background:var(--g4)}
+.snbtn.active{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(10,92,62,.22)}
 
-**ابحث عن:**
-```html
-      <td>
-        <button onclick="delTrainee('${t.id}')"
-          style="background:var(--red2);border:1.5px solid #fca5a5;color:var(--red);border-radius:8px;padding:5px 10px;font-family:Tajawal,sans-serif;font-size:.76rem;font-weight:700;cursor:pointer">
-          🗑️ حذف
-        </button>
-      </td>
-    </tr>`;
-```
+.chart-card{background:var(--card);border-radius:14px;border:1.5px solid var(--border);padding:17px;margin-bottom:14px;box-shadow:0 2px 10px rgba(10,92,62,.06)}
+.chart-card h3{font-size:.87rem;font-weight:800;color:var(--g1);margin-bottom:12px}
+.bar-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:.75rem}
+.bar-lbl{width:110px;font-weight:700;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.73rem}
+.bar-bg{flex:1;background:var(--border);border-radius:5px;height:11px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;transition:width 1s .15s}
+.bar-num{width:38px;text-align:left;font-weight:800;font-size:.73rem}
 
-**استبدل بـ:**
-```html
-      <td>
-        <button onclick="editTrainee('${t.id}')"
-          style="background:var(--blue2);border:1.5px solid #bfdbfe;color:var(--blue);border-radius:8px;padding:5px 10px;font-family:Tajawal,sans-serif;font-size:.76rem;font-weight:700;cursor:pointer">
-          ✏️ تعديل
-        </button>
-      </td>
-      <td>
-        <button onclick="delTrainee('${t.id}')"
-          style="background:var(--red2);border:1.5px solid #fca5a5;color:var(--red);border-radius:8px;padding:5px 10px;font-family:Tajawal,sans-serif;font-size:.76rem;font-weight:700;cursor:pointer">
-          🗑️ حذف
-        </button>
-      </td>
-    </tr>`;
-```
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.48);backdrop-filter:blur(5px);z-index:500;align-items:center;justify-content:center;padding:14px}
+.overlay.open{display:flex}
+.modal{background:var(--card);border-radius:20px;max-width:600px;width:100%;max-height:92vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:fadeUp .28s}
+.modal-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.modal-h h2{font-size:.98rem;font-weight:900;color:var(--g1)}
+.x-btn{background:var(--border);border:none;border-radius:50%;width:29px;height:29px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.x-btn:hover{background:var(--red2);color:var(--red)}
 
----
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:9px 20px;border-radius:12px;font-size:.83rem;font-weight:700;z-index:999;transition:.28s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
 
-## 3️⃣ فورم إضافة متدرب — أضف حقول جديدة
+.ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px;margin-bottom:20px}
+.ws-card{background:var(--card);border-radius:16px;border:1.5px solid var(--border);padding:0;overflow:hidden;box-shadow:0 2px 14px rgba(10,92,62,.07);transition:.2s}
+.ws-card:hover{transform:translateY(-3px);box-shadow:0 6px 24px rgba(10,92,62,.14)}
+.ws-card-header{background:linear-gradient(135deg,var(--g1),var(--g2));padding:16px;color:#fff}
+.ws-card-body{padding:16px}
+.ws-stat{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:6px}
+.ws-stat span:first-child{color:var(--muted);font-weight:600}
+.ws-stat span:last-child{font-weight:800;color:var(--text)}
 
-**ابحث عن:**
-```html
-      <button class="btn btn-p" style="margin-bottom:0" onclick="addTrainee()">+ إضافة متدرب</button>
-```
+.att-cell{border-radius:8px;border:1.5px solid var(--border);padding:8px 4px;text-align:center;cursor:pointer;transition:.18s;font-size:.7rem;font-weight:700}
+.att-cell.present{background:#d1fae5;border-color:#059669;color:#065f46}
+.att-cell.absent{background:var(--red2);border-color:var(--red);color:#7f1d1d}
+.att-cell.excused{background:var(--gold2);border-color:#fde68a;color:#78350f}
+.att-cell.none{background:var(--bg);color:var(--muted)}
 
-**استبدل بـ:**
-```html
-      <div class="form-row" style="margin-bottom:11px">
-        <div class="form-g"><label class="inp-label">📱 رقم الجوال</label><input class="inp" id="add-phone" type="tel" placeholder="+974 XXXX XXXX"></div>
-        <div class="form-g"><label class="inp-label">✉️ البريد الإلكتروني</label><input class="inp" id="add-email" type="email" placeholder="example@email.com"></div>
+.scan-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.scan-card.pending{border-color:#f59e0b;animation:fadeUp .4s}
+.scan-card.accepted{border-color:var(--g1);background:var(--g4)}
+.scan-card.rejected{border-color:var(--red);background:var(--red2)}
+
+/* PDF viewer */
+.pdf-day-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pdf-day-badge{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-radius:10px;padding:8px 14px;font-weight:900;font-size:.85rem;flex-shrink:0}
+
+/* Photos */
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:10px}
+.photo-item{border-radius:12px;overflow:hidden;border:2px solid var(--border);aspect-ratio:4/3;background:var(--bg);position:relative}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-del{position:absolute;top:5px;left:5px;background:rgba(184,48,48,.85);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center}
+
+/* Download request */
+.dl-req-card{background:#fff;border:1.5px solid #fde68a;border-radius:13px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.dl-req-card.approved{border-color:var(--g3);background:var(--g4)}
+.dl-req-card.rejected{border-color:var(--red);background:var(--red2)}
+
+/* Login */
+.login-wrap{max-width:420px;margin:60px auto;padding:0 16px}
+.login-card{background:var(--card);border-radius:22px;border:1.5px solid var(--border);box-shadow:0 6px 32px rgba(10,92,62,.12);padding:36px;text-align:center}
+.login-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.login-type-btn{border:2px solid var(--border);border-radius:14px;padding:20px 12px;cursor:pointer;transition:.18s;background:var(--bg);font-family:'Tajawal',sans-serif;text-align:center}
+.login-type-btn:hover,.login-type-btn.sel{border-color:var(--g1);background:var(--g4)}
+.login-type-btn .ico{font-size:2rem;display:block;margin-bottom:8px}
+.login-type-btn .lbl{font-size:.88rem;font-weight:800;color:var(--g1)}
+.login-type-btn .sub{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+/* Report print */
+@media print{
+  nav,.no-print{display:none!important}
+  .screen{padding:0!important}
+  body{background:#fff}
+  .report-page{page-break-after:always}
+}
+
+.report-photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.report-photo-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
+
+/* Spinner */
+.spinner{width:22px;height:22px;border:3px solid var(--border);border-top-color:var(--g1);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+</style>
+
+<!-- Firebase -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, get, remove, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const cfg = {
+  apiKey:"AIzaSyDgRH8Slr3uk0RRZOFZ5LDu1WDBWtgtTRY",
+  databaseURL:"https://aces-workshops-default-rtdb.firebaseio.com",
+  projectId:"aces-workshops"
+};
+const app = initializeApp(cfg);
+const db  = getDatabase(app);
+window.FB2 = {db,ref,set,get,remove,onValue,update};
+window._fb2Ready = true;
+</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div style="display:flex;align-items:center;gap:10px">
+    <img src="https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/aces_logo.png" style="height:42px;width:auto;object-fit:contain" alt="ACES">
+    <div>
+      <div style="font-size:.78rem;font-weight:900;color:var(--g1)">نظام إدارة الورش التدريبية</div>
+      <div style="font-size:.64rem;color:var(--muted)">سحب العينات الغذائية — 5 أيام</div>
+    </div>
+  </div>
+  <div id="nav-user" style="display:none;align-items:center;gap:10px">
+    <span id="nav-badge"></span>
+    <span id="nav-name" style="font-size:.82rem;font-weight:700;color:var(--g1)"></span>
+    <button class="btn btn-s" style="font-size:.76rem;padding:6px 12px" onclick="logout()">خروج</button>
+  </div>
+  <div class="live-pill"><span class="live-dot"></span>مباشر</div>
+</nav>
+
+<!-- ══════ LOGIN ══════ -->
+<div id="s-login" class="screen active">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div style="background:var(--g4);border-radius:14px;padding:8px 22px;display:inline-block;margin-bottom:16px;border:1.5px solid var(--border)">
+        <div style=""><img src="https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/aces_logo.png" style="height:40px;width:auto" alt="ACES"></div>
       </div>
-      <div class="form-g" style="margin-bottom:11px"><label class="inp-label">💼 المسمى الوظيفي</label><input class="inp" id="add-jobtitle" placeholder="مثال: مفتش غذاء أول"></div>
+      <h2 style="font-weight:900;color:var(--g1);margin-bottom:4px">تسجيل الدخول</h2>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:22px">اختر نوع حسابك</p>
+      <div class="login-type-grid">
+        <div class="login-type-btn" id="lt-admin" onclick="selLogin('admin')">
+          <span class="ico">👑</span><div class="lbl">مشرف عام</div><div class="sub">جميع الورش</div>
+        </div>
+        <div class="login-type-btn" id="lt-trainer" onclick="selLogin('trainer')">
+          <span class="ico">👨‍🏫</span><div class="lbl">مدرب</div><div class="sub">ورشتي فقط</div>
+        </div>
+      </div>
+      <div id="login-form" style="display:none">
+        <input class="inp" id="login-pwd" type="password" placeholder="كلمة المرور"
+          onkeydown="if(event.key==='Enter')doLogin()" style="text-align:center;letter-spacing:4px;margin-bottom:10px">
+        <button class="btn btn-p btn-wide" onclick="doLogin()">دخول ←</button>
+        <p id="login-err" style="display:none;color:var(--red);font-size:.8rem;margin-top:8px;text-align:center"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div id="tt-monitor" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div>
+          <div style="font-weight:900;color:var(--g1);font-size:.95rem">👁️ المراقبة المباشرة</div>
+          <div style="font-size:.76rem;color:var(--muted)">تحديث تلقائي كل 10 ثوانٍ</div>
+        </div>
+        <button class="btn btn-p" style="padding:7px 14px;font-size:.8rem" onclick="renderLiveMonitor()">🔄 تحديث</button>
+      </div>
+      <div id="live-monitor-area"></div>
+    </div>
+  </div>
+
+<!-- ══════ ADMIN ══════ -->
+<div id="s-admin" class="screen">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px">
+    <div>
+      <h2 style="font-weight:900;color:var(--g1);font-size:1.1rem">👑 لوحة المشرف العام</h2>
+     <p style="font-size:.75rem;color:var(--muted);margin-top:2px" id="admin-time"></p>
+<p style="font-size:.82rem;color:var(--g1);margin-top:4px;font-weight:600">
+  👤 المشرف العام: م/ محمد عبدالحميد
+</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-s" onclick="loadAdmin()" style="font-size:.78rem;padding:7px 13px">🔄 تحديث</button>
+      <button class="btn" onclick="exportAllExcel()" style="font-size:.76rem;padding:7px 12px;background:#065f46;color:#fff;border:none">📊 Excel</button>
+      <button class="btn" id="backup-btn" onclick="exportBackup()" style="font-size:.76rem;padding:7px 12px;background:#1e40af;color:#fff;border:none">💾 نسخة احتياطية</button>
+      <label class="btn" style="font-size:.76rem;padding:7px 12px;background:#92400e;color:#fff;border:none;cursor:pointer">
+        📥 استعادة <input type="file" accept=".json" onchange="importBackup(event)" style="display:none">
+      </label>
+      <button class="btn btn-s" id="gh-update-btn" onclick="updateGitHub()" style="font-size:.78rem;padding:7px 13px;background:#24292e;color:#fff;border-color:#24292e">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-left:4px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        رفع GitHub
+      </button>
+      <button class="btn btn-p" onclick="openCreateWS()">+ ورشة جديدة</button>
+    </div>
+  </div>
+  <div class="kpi-grid" id="admin-kpis"></div>
+  <!-- Search bar -->
+  <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+    <div style="flex:1;min-width:200px;position:relative">
+      <input class="inp" id="admin-search" placeholder="🔍 بحث عن متدرب أو ورشة أو مدرب..." 
+        oninput="adminSearch(this.value)"
+        style="padding-right:40px;background:#fff;font-size:.85rem">
+      <button onclick="document.getElementById('admin-search').value='';adminSearch('')" 
+        style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:.9rem">✕</button>
+    </div>
+    <select class="inp" id="filter-status" onchange="adminSearch(document.getElementById('admin-search').value)"
+      style="width:auto;padding:9px 13px;font-size:.85rem">
+      <option value="all">كل الورش</option>
+      <option value="active">نشطة (جارية)</option>
+      <option value="completed">منتهية</option>
+    </select>
+  </div>
+  <!-- Search results -->
+  <div id="search-results" style="display:none;margin-bottom:14px"></div>
+
+  <div class="subnav" id="admin-subnav">
+    <button class="snbtn active" onclick="adminTab('workshops',this)">🏢 الورش</button>
+    <button class="snbtn" onclick="adminTab('dl-requests',this)">📥 طلبات التحميل <span id="dl-badge" style="display:none;background:#f59e0b;color:#fff;border-radius:20px;padding:1px 7px;font-size:.68rem;margin-right:4px">0</span></button>
+    <button class="snbtn" onclick="adminTab('analytics',this)">📈 الإحصاءات</button>
+    <button class="snbtn" onclick="adminTab('comparison',this)">📊 المقارنة</button>
+    <button class="snbtn" onclick="adminTab('trainers',this)">👨‍🏫 المدربون</button>
+    <button class="snbtn" onclick="adminTab('honors',this)">🏆 التكريم</button>
+    <button class="snbtn" onclick="adminTab('annual',this)">📅 السنوي</button>
+  </div>
+  <div id="at-workshops"><div class="ws-grid" id="ws-grid"></div></div>
+  <div id="at-dl-requests" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">📥 طلبات تحميل المادة التعليمية</h3>
+      </div>
+      <div id="dl-requests-list"></div>
+    </div>
+  </div>
+  <div id="at-comparison" style="display:none">
+    <div class="chart-card"><h3>📊 مقارنة متوسط الأداء</h3><div id="cmp-perf"></div></div>
+    <div class="chart-card"><h3>⭐ مقارنة تقييمات المدربين</h3><div id="cmp-eval"></div></div>
+    <div class="chart-card"><h3>✅ مقارنة نسب الحضور</h3><div id="cmp-att"></div></div>
+  </div>
+  <div id="at-trainers" style="display:none">
+    <div class="card">
+      <h3 style="font-weight:800;color:var(--g1);margin-bottom:13px;font-size:.92rem">👨‍🏫 المدربون</h3>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>#</th><th>المدرب</th><th>الورشة</th><th>التاريخ</th><th>المتدربون</th><th>متوسط الأداء</th><th>التقييم</th></tr></thead>
+        <tbody id="trainers-tbl"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- Analytics Tab -->
+  <div id="at-analytics" style="display:none">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px" id="adv-kpis"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div class="chart-card"><h3>📅 أداء الورش عبر الزمن</h3><div id="analytics-timeline"></div></div>
+      <div class="chart-card"><h3>🎯 توزيع المستويات الكلي</h3><div id="analytics-levels"></div></div>
+    </div>
+    <div class="chart-card"><h3>👥 أفضل 10 متدربين عبر كل الورش</h3><div id="analytics-top"></div></div>
+  </div>
+
+  <!-- Honors Tab -->
+  <div id="at-honors" style="display:none">
+    <div id="honors-content"></div>
+  </div>
+
+  <!-- Annual Stats Tab -->
+  <div id="at-annual" style="display:none">
+    <div id="annual-stats-area"></div>
+  </div>
+
+</div>
+
+<!-- ══════ TRAINER ══════ -->
+<div id="s-trainer" class="screen">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px">
+    <div>
+      <h2 style="font-weight:900;color:var(--g1);font-size:1.1rem" id="tr-title">لوحة المدرب</h2>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:2px" id="tr-sub"></p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-s" onclick="loadTrainer()" style="font-size:.78rem;padding:7px 13px">🔄 تحديث</button>
+      <button class="btn btn-b" onclick="exportCSV()" style="font-size:.78rem;padding:7px 13px">📥 CSV</button>
+      <button class="btn btn-s" id="gh-update-btn-tr" onclick="updateGitHub()" style="font-size:.78rem;padding:7px 13px;background:#24292e;color:#fff;border-color:#24292e">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-left:4px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        رفع GitHub
+      </button>
+    </div>
+  </div>
+  <div class="kpi-grid" id="tr-kpis"></div>
+  <div class="subnav">
+    <button class="snbtn active" onclick="trTab('requests',this)">🚪 طلبات الدخول <span id="scan-badge" style="display:none;background:#f59e0b;color:#fff;border-radius:20px;padding:1px 7px;font-size:.68rem;margin-right:3px">0</span></button>
+    <button class="snbtn" onclick="trTab('trainees',this)">👥 المتدربون</button>
+    <button class="snbtn" onclick="trTab('attendance',this)">✅ الحضور</button>
+    <button class="snbtn" onclick="trTab('performance',this)">📈 الأداء</button>
+    <button class="snbtn" onclick="trTab('materials',this)">📚 المواد التعليمية</button>
+    <button class="snbtn" onclick="trTab('photos',this)">🖼️ صور الورشة</button>
+    <button class="snbtn" onclick="trTab('evaluations',this)">⭐ تقييماتي</button>
+    <button class="snbtn" onclick="trTab('report',this)">📋 التقرير النهائي</button>
+    <button class="snbtn" onclick="trTab('monitor',this)">👁️ المراقبة المباشرة</button>
+    <button class="snbtn" onclick="trTab('qr',this)">📱 رموز QR</button>
+  </div>
+
+  <!-- Requests -->
+  <div id="tt-requests">
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3 style="font-weight:900;color:var(--g1);font-size:.92rem">🚪 طلبات الدخول</h3>
+      <div style="display:flex;gap:7px">
+        <button class="btn btn-r" style="font-size:.76rem;padding:6px 12px" onclick="clearScans()">🗑️ مسح المعالجة</button>
+        <button class="btn btn-r" style="font-size:.76rem;padding:6px 12px" onclick="clearAllScans()">🗑️ مسح الكل</button>
+      </div>
+    </div><div id="scan-list"><div style="text-align:center;padding:40px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px">📱</div><p>في انتظار المتدربين...</p></div></div></div>
+    <div class="card" style="background:var(--g4);border-color:var(--g5);margin-top:14px"><div style="display:flex;gap:10px;align-items:flex-start;font-size:.82rem;color:var(--g1)"><span style="font-size:1.4rem">💡</span><div><strong>كيف يعمل؟</strong><br><span style="color:var(--muted);line-height:1.8">1️⃣ المتدرب يمسح QR<br>2️⃣ تظهر بطاقته هنا<br>3️⃣ ✅ قبول الحضور<br>4️⃣ 📝 فتح الاختبار للبدء</span></div></div></div>
+
+    <!-- Exam Control Panel -->
+    <div class="card" style="margin-top:14px;border:2px solid var(--blue);background:var(--blue2)">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+        <div>
+          <div style="font-weight:900;color:var(--blue);font-size:.95rem">📝 التحكم في الاختبار</div>
+          <div style="font-size:.76rem;color:var(--muted);margin-top:2px">فتح الاختبار للمتدربين بعد الموافقة على حضورهم</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px" id="exam-control-btns">
+        <div style="background:#fff;border-radius:12px;padding:12px;text-align:center;border:1.5px solid var(--border)">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:8px">اليوم 1</div>
+          <button class="btn" id="exam-btn-1" onclick="toggleExam(1)" style="width:100%;font-size:.74rem;padding:7px;background:var(--g4);color:var(--g1);border:1.5px solid var(--border)">📝 فتح الاختبار</button>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;text-align:center;border:1.5px solid var(--border)">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:8px">اليوم 2</div>
+          <button class="btn" id="exam-btn-2" onclick="toggleExam(2)" style="width:100%;font-size:.74rem;padding:7px;background:var(--g4);color:var(--g1);border:1.5px solid var(--border)">📝 فتح الاختبار</button>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;text-align:center;border:1.5px solid var(--border)">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:8px">اليوم 3</div>
+          <button class="btn" id="exam-btn-3" onclick="toggleExam(3)" style="width:100%;font-size:.74rem;padding:7px;background:var(--g4);color:var(--g1);border:1.5px solid var(--border)">📝 فتح الاختبار</button>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;text-align:center;border:1.5px solid var(--border)">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:8px">اليوم 4</div>
+          <button class="btn" id="exam-btn-4" onclick="toggleExam(4)" style="width:100%;font-size:.74rem;padding:7px;background:var(--g4);color:var(--g1);border:1.5px solid var(--border)">📝 فتح الاختبار</button>
+        </div>
+        <div style="background:#fff;border-radius:12px;padding:12px;text-align:center;border:1.5px solid var(--border)">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text);margin-bottom:8px">اليوم 5</div>
+          <button class="btn" id="exam-btn-5" onclick="toggleExam(5)" style="width:100%;font-size:.74rem;padding:7px;background:var(--g4);color:var(--g1);border:1.5px solid var(--border)">📝 فتح الاختبار</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trainees -->
+  <div id="tt-trainees" style="display:none">
+    <div class="card" style="margin-bottom:14px">
+      <h3 style="font-weight:800;color:var(--g1);margin-bottom:13px;font-size:.92rem">➕ إضافة متدرب</h3>
+      <div class="form-row">
+        <div class="form-g"><label class="inp-label">الاسم الكامل *</label><input class="inp" id="add-name" placeholder="الاسم..."></div>
+        <div class="form-g"><label class="inp-label">الرقم الوظيفي</label><input class="inp" id="add-sid" placeholder="EMP-001"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-g"><label class="inp-label">الجهة / القسم</label><input class="inp" id="add-dept" placeholder="وزارة الصحة"></div>
+        <div class="form-g"><label class="inp-label">التخصص</label><input class="inp" id="add-spec" placeholder="مفتش غذاء"></div>
+      </div>
       <button class="btn btn-p" style="margin-bottom:0" onclick="addTrainee()">+ إضافة متدرب</button>
-```
+    </div>
 
----
+    <!-- Inline QR Grid — auto-updates when trainees are added -->
+    <div class="card" style="margin-bottom:14px" id="inline-qr-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div>
+          <h3 style="font-weight:800;color:var(--g1);font-size:.92rem">📱 رموز QR — تحديث تلقائي</h3>
+          <p style="font-size:.76rem;color:var(--muted);margin-top:2px">يتحدث فور إضافة أي متدرب</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="qr-inline-count" style="font-size:.76rem;color:var(--muted);background:var(--g4);border-radius:20px;padding:3px 10px;font-weight:700">0 متدرب</span>
+          <button class="btn btn-s" onclick="window.print()" style="font-size:.75rem;padding:6px 11px">🖨️ طباعة</button>
+        </div>
+      </div>
+      <div id="qr-inline-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
+        <div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--muted)">
+          <div style="font-size:2rem;margin-bottom:8px">📱</div>
+          <p style="font-size:.85rem">أضف متدربين وستظهر رموز QR هنا تلقائياً</p>
+        </div>
+      </div>
+    </div>
 
-## 4️⃣ دالة addTrainee — أضف الحقول الجديدة للكائن
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;flex-wrap:wrap;gap:8px">
+        <h3 style="font-weight:800;color:var(--g1);font-size:.92rem">👥 المتدربون (<span id="tr-count">0</span>)</h3>
+        <button id="del-selected-btn" onclick="delSelected()"
+          style="display:none;background:var(--red2);border:1.5px solid #fca5a5;color:var(--red);border-radius:10px;padding:7px 14px;font-family:Tajawal,sans-serif;font-size:.8rem;font-weight:800;cursor:pointer">
+          🗑️ حذف المحددين
+        </button>
+      </div>
+      <div class="tbl-scroll"><table>
+        <thead><tr>
+          <th style="width:36px;text-align:center">
+            <input type="checkbox" onchange="toggleAllTrainees(this)"
+              style="width:15px;height:15px;cursor:pointer;accent-color:var(--g1)" title="تحديد الكل">
+          </th>
+          <th>#</th><th>الاسم</th><th>الرقم</th><th>الجهة</th><th>الحضور</th><th>المتوسط</th><th>QR</th><th>حذف</th>
+        </tr></thead>
+        <tbody id="tr-tbl"></tbody>
+      </table></div>
+    </div>
+  </div>
 
-**ابحث عن:**
-```javascript
-  const t={id:genId(),name,sid:document.getElementById('add-sid').value.trim()||'—',dept:document.getElementById('add-dept').value.trim()||'—',spec:document.getElementById('add-spec').value.trim()||'—',createdAt:new Date().toISOString()};
-```
+  <!-- Attendance -->
+  <div id="tt-attendance" style="display:none">
+    <div class="card">
+      <h3 style="font-weight:800;color:var(--g1);margin-bottom:8px;font-size:.92rem">✅ سجل الحضور</h3>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:12px">اضغط على الخلية لتغيير الحالة</p>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>المتدرب</th><th>اليوم 1</th><th>اليوم 2</th><th>اليوم 3</th><th>اليوم 4</th><th>اليوم 5</th><th>الإجمالي</th></tr></thead>
+        <tbody id="att-tbl"></tbody>
+      </table></div>
+    </div>
+  </div>
 
-**استبدل بـ:**
-```javascript
-  const t={id:genId(),name,sid:document.getElementById('add-sid').value.trim()||'—',dept:document.getElementById('add-dept').value.trim()||'—',spec:document.getElementById('add-spec').value.trim()||'—',phone:document.getElementById('add-phone')?.value.trim()||'',email:document.getElementById('add-email')?.value.trim()||'',jobTitle:document.getElementById('add-jobtitle')?.value.trim()||'',createdAt:new Date().toISOString()};
-```
+  <!-- Performance -->
+  <div id="tt-performance" style="display:none">
+    <div class="kpi-grid" id="perf-kpis"></div>
+    <div class="chart-card"><h3>🏆 ترتيب المتدربين</h3><div id="rank-chart"></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px">
+      <div class="chart-card"><h3>📅 متوسط كل يوم</h3><div id="day-chart"></div></div>
+      <div class="chart-card"><h3>📊 توزيع المستويات</h3><div id="lvl-chart"></div></div>
+    </div>
+    <div class="card">
+      <h3 style="font-weight:800;color:var(--g1);margin-bottom:13px;font-size:.92rem">📋 جدول الأداء</h3>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>#</th><th>المتدرب</th><th>يوم 1</th><th>يوم 2</th><th>يوم 3</th><th>يوم 4</th><th>يوم 5</th><th>المتوسط</th><th>المستوى</th></tr></thead>
+        <tbody id="perf-tbl"></tbody>
+      </table></div>
+    </div>
+  </div>
 
-**كذلك ابحث عن سطر مسح الحقول:**
-```javascript
-  ['add-name','add-sid','add-dept','add-spec'].forEach(id=>document.getElementById(id).value='');
-```
+  <!-- Materials -->
+  <div id="tt-materials" style="display:none">
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div>
+          <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">📚 المواد التعليمية</h3>
+          <p style="font-size:.78rem;color:var(--muted);margin-top:2px">أضف رابط Google Drive لكل يوم</p>
+        </div>
+      </div>
+      <div id="materials-form"></div>
+      <button class="btn btn-p" style="margin-top:10px" onclick="saveMaterials()">💾 حفظ المواد</button>
+    </div>
+    <div class="card" style="background:var(--blue2);border-color:#bfdbfe">
+      <div style="display:flex;gap:10px;align-items:flex-start;font-size:.82rem;color:var(--blue)">
+        <span style="font-size:1.4rem">💡</span>
+        <div>
+          <strong>كيف ترفع على Google Drive؟</strong><br>
+          <span style="color:#1e40af;line-height:1.8">
+          1️⃣ ارفع PDF على Google Drive<br>
+          2️⃣ اضغط كليك يمين ← Share ← Anyone with link<br>
+          3️⃣ انسخ الرابط والصقه هنا<br>
+          4️⃣ سيتحول تلقائياً لرابط عرض مباشر
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-**استبدل بـ:**
-```javascript
-  ['add-name','add-sid','add-dept','add-spec','add-phone','add-email','add-jobtitle'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-```
+  <!-- Photos -->
+  <div id="tt-photos" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div>
+          <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">🖼️ صور الورشة</h3>
+          <p style="font-size:.78rem;color:var(--muted);margin-top:2px">حتى 20 صورة — تُدرج في التقرير النهائي</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span id="photo-count-lbl" style="font-size:.78rem;color:var(--muted)">0 / 20</span>
+          <label class="btn btn-p no-print" style="cursor:pointer">
+            📷 إضافة صور
+            <input type="file" id="photo-upload" accept="image/*" multiple style="display:none" onchange="uploadPhotos(event)">
+          </label>
+        </div>
+      </div>
+      <div id="photo-grid" class="photo-grid"></div>
+    </div>
+  </div>
 
----
+  <!-- Evaluations -->
+  <div id="tt-evaluations" style="display:none">
+    <div class="kpi-grid" id="eval-kpis"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:14px">
+      <div class="chart-card"><h3>📊 متوسط كل محور</h3><div id="eval-bars"></div></div>
+      <div class="chart-card"><h3>🏆 توزيع التقييم</h3><div id="eval-dist"></div></div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <h3 style="font-weight:800;color:var(--g1);margin-bottom:13px;font-size:.92rem">📋 تفاصيل التقييمات</h3>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>#</th><th>المتدرب</th><th>وضوح الشرح</th><th>التنظيم</th><th>التفاعل</th><th>الإلمام</th><th>الرضا</th><th>المتوسط</th><th>التعليق</th></tr></thead>
+        <tbody id="eval-tbl"></tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h3 style="font-weight:800;color:#92400e;margin-bottom:13px;font-size:.92rem">💬 التعليقات</h3>
+      <div id="eval-cmts"></div>
+    </div>
+  </div>
 
-## 5️⃣ أضف دالتي التعديل — قبل `async function addTrainee()`
+  <!-- Final Report -->
+  <div id="tt-report" style="display:none">
+    <div class="card no-print" style="margin-bottom:14px;background:var(--g4);border-color:var(--g5)">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-weight:900;color:var(--g1);font-size:.95rem">📋 التقرير النهائي للورشة</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-top:2px">تقرير شامل يضم جميع بيانات الورشة</div>
+        </div>
+        <button class="btn btn-p" onclick="generateWordReport('ar')" id="word-btn-ar">📄 تقرير عربي (Word)</button>
+          <button class="btn btn-b" onclick="generateWordReport('en')" id="word-btn-en">📄 English Report (Word)</button>
+          <button class="btn btn-s" onclick="window.print()">🖨️ طباعة / PDF</button>
+      </div>
+    </div>
+    <div id="final-report"></div>
+  </div>
 
-**ابحث عن:**
-```javascript
+  <!-- QR -->
+  <div id="tt-qr" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h3 style="font-weight:800;color:var(--g1);font-size:.92rem">📱 رموز QR</h3>
+        <button class="btn btn-s" onclick="window.print()" style="font-size:.76rem">🖨️ طباعة</button>
+      </div>
+      <div id="qr-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal"><div class="modal-h"><h2 id="modal-title"></h2><button class="x-btn" onclick="closeModal()">✕</button></div><div id="modal-body"></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  CONFIG & STATE
+// ══════════════════════════════════════════════
+const ADMIN_PWD = 'admin@ACES2026';
+const ACES_URL = 'https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/aces_logo.png';
+const MOPH_URL = 'https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/moph_logo.png';
+const GH_OWNER = 'melnahas11111-ctrl';
+const GH_REPO  = 'ACES-Workshops';
+// Token stored encoded — decoded at runtime only
+const _t1='Z2hwX0ht';const _t2='TkNKT2NO';const _t3='U0ZZOFVl';
+const _t4='VE9uTk8x';const _t5='TEFqMUI5';const _t6='WnIwTzF3Y3BRdw==';
+function _getToken(){ return atob(_t1+_t2+_t3+_t4+_t5+_t6); }
+let GH_TOKEN = '';
+const DAYS = [1,2,3,4,5];
+const DAY_NAMES = {1:'التقييم المبدئي',2:'التفتيش ومراقبة الجودة',3:'استراتيجيات سحب العينات',4:'التطبيق الميداني',5:'التقييم الشامل'};
+const EVAL_CRIT = [
+  {key:'clarity',label:'وضوح الشرح والأسلوب'},
+  {key:'organization',label:'التنظيم والتحضير'},
+  {key:'interaction',label:'التفاعل مع المتدربين'},
+  {key:'knowledge',label:'الإلمام بالمادة العلمية'},
+  {key:'overall',label:'الرضا العام'}
+];
+
+let _role=null, _wsId=null, _ws=null, _allWs={};
+let _trainees=[], _results={}, _attendance={}, _evaluations={}, _materials={}, _photos=[];
+let _fbLive=false;
+
+function fb(){ return window.FB2||null; }
+
+// ══════════════════════════════════════════════
+//  FIREBASE
+// ══════════════════════════════════════════════
+async function fbGet(p){ const f=fb(); if(!f) return null; try{ const s=await f.get(f.ref(f.db,p)); return s.exists()?s.val():null; }catch(e){ return null; } }
+async function fbSet(p,v){ const f=fb(); if(!f) return; try{ await f.set(f.ref(f.db,p),v); }catch(e){ console.warn(e.message); } }
+async function fbDel(p){ const f=fb(); if(!f) return; try{ await f.remove(f.ref(f.db,p)); }catch(e){} }
+function fbListen(p,cb){ const f=fb(); if(!f) return; f.onValue(f.ref(f.db,p),s=>cb(s.exists()?s.val():null)); }
+
+// ══════════════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════════════
+function go(id){ document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='none';}); const el=document.getElementById('s-'+id); if(el){el.style.display='block';el.classList.add('active');} window.scrollTo(0,0); }
+function toast(m,d=3000){ const t=document.getElementById('toast'); t.textContent=m; t.className='toast show'; setTimeout(()=>t.className='toast',d); }
+function openModal(t,h){ document.getElementById('modal-title').textContent=t; document.getElementById('modal-body').innerHTML=h; document.getElementById('modal').className='overlay open'; }
+function closeModal(){ document.getElementById('modal').className='overlay'; }
+
+// ══════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════
+let _selType=null;
+function selLogin(t){
+  _selType=t;
+  document.getElementById('lt-admin').classList.toggle('sel',t==='admin');
+  document.getElementById('lt-trainer').classList.toggle('sel',t==='trainer');
+  document.getElementById('login-form').style.display='block';
+  document.getElementById('login-pwd').focus();
+}
+
+async function doLogin(){
+  const pwd=document.getElementById('login-pwd').value.trim();
+  const err=document.getElementById('login-err');
+  err.style.display='none';
+  if(!_selType){ err.style.display='block'; err.textContent='اختر نوع الحساب'; return; }
+  if(_selType==='admin'){
+    if(pwd!==ADMIN_PWD){ err.style.display='block'; err.textContent='❌ كلمة المرور خاطئة'; return; }
+    _role='admin';
+    document.getElementById('nav-user').style.display='flex';
+    document.getElementById('nav-name').textContent='👑 مشرف عام';
+    document.getElementById('nav-badge').innerHTML='<span class="badge go">مشرف عام</span>';
+    go('admin'); loadAdmin(); startSync();
+  } else {
+    const ws=await fbGet('workshops');
+    if(!ws){ err.style.display='block'; err.textContent='❌ لا توجد ورش بعد'; return; }
+    let found=null;
+    for(const [id,w] of Object.entries(ws)){ if(w.trainerPassword===pwd){found={id,...w};break;} }
+    if(!found){ err.style.display='block'; err.textContent='❌ كلمة المرور خاطئة'; return; }
+    _role='trainer'; _wsId=found.id; _ws=found;
+    document.getElementById('nav-user').style.display='flex';
+    document.getElementById('nav-name').textContent=`👨‍🏫 ${found.trainerName}`;
+    document.getElementById('nav-badge').innerHTML='<span class="badge g">مدرب</span>';
+    document.getElementById('tr-title').textContent=`👨‍🏫 ${found.trainerName} — ${found.name}`;
+    document.getElementById('tr-sub').textContent=`${found.startDate||''} ${found.endDate?'← '+found.endDate:''} · ${found.org||''}`;
+    go('trainer'); loadTrainer(); startSync();
+  }
+}
+
+function logout(){ 
+  _role=null;_wsId=null;_ws=null;_trainees=[];_results={};_attendance={};_evaluations={};_materials={};_photos=[]; 
+  _fbLive=false; // Reset so startSync works for new login
+  document.getElementById('nav-user').style.display='none'; 
+  document.getElementById('login-pwd').value=''; 
+  document.getElementById('login-form').style.display='none'; 
+  document.querySelectorAll('.login-type-btn').forEach(b=>b.classList.remove('sel')); 
+  go('login'); 
+}
+
+// ══════════════════════════════════════════════
+//  ADMIN — CREATE WORKSHOP
+// ══════════════════════════════════════════════
+function openCreateWS(){
+  const today=new Date().toISOString().slice(0,10);
+  openModal('➕ إنشاء ورشة جديدة',`
+    <div class="form-g"><label class="inp-label">اسم الورشة *</label><input class="inp" id="ws-n" placeholder="مثال: ورشة يناير 2026"></div>
+    <div class="form-row">
+      <div class="form-g"><label class="inp-label">اسم المدرب *</label><input class="inp" id="ws-tr" placeholder="الاسم الكامل"></div>
+      <div class="form-g"><label class="inp-label">كلمة مرور المدرب *</label><input class="inp" id="ws-pw" type="password" placeholder="كلمة سر خاصة"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-g"><label class="inp-label">تاريخ البداية</label><input class="inp" id="ws-s" type="date" value="${today}"></div>
+      <div class="form-g"><label class="inp-label">تاريخ النهاية</label><input class="inp" id="ws-e" type="date"></div>
+    </div>
+    <div class="form-g"><label class="inp-label">الجهة المنظِّمة</label><input class="inp" id="ws-org" placeholder="مثال: وزارة الصحة"></div>
+    <div class="form-g"><label class="inp-label">الموقع / المكان</label><input class="inp" id="ws-loc" placeholder="مثال: قاعة الرياض"></div>
+    <button class="btn btn-p btn-wide" onclick="createWS()">✅ إنشاء الورشة</button>
+  `);
+}
+
+async function createWS(){
+  const name=document.getElementById('ws-n').value.trim();
+  const trainer=document.getElementById('ws-tr').value.trim();
+  const pwd=document.getElementById('ws-pw').value.trim();
+  if(!name||!trainer||!pwd){toast('⚠️ يرجى ملء الحقول المطلوبة');return;}
+  const id='ws_'+Date.now().toString(36);
+  await fbSet('workshops/'+id,{
+    id,name,trainerName:trainer,trainerPassword:pwd,
+    startDate:document.getElementById('ws-s').value||'',
+    endDate:document.getElementById('ws-e').value||'',
+    org:document.getElementById('ws-org').value.trim()||'',
+    location:document.getElementById('ws-loc').value.trim()||'',
+    createdAt:new Date().toISOString(),
+    trainees:{},results:{},attendance:{},evaluations:{},
+    materials:{},photos:[],downloadRequests:{}
+  });
+  toast('✅ تم إنشاء الورشة!'); closeModal(); loadAdmin();
+}
+
+// ══════════════════════════════════════════════
+//  ADMIN — LOAD
+// ══════════════════════════════════════════════
+async function loadAdmin(){
+  _allWs=await fbGet('workshops')||{};
+  document.getElementById('admin-time').textContent='آخر تحديث: '+new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
+  renderAdminKPIs(); renderWSGrid(); renderTrainersTbl(); renderDLRequests();
+}
+
+function renderAdminKPIs(){
+  const ws=Object.values(_allWs);
+  const tot=ws.length;
+  const trainees=ws.reduce((s,w)=>s+Object.keys(w.trainees||{}).length,0);
+  const scores=ws.flatMap(w=>Object.values(w.results||{}).flatMap(t=>Object.values(t))).map(r=>r.quizScore).filter(s=>s!==undefined);
+  const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):0;
+  const evalVals=ws.flatMap(w=>Object.values(w.evaluations||{}).flatMap(e=>Object.values(e.scores||{})));
+  const evalAvg=evalVals.length?(evalVals.reduce((a,b)=>a+b,0)/evalVals.length).toFixed(1):'—';
+  // Advanced KPIs
+  const allScores=ws.flatMap(w=>Object.values(w.results||{}).flatMap(t=>Object.values(t))).map(r=>r.quizScore).filter(s=>s!==undefined);
+  const passedAll=allScores.filter(s=>s>=60).length;
+  const passRate=allScores.length?Math.round(passedAll/allScores.length*100):0;
+  const completedTrainees=ws.reduce((s,w)=>{const tr=Object.keys(w.trainees||{});return s+tr.filter(tid=>DAYS.every(d=>w.results?.[tid]?.[d]?.quizScore!==undefined)).length;},0);
+  const attAll=ws.reduce((s,w)=>{const tr=Object.keys(w.trainees||{});return s+tr.reduce((a,tid)=>a+Object.values(w.attendance?.[tid]||{}).filter(v=>v==='present').length,0);},0);
+  const attTotal=ws.reduce((s,w)=>s+Object.keys(w.trainees||{}).length*5,0);
+  const avgAtt=attTotal?Math.round(attAll/attTotal*100):0;
+
+  document.getElementById('admin-kpis').innerHTML=`
+    <div class="kpi g"><div class="v">${tot}</div><div class="l">🏢 الورش</div></div>
+    <div class="kpi b"><div class="v">${trainees}</div><div class="l">👥 المتدربون</div></div>
+    <div class="kpi go"><div class="v">${avg}%</div><div class="l">📊 متوسط الأداء</div></div>
+    <div class="kpi g"><div class="v">${passRate}%</div><div class="l">✅ نسبة النجاح</div></div>
+    <div class="kpi go"><div class="v">${evalAvg}${evalAvg!=='—'?'⭐':''}</div><div class="l">⭐ تقييم المدربين</div></div>
+    <div class="kpi b"><div class="v">${avgAtt}%</div><div class="l">📅 متوسط الحضور</div></div>
+    <div class="kpi g"><div class="v">${completedTrainees}</div><div class="l">🏆 أكملوا البرنامج</div></div>`;
+}
+
+function renderWSGrid(wsList=null){
+  const grid=document.getElementById('ws-grid');
+  const ws=wsList||Object.values(_allWs);
+  if(!ws.length){grid.innerHTML=`<div class="card" style="grid-column:1/-1;text-align:center;padding:40px"><div style="font-size:2.5rem;margin-bottom:10px">🏢</div><p style="color:var(--muted)">لا توجد ورش بعد — أنشئ ورشتك الأولى</p></div>`;return;}
+  grid.innerHTML=ws.map(w=>{
+    const trainees=Object.values(w.trainees||{});
+    const scores=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);
+    const avg=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
+    const evals=Object.values(w.evaluations||{});
+    const ev=evals.flatMap(e=>Object.values(e.scores||{}));
+    const evAvg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
+    const photos=(w.photos||[]).length;
+    const dlReqs=Object.values(w.downloadRequests||{}).filter(r=>r.status==='pending').length;
+    const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';
+    return `<div class="ws-card">
+      <div class="ws-card-header">
+        <h3 style="font-size:1rem;font-weight:900;margin-bottom:4px">🏢 ${w.name}</h3>
+        <p style="font-size:.78rem;opacity:.9">👨‍🏫 ${w.trainerName} ${w.org?'· '+w.org:''}</p>
+        ${w.startDate?`<p style="font-size:.73rem;opacity:.8;margin-top:3px">📅 ${w.startDate}${w.endDate?' ← '+w.endDate:''} ${w.location?'· '+w.location:''}</p>`:''}
+      </div>
+      <div class="ws-card-body">
+        <div class="ws-stat"><span>المتدربون</span><span>${trainees.length} متدرب</span></div>
+        <div class="ws-stat"><span>متوسط الأداء</span><span style="color:${col};font-weight:900">${avg!==null?avg+'%':'—'}</span></div>
+        <div class="ws-stat"><span>تقييم المدرب</span><span style="color:#f59e0b;font-weight:900">${evAvg}${evAvg!=='—'?'⭐':''}</span></div>
+        <div class="ws-stat"><span>الصور</span><span>${photos} صورة</span></div>
+        ${dlReqs>0?`<div class="ws-stat"><span>طلبات تحميل</span><span class="badge go">${dlReqs} معلقة</span></div>`:''}
+        <div style="display:flex;gap:6px;margin-top:12px">
+          <button class="btn btn-p" style="flex:1;font-size:.76rem;padding:7px" onclick="viewWS('${w.id}')">📊 عرض</button>
+          <button class="btn" style="font-size:.76rem;padding:7px 10px;background:#ede9fe;color:#6d28d9;border:1.5px solid #c4b5fd" onclick="openCertificatesModal('${w.id}')">🎓</button>
+          <button class="btn btn-g" style="font-size:.76rem;padding:7px 10px" onclick="changeTrainerPwd('${w.id}','${w.trainerName}')">🔑</button>
+          <button class="btn btn-r" style="font-size:.76rem;padding:7px 10px" onclick="deleteWS('${w.id}','${w.name}')">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function adminTab(tab,btn){
+  ['workshops','dl-requests','comparison','trainers','analytics','honors','annual'].forEach(t=>{const el=document.getElementById('at-'+t);if(el)el.style.display=t===tab?'block':'none';});
+  document.querySelectorAll('#admin-subnav .snbtn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(tab==='comparison')renderComparison();
+  if(tab==='trainers')renderTrainersTbl();
+  if(tab==='dl-requests')renderDLRequests();
+  if(tab==='analytics')renderAnalytics();
+  if(tab==='honors')renderHonors();
+  if(tab==='annual'){document.getElementById('at-annual').style.display='block';renderAnnualStats();}
+}
+
+// ══════════════════════════════════════════════
+//  DOWNLOAD REQUESTS
+// ══════════════════════════════════════════════
+function renderDLRequests(){
+  const allReqs=[];
+  Object.values(_allWs).forEach(w=>{
+    Object.entries(w.downloadRequests||{}).forEach(([rid,r])=>{
+      allReqs.push({...r, wsId:w.id, wsName:w.name, reqId:rid});
+    });
+  });
+  const pending=allReqs.filter(r=>r.status==='pending');
+  const badge=document.getElementById('dl-badge');
+  if(badge){badge.style.display=pending.length?'inline':'none';badge.textContent=pending.length;}
+
+  const list=document.getElementById('dl-requests-list');
+  if(!list) return;
+  if(!allReqs.length){list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">📥</div><p>لا توجد طلبات تحميل بعد</p></div>';return;}
+  list.innerHTML=allReqs.sort((a,b)=>(a.status==='pending'?-1:1)).map(r=>`
+    <div class="dl-req-card ${r.status}">
+      <div>
+        <div style="font-weight:900;font-size:.9rem">${r.traineeName||'—'}</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:2px">🏢 ${r.wsName} · 📅 اليوم ${r.dayId} · ⏰ ${r.requestedAt||''}</div>
+      </div>
+      ${r.status==='pending'
+        ?`<div style="display:flex;gap:7px">
+            <button class="btn btn-p" style="padding:7px 14px;font-size:.82rem" onclick="approveDL('${r.wsId}','${r.reqId}')">✅ موافقة</button>
+            <button class="btn btn-r" style="padding:7px 14px;font-size:.82rem" onclick="rejectDL('${r.wsId}','${r.reqId}')">❌ رفض</button>
+          </div>`
+        :`<span class="badge ${r.status==='approved'?'g':'r'}">${r.status==='approved'?'✅ موافق':'❌ مرفوض'}</span>`}
+    </div>`).join('');
+}
+
+async function approveDL(wsId,reqId){
+  await fbSet(`workshops/${wsId}/downloadRequests/${reqId}/status`,'approved');
+  toast('✅ تمت الموافقة على التحميل'); loadAdmin();
+}
+async function rejectDL(wsId,reqId){
+  await fbSet(`workshops/${wsId}/downloadRequests/${reqId}/status`,'rejected');
+  toast('❌ تم رفض طلب التحميل'); loadAdmin();
+}
+
+function viewWS(id){
+  const w=_allWs[id]; if(!w) return;
+  const trainees=Object.values(w.trainees||{});
+  const getAvg=tid=>{const s=DAYS.map(d=>w.results?.[tid]?.[d]?.quizScore).filter(s=>s!==undefined);return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null;};
+  openModal(`📊 ${w.name}`,`
+    <div style="background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:14px;padding:16px;color:#fff;margin-bottom:16px">
+      <div style="font-weight:900;font-size:1rem;margin-bottom:4px">🏢 ${w.name}</div>
+      <div style="font-size:.82rem;opacity:.9">👨‍🏫 ${w.trainerName}${w.org?' · '+w.org:''}</div>
+      ${w.startDate?`<div style="font-size:.78rem;opacity:.8;margin-top:3px">📅 ${w.startDate}${w.endDate?' ← '+w.endDate:''}</div>`:''}
+      ${w.location?`<div style="font-size:.78rem;opacity:.8">📍 ${w.location}</div>`:''}
+    </div>
+    <h4 style="font-weight:800;color:var(--g1);margin-bottom:8px;font-size:.85rem">👥 المتدربون (${trainees.length})</h4>
+    ${trainees.map(t=>{const avg=getAvg(t.id);const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';return`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:.82rem;font-weight:700">${t.name}</span><strong style="color:${col}">${avg!==null?avg+'%':'—'}</strong></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا متدربون</p>'}
+  `);
+}
+
+async function changeTrainerPwd(wsId, trainerName){
+  openModal(`🔑 تغيير كلمة مرور المدرب`,`
+    <div style="background:var(--gold2);border:1.5px solid #fde68a;border-radius:12px;padding:14px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.5rem">👨‍🏫</span>
+      <div>
+        <div style="font-weight:900;color:#92400e;font-size:.92rem">${trainerName}</div>
+        <div style="font-size:.76rem;color:#b45309">أدخل كلمة مرور جديدة للمدرب</div>
+      </div>
+    </div>
+    <div class="form-g">
+      <label class="inp-label">كلمة المرور الجديدة *</label>
+      <input class="inp" id="new-pwd-inp" type="password" placeholder="أدخل كلمة المرور الجديدة" style="letter-spacing:3px">
+    </div>
+    <div class="form-g">
+      <label class="inp-label">تأكيد كلمة المرور *</label>
+      <input class="inp" id="new-pwd-confirm" type="password" placeholder="أعد إدخال كلمة المرور" style="letter-spacing:3px"
+        onkeydown="if(event.key==='Enter')savePwd('${wsId}')">
+    </div>
+    <div id="pwd-err" style="display:none;color:var(--red);font-size:.8rem;text-align:center;margin-bottom:8px"></div>
+    <button class="btn btn-p btn-wide" onclick="savePwd('${wsId}')">💾 حفظ كلمة المرور</button>
+  `);
+  setTimeout(()=>document.getElementById('new-pwd-inp')?.focus(),100);
+}
+
+async function savePwd(wsId){
+  const p1 = document.getElementById('new-pwd-inp')?.value.trim();
+  const p2 = document.getElementById('new-pwd-confirm')?.value.trim();
+  const err = document.getElementById('pwd-err');
+  
+  if(!p1){ err.style.display='block'; err.textContent='⚠️ أدخل كلمة المرور'; return; }
+  if(p1.length < 4){ err.style.display='block'; err.textContent='⚠️ كلمة المرور قصيرة جداً (4 أحرف على الأقل)'; return; }
+  if(p1 !== p2){ err.style.display='block'; err.textContent='❌ كلمتا المرور غير متطابقتين'; return; }
+  
+  await fbSet(`workshops/${wsId}/trainerPassword`, p1);
+  // Update local cache
+  if(_allWs[wsId]) _allWs[wsId].trainerPassword = p1;
+  
+  closeModal();
+  toast('✅ تم تغيير كلمة المرور بنجاح');
+}
+
+async function deleteWS(id,name){
+  if(!confirm(`حذف ورشة "${name}"؟`)) return;
+  await fbDel('workshops/'+id); toast('🗑️ تم الحذف'); loadAdmin();
+}
+
+function renderTrainersTbl(){
+  const ws=Object.values(_allWs);
+  document.getElementById('trainers-tbl').innerHTML=ws.map((w,i)=>{
+    const n=Object.keys(w.trainees||{}).length;
+    const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);
+    const avg=s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null;
+    const ev=Object.values(w.evaluations||{}).flatMap(e=>Object.values(e.scores||{}));
+    const evAvg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
+    const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';
+    return`<tr><td>${i+1}</td><td><strong>${w.trainerName}</strong></td><td>${w.name}</td><td>${w.startDate||'—'}${w.endDate?' ← '+w.endDate:''}</td><td>${n}</td><td><strong style="color:${col}">${avg!==null?avg+'%':'—'}</strong></td><td style="color:#f59e0b;font-weight:800">${evAvg}${evAvg!=='—'?'⭐':''}</td></tr>`;
+  }).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">لا توجد ورش</td></tr>';
+}
+
+function renderComparison(){
+  const ws=Object.values(_allWs);
+  const maxA=Math.max(...ws.map(w=>{const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):0;}),1);
+  document.getElementById('cmp-perf').innerHTML=ws.map(w=>{const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);const avg=s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):0;const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';return`<div class="bar-row"><div class="bar-lbl">${w.name.slice(0,14)}</div><div class="bar-bg"><div class="bar-fill" style="width:${avg/maxA*100}%;background:${col}"></div></div><div class="bar-num" style="color:${col}">${avg}%</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
+  document.getElementById('cmp-eval').innerHTML=ws.map(w=>{const ev=Object.values(w.evaluations||{}).flatMap(e=>Object.values(e.scores||{}));const avg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):null;return`<div class="bar-row"><div class="bar-lbl">${w.name.slice(0,14)}</div><div class="bar-bg"><div class="bar-fill" style="width:${avg?parseFloat(avg)/5*100:0}%;background:#f59e0b"></div></div><div class="bar-num" style="color:#f59e0b">${avg?avg+'/5':'—'}</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
+  document.getElementById('cmp-att').innerHTML=ws.map(w=>{const tr=Object.keys(w.trainees||{});const present=tr.reduce((s,tid)=>s+Object.values(w.attendance?.[tid]||{}).filter(v=>v==='present').length,0);const total=tr.length*5||1;const pct=Math.round(present/total*100);return`<div class="bar-row"><div class="bar-lbl">${w.name.slice(0,14)}</div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:var(--blue)"></div></div><div class="bar-num" style="color:var(--blue)">${pct}%</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
+}
+
+// ══════════════════════════════════════════════
+//  TRAINER LOAD
+// ══════════════════════════════════════════════
+async function loadTrainer(){
+  const data=await fbGet('workshops/'+_wsId); if(!data) return;
+  _ws=data;
+  _trainees=data.trainees?Object.values(data.trainees):[];
+  _results=data.results||{}; _attendance=data.attendance||{};
+  _evaluations=data.evaluations||{}; _materials=data.materials||{};
+  _photos=data.photos||[];
+  renderTrKPIs(); renderTrTable(); buildMaterialsForm(); renderPhotos(); renderInlineQR(); updateExamBtns();
+}
+
+function getAvg(tid){const s=DAYS.map(d=>_results[tid]?.[d]?.quizScore).filter(s=>s!==undefined);return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null;}
+function getAtt(tid){return Object.values(_attendance[tid]||{}).filter(v=>v==='present').length;}
+
+function renderTrKPIs(){
+  const avgs=_trainees.map(t=>getAvg(t.id)).filter(a=>a!==null);
+  const overall=avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):0;
+  const passed=avgs.filter(a=>a>=60).length;
+  const ev=Object.values(_evaluations).flatMap(e=>Object.values(e.scores||{}));
+  const evAvg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
+  document.getElementById('tr-kpis').innerHTML=`
+    <div class="kpi g"><div class="v">${_trainees.length}</div><div class="l">المتدربون</div></div>
+    <div class="kpi go"><div class="v">${overall}%</div><div class="l">متوسط الأداء</div></div>
+    <div class="kpi g"><div class="v">${passed}</div><div class="l">ناجح ≥60%</div></div>
+    <div class="kpi go"><div class="v">${evAvg}${evAvg!=='—'?'⭐':''}</div><div class="l">تقييمي</div></div>`;
+}
+
+// ══════════════════════════════════════════════
+//  TRAINER TABS
+// ══════════════════════════════════════════════
+function trTab(tab,btn){
+  ['requests','trainees','attendance','performance','materials','photos','evaluations','report','qr','monitor'].forEach(t=>{const el=document.getElementById('tt-'+t);if(el)el.style.display=t===tab?'block':'none';});
+  document.querySelectorAll('#s-trainer .snbtn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(tab==='trainees')renderInlineQR();
+  if(tab==='attendance')renderAttendance();
+  if(tab==='performance')renderPerformance();
+  if(tab==='evaluations')renderEvaluations();
+  if(tab==='qr')renderQR();
+  if(tab==='report')renderFinalReport();
+  if(tab==='photos')renderPhotos();
+  if(tab==='monitor'){
+    renderLiveMonitor();
+    // Clear old interval and set new one
+    if(window._monitorInterval) clearInterval(window._monitorInterval);
+    window._monitorInterval = setInterval(renderLiveMonitor, 10000);
+  } else {
+    if(window._monitorInterval){ clearInterval(window._monitorInterval); window._monitorInterval=null; }
+  }
+}
+
+// ══════════════════════════════════════════════
+//  TRAINEES
+// ══════════════════════════════════════════════
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
+
+
+// ══════════════════════════════════════════════
+//  INLINE QR — auto-updates in trainees tab
+// ══════════════════════════════════════════════
+function renderInlineQR() {
+  const grid = document.getElementById('qr-inline-grid');
+  const lbl  = document.getElementById('qr-inline-count');
+  if (!grid) return;
+  if (lbl) lbl.textContent = _trainees.length + ' متدرب';
+
+  if (!_trainees.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--muted)">
+      <div style="font-size:2rem;margin-bottom:8px">📱</div>
+      <p style="font-size:.85rem">أضف متدربين وستظهر رموز QR هنا تلقائياً</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = _trainees.map(t => {
+    const code = traineeCode(t.id);
+    const url  = traineeURL(t.id);
+    return `<div style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px;text-align:center;box-shadow:0 2px 10px rgba(10,92,62,.07);animation:fadeUp .3s ease">
+      <div id="qr-mini-${t.id}" style="width:100px;height:100px;margin:0 auto 10px;background:var(--g4);border-radius:10px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border);overflow:hidden"></div>
+      <div style="font-weight:900;font-size:.88rem;color:var(--g1);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</div>
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.dept}</div>
+      <div style="background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:10px;padding:8px;margin-bottom:8px">
+        <div style="color:rgba(255,255,255,.8);font-size:.62rem;font-weight:700;margin-bottom:2px">🔑 كود الدخول</div>
+        <div style="color:#fff;font-size:1.4rem;font-weight:900;letter-spacing:5px">${code}</div>
+      </div>
+      <button onclick="showQRModal('${t.id}')"
+        style="width:100%;padding:7px;background:var(--g4);border:1.5px solid var(--border);
+               border-radius:9px;font-family:Tajawal,sans-serif;font-size:.76rem;font-weight:700;
+               cursor:pointer;color:var(--g1)">🔍 عرض موسّع</button>
+    </div>`;
+  }).join('');
+
+  // Generate QR codes
+  setTimeout(() => {
+    if (!window.QRCode) return;
+    _trainees.forEach(t => {
+      const c = document.getElementById('qr-mini-' + t.id);
+      if (!c || c.querySelector('canvas,img')) return;
+      try {
+        new window.QRCode(c, {
+          text: traineeURL(t.id),
+          width:100, height:100,
+          colorDark:'#0a5c3e', colorLight:'#ffffff',
+          correctLevel: window.QRCode.CorrectLevel.M
+        });
+      } catch(e) {
+        c.innerHTML = `<div style="font-size:1.1rem;font-weight:900;color:var(--g1);padding:12px">${traineeCode(t.id)}</div>`;
+      }
+    });
+  }, 150);
+}
+
 async function addTrainee(){
-```
+  const name=document.getElementById('add-name').value.trim();
+  if(!name){toast('⚠️ الاسم مطلوب');return;}
+  const t={id:genId(),name,sid:document.getElementById('add-sid').value.trim()||'—',dept:document.getElementById('add-dept').value.trim()||'—',spec:document.getElementById('add-spec').value.trim()||'—',createdAt:new Date().toISOString()};
+  _trainees.push(t);
+  await fbSet(`workshops/${_wsId}/trainees/${t.id}`,t);
+  ['add-name','add-sid','add-dept','add-spec'].forEach(id=>document.getElementById(id).value='');
+  renderTrTable(); renderInlineQR();
+  // Auto-update QR tab if open
+  const qrTab = document.getElementById('tt-qr');
+  if(qrTab && qrTab.style.display !== 'none') renderQR();
+  toast('✅ تم الإضافة');
+}
 
-**أضف قبلها مباشرة:**
+async function delTrainee(id){
+  const t = _trainees.find(x=>x.id===id);
+  if(!confirm(`حذف المتدرب "${t?.name||id}"؟\nسيتم حذف جميع بياناته (نتائج، حضور).`)) return;
+  _trainees=_trainees.filter(t=>t.id!==id);
+  await fbDel(`workshops/${_wsId}/trainees/${id}`);
+  await fbDel(`workshops/${_wsId}/results/${id}`);
+  await fbDel(`workshops/${_wsId}/attendance/${id}`);
+  await fbDel(`workshops/${_wsId}/evaluations/${id}`);
+  renderTrTable(); renderInlineQR();
+  const qrTab2 = document.getElementById('tt-qr');
+  if(qrTab2 && qrTab2.style.display !== 'none') renderQR();
+  toast('🗑️ تم حذف '+( t?.name||'المتدرب'));
+}
 
-```javascript
+async function delSelected(){
+  const checked = [...document.querySelectorAll('.tr-chk:checked')].map(c=>c.dataset.id);
+  if(!checked.length){ toast('⚠️ لم تختر أي متدرب'); return; }
+  const names = checked.map(id=>_trainees.find(t=>t.id===id)?.name||id).join('، ');
+  if(!confirm(`حذف ${checked.length} متدرب؟\n${names}\n\nسيتم حذف جميع بياناتهم.`)) return;
+  for(const id of checked){
+    _trainees=_trainees.filter(t=>t.id!==id);
+    await fbDel(`workshops/${_wsId}/trainees/${id}`);
+    await fbDel(`workshops/${_wsId}/results/${id}`);
+    await fbDel(`workshops/${_wsId}/attendance/${id}`);
+    await fbDel(`workshops/${_wsId}/evaluations/${id}`);
+  }
+  renderTrTable(); renderInlineQR();
+  toast(`🗑️ تم حذف ${checked.length} متدرب`);
+}
+
+function toggleAllTrainees(cb){
+  document.querySelectorAll('.tr-chk').forEach(c=>c.checked=cb.checked);
+  updateDelBtn();
+}
+
+function updateDelBtn(){
+  const cnt = document.querySelectorAll('.tr-chk:checked').length;
+  const btn = document.getElementById('del-selected-btn');
+  if(!btn) return;
+  btn.style.display = cnt>0 ? 'inline-flex' : 'none';
+  btn.textContent = `🗑️ حذف المحددين (${cnt})`;
+}
+
+function renderTrTable(){
+  document.getElementById('tr-count').textContent=_trainees.length;
+
+  if(!_trainees.length){
+    document.getElementById('tr-tbl').innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px">لا متدربون بعد — أضف من الأعلى</td></tr>';
+    const btn=document.getElementById('del-selected-btn');
+    if(btn) btn.style.display='none';
+    return;
+  }
+
+  document.getElementById('tr-tbl').innerHTML=_trainees.map((t,i)=>{
+    const avg=getAvg(t.id); const att=getAtt(t.id);
+    const col=avg===null?'var(--muted)':avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';
+    return`<tr>
+      <td style="text-align:center">
+        <input type="checkbox" class="tr-chk" data-id="${t.id}"
+          onchange="updateDelBtn()"
+          style="width:16px;height:16px;cursor:pointer;accent-color:var(--g1)">
+      </td>
+      <td>${i+1}</td>
+      <td><strong>${t.name}</strong><br><span style="font-size:.68rem;color:var(--muted)">${t.spec||''}</span></td>
+      <td style="color:var(--muted);font-size:.8rem">${t.sid}</td>
+      <td style="font-size:.82rem">${t.dept}</td>
+      <td><span class="badge ${att>=4?'g':att>=2?'go':'r'}">${att}/5</span></td>
+      <td style="text-align:center"><strong style="color:${col}">${avg!==null?avg+'%':'—'}</strong></td>
+      <td><button class="badge b" style="cursor:pointer;padding:4px 9px" onclick="showQRModal('${t.id}')">📱 QR</button></td>
+      <td>
+        <button onclick="delTrainee('${t.id}')"
+          style="background:var(--red2);border:1.5px solid #fca5a5;color:var(--red);border-radius:8px;padding:5px 10px;font-family:Tajawal,sans-serif;font-size:.76rem;font-weight:700;cursor:pointer">
+          🗑️ حذف
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
 // ══════════════════════════════════════════════
-//  EDIT TRAINEE — تعديل بيانات المتدرب
+//  ATTENDANCE
 // ══════════════════════════════════════════════
-function editTrainee(id){
-  const t = _trainees.find(x=>x.id===id); if(!t) return;
-  openModal('✏️ تعديل بيانات المتدرب', `
-    <div style="background:linear-gradient(135deg,var(--g4),#f0fdf8);border:1.5px solid var(--border);border-radius:14px;padding:13px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
-      <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1.15rem;flex-shrink:0">${t.name.charAt(0)}</div>
-      <div>
-        <div style="font-weight:900;color:var(--g1);font-size:.93rem">${t.name}</div>
-        <div style="font-size:.74rem;color:var(--muted)">${t.dept} · ${t.spec||''}</div>
-      </div>
-    </div>
+async function cycleAtt(tid,day){
+  if(!_attendance[tid])_attendance[tid]={};
+  const cur=_attendance[tid][day]||'none';
+  const next={none:'present',present:'absent',absent:'excused',excused:'none'}[cur];
+  _attendance[tid][day]=next;
+  await fbSet(`workshops/${_wsId}/attendance/${tid}/${day}`,next);
+  renderAttendance();
+}
+function renderAttendance(){
+  const icons={present:'✅',absent:'❌',excused:'⚡',none:'○'};
+  document.getElementById('att-tbl').innerHTML=_trainees.map(t=>{
+    const att=_attendance[t.id]||{};
+    const total=Object.values(att).filter(v=>v==='present').length;
+    return`<tr><td><strong>${t.name}</strong><br><span style="font-size:.7rem;color:var(--muted)">${t.dept}</span></td>${DAYS.map(d=>`<td><div class="att-cell ${att[d]||'none'}" onclick="cycleAtt('${t.id}',${d})">${icons[att[d]||'none']}</div></td>`).join('')}<td><span class="badge ${total>=4?'g':total>=2?'go':'r'}">${total}/5</span></td></tr>`;
+  }).join('')||'<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">لا متدربون</td></tr>';
+}
 
-    <div style="font-size:.76rem;font-weight:800;color:var(--g1);margin-bottom:8px;display:flex;align-items:center;gap:6px">
-      <div style="width:3px;height:14px;background:var(--g1);border-radius:2px"></div> البيانات الأساسية
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-      <div>
-        <label class="inp-label">👤 الاسم الكامل *</label>
-        <input class="inp" id="edit-name" value="${t.name}" placeholder="الاسم الكامل">
-      </div>
-      <div>
-        <label class="inp-label">🔢 الرقم الوظيفي</label>
-        <input class="inp" id="edit-sid" value="${t.sid==='—'?'':t.sid}" placeholder="EMP-001">
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-      <div>
-        <label class="inp-label">🏢 الجهة / القسم</label>
-        <input class="inp" id="edit-dept" value="${t.dept==='—'?'':t.dept}" placeholder="وزارة الصحة">
-      </div>
-      <div>
-        <label class="inp-label">🎓 التخصص</label>
-        <input class="inp" id="edit-spec" value="${t.spec==='—'?'':t.spec}" placeholder="مفتش غذاء">
-      </div>
-    </div>
+// ══════════════════════════════════════════════
+//  SCAN REQUESTS
+// ══════════════════════════════════════════════
+async function acceptScan(tid){
+  const req=await fbGet(`workshops/${_wsId}/scan_requests/${tid}`);
+  const dayId=req?.dayId||1;
+  await fbSet(`workshops/${_wsId}/attendance/${tid}/${dayId}`,'present');
+  if(!_attendance[tid])_attendance[tid]={};
+  _attendance[tid][dayId]='present';
+  await fbSet(`workshops/${_wsId}/scan_requests/${tid}/status`,'approved');
+  toast('✅ تم القبول');
+}
+async function rejectScan(tid){
+  const req=await fbGet(`workshops/${_wsId}/scan_requests/${tid}`);
+  const dayId=req?.dayId||1;
+  await fbSet(`workshops/${_wsId}/attendance/${tid}/${dayId}`,'absent');
+  await fbSet(`workshops/${_wsId}/results/${tid}/${dayId}`,{quizScore:0,exerciseScore:0,absent:true,time:new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})});
+  await fbSet(`workshops/${_wsId}/scan_requests/${tid}/status`,'rejected');
+  toast('❌ تم الرفض');
+}
+async function clearScans(){
+  const reqs=await fbGet(`workshops/${_wsId}/scan_requests`); if(!reqs) return;
+  for(const[tid,r]of Object.entries(reqs)){if(r.status==='approved'||r.status==='rejected')await fbDel(`workshops/${_wsId}/scan_requests/${tid}`);}
+  toast('🗑️ تم مسح الطلبات المعالجة');
+}
 
-    <div style="border-top:2px dashed var(--border);margin:14px 0 10px;padding-top:12px">
-      <div style="font-size:.76rem;font-weight:800;color:var(--blue);margin-bottom:8px;display:flex;align-items:center;gap:6px">
-        <div style="width:3px;height:14px;background:var(--blue);border-radius:2px"></div> معلومات التواصل
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+async function clearAllScans(){
+  if(!confirm('مسح جميع الطلبات بما فيها المعلقة؟')) return;
+  await fbDel(`workshops/${_wsId}/scan_requests`);
+  toast('🗑️ تم مسح جميع الطلبات — يمكن للمتدربين المسح من جديد');
+}
+function renderScans(reqs){
+  const list=document.getElementById('scan-list');
+  const badge=document.getElementById('scan-badge');
+  const entries=Object.entries(reqs||{});
+  const pending=entries.filter(([,r])=>r.status==='pending');
+
+  // Update badge
+  if(badge){badge.style.display=pending.length?'inline':'none';badge.textContent=pending.length;}
+
+  // Auto-notify trainer when new pending request arrives
+  if(pending.length > 0){
+    const reqsTab = document.getElementById('tt-requests');
+    // Show toast notification if not on requests tab
+    if(reqsTab && reqsTab.style.display==='none'){
+      toast(`🔔 طلب دخول جديد — ${pending[0][1].name||'متدرب'} (${pending.length} طلب)`);
+    }
+    // Flash badge
+    if(badge) badge.style.animation='blink 1s infinite';
+  } else {
+    if(badge) badge.style.animation='';
+  }
+
+  if(!entries.length){list.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px">📱</div><p>في انتظار المتدربين...</p></div>';return;}
+  entries.sort(([,a],[,b])=>(a.status==='pending'?-1:1));
+  list.innerHTML=entries.map(([tid,r])=>{
+    const ip=r.status==='pending',ia=r.status==='approved';
+    return`<div class="scan-card ${r.status}" style="${ip?'border-color:#f59e0b;background:#fffbeb':''}">
+      <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
+        <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:1.1rem;flex-shrink:0">${(r.name||'?').charAt(0)}</div>
         <div>
-          <label class="inp-label">📱 رقم الجوال</label>
-          <input class="inp" id="edit-phone" type="tel" value="${t.phone||''}" placeholder="+974 XXXX XXXX">
-        </div>
-        <div>
-          <label class="inp-label">✉️ البريد الإلكتروني</label>
-          <input class="inp" id="edit-email" type="email" value="${t.email||''}" placeholder="example@email.com">
+          <div style="font-weight:900;font-size:.95rem;margin-bottom:2px">${r.name||'—'}</div>
+          <div style="font-size:.74rem;color:var(--muted)">${r.dept||'—'} · اليوم ${r.dayId}</div>
+          ${ip?`<div style="font-size:.7rem;color:#92400e;margin-top:3px;background:#fff3e0;border-radius:20px;padding:2px 8px;display:inline-block">⏳ ينتظر الموافقة</div>`:''}
         </div>
       </div>
-      <div>
-        <label class="inp-label">💼 المسمى الوظيفي</label>
-        <input class="inp" id="edit-jobtitle" value="${t.jobTitle||''}" placeholder="مثال: مفتش غذاء أول">
+      ${ip?`<div style="display:flex;gap:7px"><button class="btn btn-p" style="padding:7px 14px;font-size:.82rem" onclick="acceptScan('${tid}')">✅ قبول</button><button class="btn btn-r" style="padding:7px 14px;font-size:.82rem" onclick="rejectScan('${tid}')">❌ رفض</button></div>`:`<span class="badge ${ia?'g':'r'}">${ia?'✅ مقبول':'❌ مرفوض'}</span>`}
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+//  PERFORMANCE
+// ══════════════════════════════════════════════
+async function delDayResult(tid, dayId){
+  const t = _trainees.find(x=>x.id===tid);
+  if(!confirm(`حذف نتيجة اليوم ${dayId} لـ "${t?.name||tid}"؟`)) return;
+  // Delete result
+  await fbDel(`workshops/${_wsId}/results/${tid}/${dayId}`);
+  // Delete attendance for that day
+  await fbDel(`workshops/${_wsId}/attendance/${tid}/${dayId}`);
+  // Update local state
+  if(_results[tid]) delete _results[tid][dayId];
+  if(_attendance[tid]) delete _attendance[tid][dayId];
+  // Re-render
+  renderTrKPIs();
+  renderPerformance();
+  toast(`🗑️ تم حذف نتيجة اليوم ${dayId} لـ ${t?.name||tid}`);
+}
+
+function renderPerformance(){
+  const avgs=_trainees.map(t=>getAvg(t.id)).filter(a=>a!==null);
+  const overall=avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):0;
+  const passed=avgs.filter(a=>a>=60).length;
+  const comp=_trainees.filter(t=>DAYS.every(d=>_results[t.id]?.[d]?.quizScore!==undefined)).length;
+  document.getElementById('perf-kpis').innerHTML=`
+    <div class="kpi g"><div class="v">${_trainees.length}</div><div class="l">المتدربون</div></div>
+    <div class="kpi go"><div class="v">${overall}%</div><div class="l">متوسط الدرجات</div></div>
+    <div class="kpi g"><div class="v">${passed}</div><div class="l">ناجح ≥60%</div></div>
+    <div class="kpi r"><div class="v">${_trainees.length-passed}</div><div class="l">راسب <60%</div></div>
+    <div class="kpi b"><div class="v">${comp}</div><div class="l">أكمل 5 أيام</div></div>`;
+  const ranked=[..._trainees].map(t=>({...t,avg:getAvg(t.id)})).filter(t=>t.avg!==null).sort((a,b)=>b.avg-a.avg);
+  const maxA=Math.max(...ranked.map(t=>t.avg),1);
+  document.getElementById('rank-chart').innerHTML=ranked.map((t,i)=>{const col=t.avg>=80?'var(--g1)':t.avg>=60?'var(--gold)':'var(--red)';const m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';return`<div class="bar-row"><div class="bar-lbl">${m}${t.name.split(' ')[0]}</div><div class="bar-bg"><div class="bar-fill" style="width:${t.avg/maxA*100}%;background:${col}"></div></div><div class="bar-num" style="color:${col}">${t.avg}%</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
+  const dayAvgs=DAYS.map(d=>{const s=_trainees.map(t=>_results[t.id]?.[d]?.quizScore).filter(s=>s!==undefined);return{d,avg:s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null};});
+  const maxD=Math.max(...dayAvgs.map(d=>d.avg||0),1);
+  document.getElementById('day-chart').innerHTML=dayAvgs.map(({d,avg})=>`<div class="bar-row"><div class="bar-lbl">يوم ${d}</div><div class="bar-bg"><div class="bar-fill" style="width:${avg?avg/maxD*100:0}%;background:${avg>=80?'var(--g2)':avg>=60?'var(--gold)':'var(--red)'}"></div></div><div class="bar-num" style="color:var(--g1)">${avg!==null?avg+'%':'—'}</div></div>`).join('');
+  const ex=avgs.filter(a=>a>=85).length,g=avgs.filter(a=>a>=70&&a<85).length,p=avgs.filter(a=>a>=60&&a<70).length,f=avgs.filter(a=>a<60).length;
+  document.getElementById('lvl-chart').innerHTML=[['ممتاز ≥85%',ex,'var(--g1)'],['جيد 70-84%',g,'var(--blue)'],['مقبول 60-69%',p,'var(--gold)'],['ضعيف <60%',f,'var(--red)']].map(([l,n,c])=>`<div class="bar-row"><div class="bar-lbl">${l}</div><div class="bar-bg"><div class="bar-fill" style="width:${_trainees.length?n/_trainees.length*100:0}%;background:${c}"></div></div><div class="bar-num" style="color:${c}">${n}</div></div>`).join('');
+  document.getElementById('perf-tbl').innerHTML=_trainees.map((t,i)=>{
+    const avg=getAvg(t.id);
+    const level=avg===null?'—':avg>=85?'ممتاز':avg>=70?'جيد جداً':avg>=60?'مقبول':'ضعيف';
+    const lcls=avg===null?'gr':avg>=85?'g':avg>=70?'b':avg>=60?'go':'r';
+    return`<tr><td>${i+1}</td><td><strong>${t.name}</strong><br><span style="font-size:.7rem;color:var(--muted)">${t.dept}</span></td>${DAYS.map(d=>{const r=_results[t.id]?.[d];if(!r)return`<td style="color:var(--muted);text-align:center">—</td>`;if(r.absent)return`<td style="text-align:center"><span style="color:var(--red);font-weight:800">غ</span> <button onclick="delDayResult('${t.id}',${d})" title="حذف" style="background:var(--red2);border:1px solid #fca5a5;border-radius:5px;padding:1px 5px;font-size:.65rem;cursor:pointer;color:var(--red);font-family:Tajawal,sans-serif">✕</button></td>`;const s=r.quizScore;return`<td style="text-align:center"><strong style="color:${s>=80?'var(--g1)':s>=60?'var(--gold)':'var(--red)'}">${s}%</strong> <button onclick="delDayResult('${t.id}',${d})" title="حذف" style="background:var(--red2);border:1px solid #fca5a5;border-radius:5px;padding:1px 5px;font-size:.65rem;cursor:pointer;color:var(--red);font-family:Tajawal,sans-serif">✕</button></td>`;}).join('')}<td style="text-align:center"><strong style="color:${avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)'}">${avg!==null?avg+'%':'—'}</strong></td><td><span class="badge ${lcls}">${level}</span></td></tr>`;
+  }).join('')||'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">لا بيانات بعد — انتظر إنهاء المتدربين الاختبارات</td></tr>';
+}
+
+// ══════════════════════════════════════════════
+//  MATERIALS (PDF)
+// ══════════════════════════════════════════════
+function buildMaterialsForm(){
+  document.getElementById('materials-form').innerHTML=DAYS.map(d=>`
+    <div class="pdf-day-card">
+      <div class="pdf-day-badge">اليوم ${d}<br><span style="font-size:.65rem;opacity:.85">${DAY_NAMES[d]}</span></div>
+      <div style="flex:1;min-width:200px">
+        <label class="inp-label">رابط Google Drive لليوم ${d}</label>
+        <input class="inp" id="mat-${d}" value="${_materials[d]?.url||''}" placeholder="https://drive.google.com/file/d/..." style="font-size:.8rem">
+      </div>
+      <div style="text-align:center;flex-shrink:0">
+        ${_materials[d]?.url
+          ?`<a href="${convertDriveURL(_materials[d].url)}" target="_blank" class="btn btn-b" style="font-size:.76rem;padding:7px 12px;text-decoration:none">👁️ معاينة</a>`
+          :`<span style="font-size:.75rem;color:var(--muted)">لم يُرفع بعد</span>`}
+      </div>
+    </div>`).join('');
+}
+
+function convertDriveURL(url){
+  if(!url) return '#';
+  const match=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if(match) return `https://drive.google.com/file/d/${match[1]}/preview`;
+  return url;
+}
+
+async function saveMaterials(){
+  const mats={};
+  DAYS.forEach(d=>{const url=document.getElementById(`mat-${d}`)?.value.trim();if(url)mats[d]={url,dayName:DAY_NAMES[d],updatedAt:new Date().toISOString()};});
+  _materials=mats;
+  await fbSet(`workshops/${_wsId}/materials`,mats);
+  buildMaterialsForm(); toast('✅ تم حفظ المواد التعليمية');
+}
+
+// ══════════════════════════════════════════════
+//  PHOTOS
+// ══════════════════════════════════════════════
+async function uploadPhotos(event){
+  const files=Array.from(event.target.files);
+  const current=_photos.length;
+  const remaining=20-current;
+  if(!remaining){toast('⚠️ وصلت للحد الأقصى 20 صورة');return;}
+  const toAdd=files.slice(0,remaining);
+  toast(`⏳ جارٍ رفع ${toAdd.length} صورة...`,5000);
+
+  for(const file of toAdd){
+    const b64=await toBase64(file);
+    const photo={id:genId(),data:b64,name:file.name,uploadedAt:new Date().toLocaleString('ar-SA')};
+    _photos.push(photo);
+  }
+  await fbSet(`workshops/${_wsId}/photos`,_photos);
+  renderPhotos(); toast(`✅ تم رفع ${toAdd.length} صورة`);
+  event.target.value='';
+}
+
+function toBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});}
+
+async function deletePhoto(id){
+  _photos=_photos.filter(p=>p.id!==id);
+  await fbSet(`workshops/${_wsId}/photos`,_photos);
+  renderPhotos(); toast('🗑️ تم حذف الصورة');
+}
+
+function renderPhotos(){
+  const grid=document.getElementById('photo-grid');
+  const lbl=document.getElementById('photo-count-lbl');
+  if(lbl)lbl.textContent=`${_photos.length} / 20`;
+  if(!_photos.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">🖼️</div><p>لا توجد صور بعد — اضغط "إضافة صور"</p></div>';return;}
+  grid.innerHTML=_photos.map(p=>`
+    <div class="photo-item">
+      <img src="${p.data}" alt="${p.name}" loading="lazy">
+      <button class="photo-del" onclick="deletePhoto('${p.id}')">✕</button>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  EVALUATIONS
+// ══════════════════════════════════════════════
+function renderEvaluations(){
+  const evals=Object.values(_evaluations);
+  const ev=evals.flatMap(e=>Object.values(e.scores||{}));
+  const avg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
+  const pct=_trainees.length?Math.round(evals.length/_trainees.length*100):0;
+  document.getElementById('eval-kpis').innerHTML=`
+    <div class="kpi go"><div class="v">${evals.length}</div><div class="l">التقييمات</div></div>
+    <div class="kpi b"><div class="v">${pct}%</div><div class="l">نسبة المشاركة</div></div>
+    <div class="kpi go"><div class="v" style="font-size:1.3rem">${avg}${avg!=='—'?'⭐':''}</div><div class="l">المتوسط العام</div></div>
+    <div class="kpi g"><div class="v">${evals.filter(e=>e.comment&&e.comment.length>2).length}</div><div class="l">تعليقات</div></div>`;
+  document.getElementById('eval-bars').innerHTML=EVAL_CRIT.map(c=>{const vals=evals.map(e=>e.scores?.[c.key]).filter(v=>v!==undefined);const a=vals.length?(vals.reduce((x,y)=>x+y,0)/vals.length).toFixed(1):null;const col=a>=4?'#f59e0b':a>=3?'#d97706':'#b45309';return`<div class="bar-row"><div class="bar-lbl">${c.label.slice(0,14)}</div><div class="bar-bg"><div class="bar-fill" style="width:${a?parseFloat(a)/5*100:0}%;background:${col}"></div></div><div class="bar-num" style="color:${col}">${a?a+'/5':'—'}</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا تقييمات</p>';
+  const B={'5⭐':0,'4⭐':0,'3⭐':0,'2⭐':0,'1⭐':0};
+  evals.forEach(e=>{const v=Object.values(e.scores||{});const a=v.length?v.reduce((x,y)=>x+y,0)/v.length:0;if(a>=4.5)B['5⭐']++;else if(a>=3.5)B['4⭐']++;else if(a>=2.5)B['3⭐']++;else if(a>=1.5)B['2⭐']++;else B['1⭐']++;});
+  const mx=Math.max(...Object.values(B),1);const cols=['#f59e0b','#fbbf24','#d97706','#b45309','#92400e'];
+  document.getElementById('eval-dist').innerHTML=Object.entries(B).map(([l,n],i)=>`<div class="bar-row"><div class="bar-lbl">${l}</div><div class="bar-bg"><div class="bar-fill" style="width:${n/mx*100}%;background:${cols[i]}"></div></div><div class="bar-num" style="color:${cols[i]}">${n}</div></div>`).join('');
+  document.getElementById('eval-tbl').innerHTML=evals.length?evals.map((e,i)=>{const v=Object.values(e.scores||{});const a=v.length?(v.reduce((x,y)=>x+y,0)/v.length).toFixed(1):'—';const col=a>=4?'var(--g1)':a>=3?'var(--gold)':'var(--red)';return`<tr><td>${i+1}</td><td><strong>${e.name||'—'}</strong></td>${EVAL_CRIT.map(c=>`<td style="text-align:center;color:#f59e0b">${'★'.repeat(e.scores?.[c.key]||0)}${'☆'.repeat(5-(e.scores?.[c.key]||0))}</td>`).join('')}<td><strong style="color:${col}">${a}</strong></td><td style="font-size:.74rem;max-width:120px;white-space:normal">${e.comment?`"${e.comment.slice(0,50)}${e.comment.length>50?'…':''}"` :'—'}</td></tr>`;}).join(''):'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px">لا تقييمات بعد</td></tr>';
+  const wc=evals.filter(e=>e.comment&&e.comment.length>2);
+  document.getElementById('eval-cmts').innerHTML=wc.length?wc.map(e=>`<div style="background:#fff;border:1.5px solid var(--border);border-radius:11px;padding:11px 13px;margin-bottom:8px;font-size:.82rem;line-height:1.7"><div style="font-weight:800;color:var(--g1);font-size:.76rem;margin-bottom:3px">👤 ${e.name}</div>"${e.comment}"</div>`).join(''):'<p style="color:var(--muted);font-size:.82rem;text-align:center;padding:16px">لا تعليقات بعد</p>';
+}
+
+// ══════════════════════════════════════════════
+//  FINAL REPORT
+// ══════════════════════════════════════════════
+function renderFinalReport(){
+  const avgs=_trainees.map(t=>getAvg(t.id)).filter(a=>a!==null);
+  const overall=avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):0;
+  const passed=avgs.filter(a=>a>=60).length;
+  const failed=avgs.filter(a=>a<60).length;
+  const totalAtt=_trainees.reduce((s,t)=>s+getAtt(t.id),0);
+  const attPct=_trainees.length?Math.round(totalAtt/(_trainees.length*5)*100):0;
+  const evals=Object.values(_evaluations);
+  const ev=evals.flatMap(e=>Object.values(e.scores||{}));
+  const evAvg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
+  const comp=_trainees.filter(t=>DAYS.every(d=>_results[t.id]?.[d]?.quizScore!==undefined)).length;
+  const ranked=[..._trainees].map(t=>({...t,avg:getAvg(t.id)})).filter(t=>t.avg!==null).sort((a,b)=>b.avg-a.avg);
+  const top3=ranked.slice(0,3);
+  const dayAvgs=DAYS.map(d=>{const s=_trainees.map(t=>_results[t.id]?.[d]?.quizScore).filter(s=>s!==undefined);return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null;});
+  const maxDayAvg=Math.max(...dayAvgs.filter(a=>a!==null),1);
+  const ex=avgs.filter(a=>a>=85).length,gd=avgs.filter(a=>a>=70&&a<85).length,ac=avgs.filter(a=>a>=60&&a<70).length,wk=avgs.filter(a=>a<60).length;
+  const lvlTotal=avgs.length||1;
+
+  // Auto recommendations
+  const recs=[];
+  if(overall<60) recs.push({icon:'📚',txt:'يُوصى بإعادة تقديم المادة للمتدربين الضعفاء وتنظيم جلسة مراجعة إضافية.'});
+  if(overall>=60&&overall<75) recs.push({icon:'🎯',txt:'الأداء مقبول — يُنصح بتعزيز التطبيق العملي في الجلسات القادمة.'});
+  if(overall>=75) recs.push({icon:'🏆',txt:'أداء ممتاز — يُوصى بتطوير المتدربين المتميزين لقيادة ورش متقدمة.'});
+  if(attPct<80) recs.push({icon:'📅',txt:'نسبة الحضور منخفضة — يُقترح مراجعة جدولة الورشة وإشعار المتدربين مسبقاً.'});
+  if(evAvg!=='—'&&parseFloat(evAvg)>=4.5) recs.push({icon:'⭐',txt:'تقييم المدرب ممتاز — يُوصى بتوثيق أسلوبه التدريبي كمرجع للورش القادمة.'});
+  if(evals.length<_trainees.length*0.5) recs.push({icon:'📋',txt:'نسبة مشاركة في التقييم منخفضة — يُقترح تشجيع المتدربين على المشاركة في التقييم.'});
+
+  const rpt=document.getElementById('final-report');
+  rpt.innerHTML=`
+  <div style="font-family:'Tajawal',sans-serif;direction:rtl;color:#0e1f18">
+
+    <!-- ══ COVER ══ -->
+    <div style="background:linear-gradient(145deg,#04221a 0%,#0a5c3e 60%,#12a06e 100%);border-radius:20px;padding:40px 32px;text-align:center;color:#fff;margin-bottom:24px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;opacity:.04;background:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%) 0 0/20px 20px"></div>
+      <!-- Logos row -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;position:relative">
+        <div style="background:rgba(255,255,255,.95);border-radius:12px;padding:8px 14px">
+          <img src="${MOPH_URL}" style="height:44px;width:auto;object-fit:contain" alt="MoPH" onerror="this.style.display='none'">
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:.72rem;letter-spacing:2px;opacity:.7;text-transform:uppercase;margin-bottom:4px">Final Training Report</div>
+          <div style="width:60px;height:2px;background:rgba(255,255,255,.4);margin:0 auto"></div>
+        </div>
+        <div style="background:rgba(255,255,255,.95);border-radius:12px;padding:8px 14px">
+          <img src="${ACES_URL}" style="height:44px;width:auto;object-fit:contain" alt="ACES" onerror="this.style.display='none'">
+        </div>
+      </div>
+      <h1 style="font-size:1.7rem;font-weight:900;margin-bottom:8px;position:relative">التقرير النهائي للورشة التدريبية</h1>
+      <h2 style="font-size:1.1rem;font-weight:700;opacity:.92;margin-bottom:20px;position:relative">${_ws?.name||'—'}</h2>
+      <!-- KPI pills -->
+      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;position:relative">
+        ${[
+          ['👥',_trainees.length,'متدرب'],
+          ['📊',overall+'%','متوسط الأداء'],
+          ['✅',attPct+'%','نسبة الحضور'],
+          ['⭐',evAvg+(evAvg!=='—'?'/5':''),'تقييم المدرب'],
+          ['🏆',comp,'أكمل البرنامج'],
+        ].map(([ic,v,l])=>`<div style="background:rgba(255,255,255,.15);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:12px 18px;text-align:center;min-width:90px">
+          <div style="font-size:.8rem;opacity:.75;margin-bottom:3px">${ic} ${l}</div>
+          <div style="font-size:1.4rem;font-weight:900">${v}</div>
+        </div>`).join('')}
       </div>
     </div>
 
-    <div id="edit-err" style="display:none;color:var(--red);font-size:.8rem;text-align:center;margin-bottom:8px;background:var(--red2);border-radius:8px;padding:8px;border:1.5px solid #fca5a5"></div>
-    <div style="display:flex;gap:8px;margin-top:14px">
-      <button onclick="closeModal()" class="btn btn-s" style="flex:1">إلغاء</button>
-      <button onclick="saveTraineeEdit('${id}')" class="btn btn-p" style="flex:2">💾 حفظ التعديلات</button>
+    <!-- ══ WORKSHOP INFO ══ -->
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;border-bottom:2px solid var(--g4);padding-bottom:8px">
+        <div style="width:4px;height:20px;background:var(--g1);border-radius:2px"></div>
+        <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">📋 بيانات الورشة</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        ${[
+          ['🏢 اسم الورشة',_ws?.name||'—'],
+          ['👨‍🏫 المدرب',_ws?.trainerName||'—'],
+          ['📅 تاريخ البداية',_ws?.startDate||'—'],
+          ['📅 تاريخ النهاية',_ws?.endDate||'—'],
+          ['🏛️ الجهة المنظِّمة',_ws?.org||'—'],
+          ['📍 الموقع',_ws?.location||'—'],
+        ].map(([l,v],i)=>`<div style="background:${i%2===0?'var(--bg)':'#fff'};border-radius:10px;padding:10px 13px;border:1px solid var(--border)">
+          <div style="font-size:.7rem;color:var(--muted);font-weight:700;margin-bottom:3px">${l}</div>
+          <div style="font-weight:800;font-size:.88rem">${v}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- ══ STATS CHARTS ══ -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+
+      <!-- Day averages chart -->
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:18px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+          <div style="width:4px;height:18px;background:var(--blue);border-radius:2px"></div>
+          <h3 style="font-weight:900;color:var(--g1);font-size:.88rem">📅 متوسط الأداء اليومي</h3>
+        </div>
+        ${dayAvgs.map((avg,i)=>{
+          const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';
+          const pct=avg?Math.round(avg/maxDayAvg*100):0;
+          return`<div style="margin-bottom:9px">
+            <div style="display:flex;justify-content:space-between;font-size:.74rem;font-weight:700;margin-bottom:4px">
+              <span>اليوم ${i+1}</span>
+              <span style="color:${col}">${avg!==null?avg+'%':'لا بيانات'}</span>
+            </div>
+            <div style="background:var(--border);border-radius:20px;height:10px;overflow:hidden">
+              <div style="width:${pct}%;height:100%;background:${col};border-radius:20px;transition:width 1s"></div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <!-- Level distribution chart -->
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:18px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+          <div style="width:4px;height:18px;background:var(--gold);border-radius:2px"></div>
+          <h3 style="font-weight:900;color:var(--g1);font-size:.88rem">📊 توزيع المستويات</h3>
+        </div>
+        ${[['ممتاز ≥85%',ex,'var(--g1)'],['جيد 70-84%',gd,'var(--blue)'],['مقبول 60-69%',ac,'var(--gold)'],['ضعيف <60%',wk,'var(--red)']].map(([l,n,c])=>`
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+            <div style="width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0"></div>
+            <div style="flex:1;font-size:.74rem;font-weight:700">${l}</div>
+            <div style="background:var(--border);flex:1;border-radius:20px;height:10px;overflow:hidden">
+              <div style="width:${Math.round(n/lvlTotal*100)}%;height:100%;background:${c};border-radius:20px"></div>
+            </div>
+            <div style="font-size:.74rem;font-weight:900;color:${c};min-width:20px;text-align:left">${n}</div>
+          </div>`).join('')}
+        <!-- Pass/Fail summary -->
+        <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="background:var(--g4);border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:1.3rem;font-weight:900;color:var(--g1)">${passed}</div>
+            <div style="font-size:.68rem;color:var(--muted)">✅ ناجح</div>
+          </div>
+          <div style="background:var(--red2);border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:1.3rem;font-weight:900;color:var(--red)">${failed}</div>
+            <div style="font-size:.68rem;color:var(--muted)">❌ راسب</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TOP 3 TRAINEES ══ -->
+    ${top3.length?`
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;border-bottom:2px solid var(--g4);padding-bottom:8px">
+        <div style="width:4px;height:20px;background:var(--gold);border-radius:2px"></div>
+        <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">🏆 أفضل المتدربين أداءً</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+        ${top3.map((t,i)=>{
+          const medals=['🥇','🥈','🥉'];
+          const bgs=['linear-gradient(135deg,#fef9c3,#fde68a)','linear-gradient(135deg,#f1f5f9,#e2e8f0)','linear-gradient(135deg,#fef3c7,#fde68a)'];
+          const cols=['#92400e','#475569','#78350f'];
+          return`<div style="background:${bgs[i]};border-radius:14px;padding:16px;text-align:center">
+            <div style="font-size:2rem;margin-bottom:6px">${medals[i]}</div>
+            <div style="font-weight:900;font-size:.88rem;margin-bottom:4px;color:${cols[i]}">${t.name.split(' ').slice(0,2).join(' ')}</div>
+            <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px">${t.dept}</div>
+            <div style="font-size:1.5rem;font-weight:900;color:${t.avg>=80?'var(--g1)':t.avg>=60?'var(--gold)':'var(--red)'}">${t.avg}%</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`:''}
+
+    <!-- ══ TRAINEES TABLE ══ -->
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;border-bottom:2px solid var(--g4);padding-bottom:8px">
+        <div style="width:4px;height:20px;background:var(--g1);border-radius:2px"></div>
+        <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">👥 قائمة المتدربين ودرجاتهم</h3>
+      </div>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.78rem">
+        <thead><tr style="background:linear-gradient(135deg,var(--g1),var(--g2))">
+          <th style="padding:10px 11px;text-align:right;font-weight:800;color:#fff;border-radius:8px 0 0 0">#</th>
+          <th style="padding:10px 11px;text-align:right;font-weight:800;color:#fff">الاسم</th>
+          <th style="padding:10px 11px;text-align:right;font-weight:800;color:#fff">الجهة</th>
+          ${DAYS.map(d=>`<th style="padding:10px 11px;text-align:center;font-weight:800;color:#fff">يوم ${d}</th>`).join('')}
+          <th style="padding:10px 11px;text-align:center;font-weight:800;color:#fff">المتوسط</th>
+          <th style="padding:10px 11px;text-align:center;font-weight:800;color:#fff;border-radius:0 8px 0 0">المستوى</th>
+        </tr></thead>
+        <tbody>
+          ${_trainees.map((t,i)=>{
+            const avg=getAvg(t.id);
+            const level=avg===null?'—':avg>=85?'ممتاز':avg>=70?'جيد جداً':avg>=60?'مقبول':'ضعيف';
+            const lc=avg===null?'#6b7280':avg>=80?'#0a5c3e':avg>=60?'#c8830a':'#b83030';
+            const lb=avg===null?'#f3f4f6':avg>=85?'#d1fae5':avg>=70?'#dbeafe':avg>=60?'#fff7e6':'#fde8e8';
+            return`<tr style="background:${i%2===0?'#fff':'#f9fbfa'}">
+              <td style="padding:9px 11px;font-weight:700">${i+1}</td>
+              <td style="padding:9px 11px;font-weight:800">${t.name}</td>
+              <td style="padding:9px 11px;color:var(--muted);font-size:.75rem">${t.dept}</td>
+              ${DAYS.map(d=>{const r=_results[t.id]?.[d];if(!r)return`<td style="padding:9px 11px;text-align:center;color:#9ca3af">—</td>`;if(r.absent)return`<td style="padding:9px 11px;text-align:center;color:#b83030;font-weight:800">غ <button onclick="delDayResult('${t.id}',${d});setTimeout(renderFinalReport,300);" style="background:#fde8e8;border:1px solid #fca5a5;border-radius:4px;padding:1px 5px;font-size:.6rem;cursor:pointer;color:#b83030;font-family:Tajawal,sans-serif" title="حذف">✕</button></td>`;const s=r.quizScore;return`<td style="padding:9px 11px;text-align:center;font-weight:800;color:${s>=80?'#0a5c3e':s>=60?'#c8830a':'#b83030'}">${s}%</td>`;}).join('')}
+              <td style="padding:9px 11px;text-align:center;font-weight:900;color:${lc};font-size:.9rem">${avg!==null?avg+'%':'—'}</td>
+              <td style="padding:9px 11px;text-align:center"><span style="background:${lb};color:${lc};padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:800">${level}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- ══ ATTENDANCE ══ -->
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;border-bottom:2px solid var(--g4);padding-bottom:8px">
+        <div style="width:4px;height:20px;background:var(--g3);border-radius:2px"></div>
+        <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">✅ إحصائيات الحضور</h3>
+      </div>
+      <!-- Day attendance bars -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px">
+        ${DAYS.map(d=>{
+          const pres=_trainees.filter(t=>(_attendance[t.id]||{})[d]==='present').length;
+          const pct=_trainees.length?Math.round(pres/_trainees.length*100):0;
+          const col=pct>=80?'var(--g1)':pct>=60?'var(--gold)':'var(--red)';
+          const bg=pct>=80?'var(--g4)':pct>=60?'var(--gold2)':'var(--red2)';
+          return`<div style="background:${bg};border-radius:12px;padding:14px;text-align:center;border:1.5px solid var(--border)">
+            <div style="font-size:.72rem;color:var(--muted);font-weight:700;margin-bottom:6px">اليوم ${d}</div>
+            <div style="font-size:1.6rem;font-weight:900;color:${col};line-height:1">${pct}%</div>
+            <div style="font-size:.65rem;color:var(--muted);margin-top:4px">${pres} / ${_trainees.length}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <!-- Overall -->
+      <div style="background:var(--g4);border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:800;color:var(--g1)">متوسط الحضور الكلي للورشة</span>
+        <span style="font-size:1.5rem;font-weight:900;color:${attPct>=80?'var(--g1)':attPct>=60?'var(--gold)':'var(--red)'}">${attPct}%</span>
+      </div>
+    </div>
+
+    <!-- ══ EVALUATIONS ══ -->
+    ${evals.length?`
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;border-bottom:2px solid var(--g4);padding-bottom:8px">
+        <div style="width:4px;height:20px;background:var(--gold);border-radius:2px"></div>
+        <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">⭐ تقييمات المدرب</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
+        <div style="background:var(--gold2);border-radius:12px;padding:14px;text-align:center;border:1.5px solid #fde68a">
+          <div style="font-size:1.8rem;font-weight:900;color:#92400e">${evAvg}${evAvg!=='—'?'⭐':''}</div>
+          <div style="font-size:.7rem;color:#78350f;font-weight:700">المتوسط العام</div>
+        </div>
+        <div style="background:var(--g4);border-radius:12px;padding:14px;text-align:center;border:1.5px solid var(--g5)">
+          <div style="font-size:1.8rem;font-weight:900;color:var(--g1)">${evals.length}</div>
+          <div style="font-size:.7rem;color:var(--muted);font-weight:700">عدد التقييمات</div>
+        </div>
+        <div style="background:var(--blue2);border-radius:12px;padding:14px;text-align:center;border:1.5px solid #bfdbfe">
+          <div style="font-size:1.8rem;font-weight:900;color:var(--blue)">${_trainees.length?Math.round(evals.length/_trainees.length*100):0}%</div>
+          <div style="font-size:.7rem;color:#1e40af;font-weight:700">نسبة المشاركة</div>
+        </div>
+      </div>
+      ${[['clarity','وضوح الشرح والأسلوب'],['organization','التنظيم والتحضير'],['interaction','التفاعل مع المتدربين'],['knowledge','الإلمام بالمادة'],['overall','الرضا العام']].map(([k,l])=>{
+        const vals=evals.map(e=>e.scores?.[k]).filter(v=>v!==undefined);
+        const avg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):null;
+        const col=avg>=4?'var(--g1)':avg>=3?'var(--gold)':'var(--red)';
+        return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px">
+          <div style="width:130px;font-size:.78rem;font-weight:700;flex-shrink:0">${l}</div>
+          <div style="flex:1;background:var(--border);border-radius:20px;height:10px;overflow:hidden">
+            <div style="width:${avg?parseFloat(avg)/5*100:0}%;height:100%;background:${col};border-radius:20px"></div>
+          </div>
+          <div style="font-size:.78rem;font-weight:900;color:${col};min-width:36px;text-align:left">${avg?avg+'/5':'—'}</div>
+        </div>`;
+      }).join('')}
+      ${evals.filter(e=>e.comment&&e.comment.length>2).length?`
+      <div style="margin-top:16px;border-top:1.5px solid var(--border);padding-top:14px">
+        <div style="font-weight:800;color:#92400e;font-size:.85rem;margin-bottom:10px">💬 تعليقات المتدربين</div>
+        ${evals.filter(e=>e.comment&&e.comment.length>2).map(e=>`
+          <div style="background:#fffbeb;border-right:3px solid #f59e0b;padding:10px 14px;border-radius:0 10px 10px 0;margin-bottom:8px;font-size:.82rem">
+            <strong style="color:#92400e">${e.name}:</strong> "${e.comment}"
+          </div>`).join('')}
+      </div>`:''}
+    </div>`:''}
+
+    <!-- ══ PHOTOS ══ -->
+    ${_photos&&_photos.length?`
+    <div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;border-bottom:2px solid var(--g4);padding-bottom:8px">
+        <div style="width:4px;height:20px;background:var(--purple);border-radius:2px"></div>
+        <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">🖼️ صور الورشة (${_photos.length} صورة)</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px">
+        ${_photos.map(p=>`<div style="border-radius:12px;overflow:hidden;border:1.5px solid var(--border);aspect-ratio:4/3">
+          <img src="${p.data}" style="width:100%;height:100%;object-fit:cover" alt="${p.name}">
+        </div>`).join('')}
+      </div>
+    </div>`:''}
+
+    <!-- ══ RECOMMENDATIONS ══ -->
+    ${recs.length?`
+    <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:16px;padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <div style="width:4px;height:20px;background:#16a34a;border-radius:2px"></div>
+        <h3 style="font-weight:900;color:#15803d;font-size:.95rem">💡 التوصيات والمقترحات</h3>
+      </div>
+      ${recs.map((r,i)=>`<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;${i<recs.length-1?'border-bottom:1px solid #bbf7d0':''}">
+        <span style="font-size:1.3rem;flex-shrink:0">${r.icon}</span>
+        <p style="font-size:.85rem;color:#166534;font-weight:600;line-height:1.7;margin:0">${r.txt}</p>
+      </div>`).join('')}
+    </div>`:''}
+
+    <!-- ══ FOOTER ══ -->
+    <div style="background:linear-gradient(135deg,#04211a,#0a5c3e);border-radius:16px;padding:24px;text-align:center">
+      <div style="display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:14px">
+        <div style="background:rgba(255,255,255,.95);border-radius:10px;padding:7px 14px">
+          <img src="${MOPH_URL}" style="height:38px;width:auto;object-fit:contain" alt="MoPH" onerror="this.style.display='none'">
+        </div>
+        <div style="width:1px;height:36px;background:rgba(255,255,255,.3)"></div>
+        <div style="background:rgba(255,255,255,.95);border-radius:10px;padding:7px 14px">
+          <img src="${ACES_URL}" style="height:38px;width:auto;object-fit:contain" alt="ACES" onerror="this.style.display='none'">
+        </div>
+      </div>
+      <div style="color:#fff;font-weight:900;font-size:.9rem;margin-bottom:5px">نظام ACES لإدارة ورش تدريب سحب العينات الغذائية</div>
+      <div style="color:rgba(255,255,255,.7);font-size:.76rem;margin-bottom:5px">Ministry of Public Health — State of Qatar</div>
+      <div style="color:rgba(255,255,255,.5);font-size:.72rem">${_ws?.trainerName||'—'} · ${_ws?.name||'—'} · تاريخ الإصدار: ${new Date().toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'})}</div>
+    </div>
+
+  </div>`;
+}
+
+
+function drawQROnCanvas(canvasId, url, size) {
+  const canvas = document.getElementById(canvasId);
+  if(!canvas || !url) return;
+  if(window.QRCode) {
+    const tmp = document.createElement('div');
+    tmp.style.display = 'none';
+    document.body.appendChild(tmp);
+    try {
+      new window.QRCode(tmp, {
+        text: url, width: size, height: size,
+        colorDark: '#0a5c3e', colorLight: '#ffffff',
+        correctLevel: window.QRCode.CorrectLevel?.M || 1
+      });
+      setTimeout(() => {
+        const img = tmp.querySelector('img') || tmp.querySelector('canvas');
+        if(img) {
+          const ctx = canvas.getContext('2d');
+          const image = new Image();
+          image.onload = () => ctx.drawImage(image, 0, 0, size, size);
+          image.src = img.tagName === 'CANVAS' ? img.toDataURL() : img.src;
+        }
+        if(tmp.parentNode) document.body.removeChild(tmp);
+      }, 150);
+    } catch(e) { if(tmp.parentNode) document.body.removeChild(tmp); }
+  }
+}
+
+function traineeCode(id){let h=0;for(let i=0;i<id.length;i++)h=((h<<5)-h+id.charCodeAt(i))|0;return String(Math.abs(h)%900000+100000);}
+function traineeURL(tid){
+  return 'https://melnahas11111-ctrl.github.io/ACES-Workshops/trainee.html?wsid=' + _wsId + '&tid=' + tid;
+}
+
+
+// ── Auto-show QR after adding new trainee ─────────────────────────
+function showNewTraineeQR(trainee) {
+  const code = traineeCode(trainee.id);
+  const url  = traineeURL(trainee.id);
+  openModal(`📱 QR جاهز — ${trainee.name}`, `
+    <div style="text-align:center">
+      <div style="background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:16px;padding:18px;color:#fff;margin-bottom:16px">
+        <div style="font-size:.78rem;opacity:.85;margin-bottom:4px">✅ تمت إضافة المتدرب بنجاح</div>
+        <div style="font-size:1.1rem;font-weight:900">${trainee.name}</div>
+        <div style="font-size:.8rem;opacity:.85;margin-top:2px">${trainee.dept}</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:14px;padding:16px;margin-bottom:14px">
+        <div style="color:rgba(255,255,255,.85);font-size:.72rem;font-weight:700;margin-bottom:4px">🔑 كود الدخول الرقمي</div>
+        <div style="color:#fff;font-size:2.2rem;font-weight:900;letter-spacing:8px">${code}</div>
+        <div style="color:rgba(255,255,255,.75);font-size:.7rem;margin-top:4px">المتدرب يدخل هذا الكود عند بداية كل يوم</div>
+      </div>
+      <div id="qr-popup-canvas" style="margin:0 auto 12px;width:fit-content;background:#fff;padding:10px;border-radius:12px;border:2px solid var(--border)">
+        <canvas id="new-trainee-qr" width="180" height="180"></canvas>
+      </div>
+      <div style="font-size:.64rem;color:var(--muted);background:var(--bg);border-radius:8px;padding:6px 10px;word-break:break-all;margin-bottom:14px">${url}</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="closeModal()" class="btn btn-s" style="flex:1">إغلاق</button>
+        <button onclick="trTab('qr',null);closeModal()" class="btn btn-p" style="flex:1">📱 عرض كل QR</button>
+      </div>
     </div>
   `);
-  setTimeout(()=>document.getElementById('edit-name')?.focus(),120);
+  // Draw QR after modal opens
+  setTimeout(() => {
+    const canvas = document.getElementById('new-trainee-qr');
+    if(canvas && window.QRCode) {
+      const tmp = document.createElement('div');
+      tmp.style.display = 'none';
+      document.body.appendChild(tmp);
+      new window.QRCode(tmp, {
+        text: url, width: 180, height: 180,
+        colorDark: '#0a5c3e', colorLight: '#ffffff',
+        correctLevel: window.QRCode.CorrectLevel?.M || 1
+      });
+      setTimeout(() => {
+        const img = tmp.querySelector('img') || tmp.querySelector('canvas');
+        if(img) {
+          const ctx = canvas.getContext('2d');
+          const image = new Image();
+          image.onload = () => ctx.drawImage(image, 0, 0, 180, 180);
+          image.src = img.tagName === 'CANVAS' ? img.toDataURL() : img.src;
+        }
+        document.body.removeChild(tmp);
+      }, 200);
+    }
+  }, 150);
 }
 
-async function saveTraineeEdit(id){
-  const name  = document.getElementById('edit-name')?.value.trim();
-  const err   = document.getElementById('edit-err');
-  if(!name){ err.style.display='block'; err.textContent='⚠️ الاسم الكامل مطلوب'; return; }
+function renderQR(){
+  const grid=document.getElementById('qr-grid');
+  if(!_trainees.length){grid.innerHTML='<p style="color:var(--muted);text-align:center;grid-column:1/-1;padding:30px">أضف متدربين أولاً</p>';return;}
+  grid.innerHTML=_trainees.map(t=>{
+    const code=traineeCode(t.id);const url=traineeURL(t.id);
+    return`<div class="card" style="padding:16px;text-align:center;page-break-inside:avoid">
+      <div id="qrcanvas-${t.id}" style="width:160px;height:160px;margin:0 auto 10px;background:#fff;border-radius:10px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center">
+        <canvas id="qrc-${t.id}" width="160" height="160" style="border-radius:8px"></canvas>
+      </div>
+      <div style="font-weight:900;font-size:.92rem;color:var(--g1);margin-bottom:2px">${t.name}</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:10px">${t.dept}</div>
+      <div style="background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:12px;padding:10px;margin-bottom:8px">
+        <div style="color:rgba(255,255,255,.8);font-size:.65rem;font-weight:700;margin-bottom:3px">🔑 كود الدخول</div>
+        <div style="color:#fff;font-size:1.6rem;font-weight:900;letter-spacing:6px">${code}</div>
+      </div>
+      <div style="font-size:.62rem;color:var(--muted);background:var(--bg);border-radius:8px;padding:5px 8px;word-break:break-all">${url}</div>
+    </div>`;
+  }).join('');
+  // Draw QR codes
+  setTimeout(()=>_trainees.forEach(t=>drawQROnCanvas('qrc-'+t.id, traineeURL(t.id), 160)), 100);
+}
 
-  const idx = _trainees.findIndex(x=>x.id===id);
-  if(idx===-1){ toast('❌ المتدرب غير موجود'); closeModal(); return; }
+function showQRModal(tid){
+  const t=_trainees.find(x=>x.id===tid);if(!t)return;
+  const code=traineeCode(tid);const url=traineeURL(tid);
+  openModal(`📱 QR — ${t.name}`,`
+    <div style="text-align:center">
+      <div style="font-weight:900;color:var(--g1);font-size:1rem;margin-bottom:14px">${t.name} · ${t.dept}</div>
+      <div style="background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:14px;padding:16px;margin-bottom:12px">
+        <div style="color:rgba(255,255,255,.8);font-size:.72rem;font-weight:700;margin-bottom:4px">🔑 كود الدخول</div>
+        <div style="color:#fff;font-size:2rem;font-weight:900;letter-spacing:8px">${code}</div>
+      </div>
+      <div style="font-size:.65rem;color:var(--muted);background:var(--bg);border-radius:8px;padding:6px 10px;word-break:break-all">${url}</div>
+    </div>`);
+}
 
-  const btn = document.querySelector('#modal .btn-p');
-  if(btn){ btn.disabled=true; btn.innerHTML='<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span> جارٍ الحفظ...'; }
+// ══════════════════════════════════════════════
+//  CSV EXPORT
+// ══════════════════════════════════════════════
+function exportCSV(){
+  const h=['الاسم','الرقم','الجهة','الحضور',...DAYS.map(d=>`يوم ${d}`),'المتوسط','المستوى'];
+  const rows=_trainees.map(t=>{
+    const scores=DAYS.map(d=>_results[t.id]?.[d]?.quizScore??'');
+    const avg=getAvg(t.id);const level=avg===null?'—':avg>=85?'ممتاز':avg>=70?'جيد جداً':avg>=60?'مقبول':'ضعيف';
+    return[t.name,t.sid,t.dept,getAtt(t.id)+'/5',...scores,avg!==null?avg+'%':'—',level];
+  });
+  const hdr=`\uFEFF# ${_ws?.name||'ورشة'}\n# المدرب: ${_ws?.trainerName||''}\n# التاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\n`;
+  const csv=hdr+[h,...rows].map(r=>r.map(v=>`"${v||''}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`تقرير_${_ws?.name||'ورشة'}.csv`;a.click();
+  toast('📥 تم التصدير');
+}
 
-  const updated = {
-    ..._trainees[idx],
-    name,
-    sid:      document.getElementById('edit-sid')?.value.trim()      || '—',
-    dept:     document.getElementById('edit-dept')?.value.trim()     || '—',
-    spec:     document.getElementById('edit-spec')?.value.trim()     || '—',
-    phone:    document.getElementById('edit-phone')?.value.trim()    || '',
-    email:    document.getElementById('edit-email')?.value.trim()    || '',
-    jobTitle: document.getElementById('edit-jobtitle')?.value.trim() || '',
-    updatedAt: new Date().toISOString()
+// ══════════════════════════════════════════════
+//  LIVE SYNC
+// ══════════════════════════════════════════════
+
+// ══════════════════════════════════════════════
+//  GITHUB AUTO-UPDATE
+// ══════════════════════════════════════════════
+async function pushToGitHub(filename, content, commitMsg) {
+  const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${filename}`;
+  const headers = {
+    'Authorization': 'token ' + GH_TOKEN,
+    'Content-Type':  'application/json',
+    'Accept':        'application/vnd.github.v3+json'
   };
 
-  _trainees[idx] = updated;
-  await fbSet(`workshops/${_wsId}/trainees/${id}`, updated);
+  // Get current SHA (needed for update)
+  let sha = null;
+  try {
+    const res = await fetch(url, { headers });
+    if (res.ok) { const d = await res.json(); sha = d.sha; }
+  } catch {}
 
-  closeModal();
-  renderTrTable();
-  renderInlineQR();
-  toast('✅ تم تحديث بيانات ' + name);
+  // Push file
+  const body = {
+    message: commitMsg || '🔄 Auto-update: ' + new Date().toLocaleString('ar-SA'),
+    content: btoa(unescape(encodeURIComponent(content))),
+    ...(sha ? { sha } : {})
+  };
+
+  const res = await fetch(url, { method:'PUT', headers, body: JSON.stringify(body) });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || 'GitHub push failed');
+  }
+  return true;
 }
 
-```
+async function updateGitHub() {
+  if (!GH_TOKEN) GH_TOKEN = _getToken();
+
+  const btn = document.getElementById('gh-update-btn') || document.getElementById('gh-update-btn-tr');
+  if (btn) { btn.disabled=true; btn.innerHTML='<span class="spinner"></span> جارٍ الرفع...'; }
+
+  try {
+    // Build updated workshops.html with embedded data
+    const wsData = await fbGet('workshops') || {};
+    
+    // Push workshops.html (current file)
+    const res = await fetch(window.location.href);
+    let htmlContent = await res.text();
+    
+    // Embed current Firebase data as snapshot comment
+        // Data sync timestamp
+    htmlContent = htmlContent.replace('</body>', '<!-- SYNC:' + new Date().toISOString() + ' --></body>');
+
+    await pushToGitHub(
+      'index.html',
+      htmlContent,
+      `🔄 Update: ${new Date().toLocaleString('ar-SA')} — ${Object.keys(wsData).length} ورشة`
+    );
+
+    if (btn) { btn.disabled=false; btn.innerHTML='✅ تم الرفع'; }
+    setTimeout(()=>{ if(btn) btn.innerHTML='🔄 تحديث GitHub'; btn.disabled=false; }, 3000);
+    toast('✅ تم رفع التحديث على GitHub بنجاح!');
+  } catch(e) {
+    console.error('GitHub update error:', e);
+    // If auth error, clear token so user can re-enter
+    if (e.message && (e.message.includes('401') || e.message.includes('Bad credentials'))) {
+      GH_TOKEN = '';
+      toast('❌ Token خاطئ — تحقق من الصلاحيات');
+    } else {
+      toast('❌ فشل الرفع: ' + e.message);
+    }
+    if (btn) { btn.disabled=false; btn.innerHTML='🔄 رفع GitHub'; }
+  }
+}
+
+
+// ══════════════════════════════════════════════
+//  EXAM CONTROL
+// ══════════════════════════════════════════════
+// toggleExam and updateExamBtns moved to Phase 3
+
+
+// ══════════════════════════════════════════════
+//  ADMIN SEARCH & FILTER
+// ══════════════════════════════════════════════
+function adminSearch(query){
+  const q = query.toLowerCase().trim();
+  const status = document.getElementById('filter-status')?.value || 'all';
+  const resultsEl = document.getElementById('search-results');
+  
+  if(!q && status==='all'){
+    if(resultsEl) resultsEl.style.display='none';
+    renderWSGrid();
+    return;
+  }
+
+  const today = new Date().toISOString().slice(0,10);
+  const results = [];
+
+  Object.values(_allWs).forEach(w=>{
+    // Filter by status
+    if(status==='active' && w.endDate && w.endDate < today) return;
+    if(status==='completed' && (!w.endDate || w.endDate >= today)) return;
+
+    // Search in workshop
+    const wsMatch = !q || w.name?.toLowerCase().includes(q) || w.trainerName?.toLowerCase().includes(q) || w.org?.toLowerCase().includes(q);
+    
+    // Search in trainees
+    const matchedTrainees = Object.values(w.trainees||{}).filter(t=>
+      !q || t.name?.toLowerCase().includes(q) || t.dept?.toLowerCase().includes(q) || t.sid?.toLowerCase().includes(q)
+    );
+
+    if(wsMatch || matchedTrainees.length){
+      results.push({ws:w, trainees:matchedTrainees, wsMatch});
+    }
+  });
+
+  if(!q && status!=='all'){
+    // Just filter workshops
+    renderWSGrid(Object.values(_allWs).filter(w=>{
+      if(status==='active') return !w.endDate || w.endDate >= today;
+      if(status==='completed') return w.endDate && w.endDate < today;
+      return true;
+    }));
+    if(resultsEl) resultsEl.style.display='none';
+    return;
+  }
+
+  if(!resultsEl) return;
+
+  if(!results.length){
+    resultsEl.style.display='block';
+    resultsEl.innerHTML=`<div class="card" style="text-align:center;padding:24px;color:var(--muted)">
+      <div style="font-size:2rem;margin-bottom:8px">🔍</div>
+      <p>لا نتائج لـ "${query}"</p>
+    </div>`;
+    return;
+  }
+
+  resultsEl.style.display='block';
+  resultsEl.innerHTML=`
+    <div class="card">
+      <div style="font-weight:800;color:var(--g1);font-size:.88rem;margin-bottom:12px">
+        🔍 نتائج البحث عن "${query}" — ${results.length} ورشة
+      </div>
+      ${results.map(({ws:w, trainees:mt})=>`
+        <div style="border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer"
+          onclick="adminTab('workshops',document.querySelector('#admin-subnav .snbtn'))">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+            <div>
+              <div style="font-weight:900;color:var(--g1)">${w.name}</div>
+              <div style="font-size:.78rem;color:var(--muted)">👨‍🏫 ${w.trainerName} · 📅 ${w.startDate||'—'}</div>
+            </div>
+            <span class="badge g">${Object.keys(w.trainees||{}).length} متدرب</span>
+          </div>
+          ${mt.length?`
+          <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px">
+            <div style="font-size:.74rem;color:var(--muted);margin-bottom:6px">متدربون مطابقون:</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              ${mt.slice(0,5).map(t=>`<span style="background:var(--g4);border-radius:20px;padding:3px 10px;font-size:.74rem;font-weight:700;color:var(--g1)">${t.name}</span>`).join('')}
+              ${mt.length>5?`<span style="color:var(--muted);font-size:.74rem">+${mt.length-5} آخرين</span>`:''}
+            </div>
+          </div>`:''}
+        </div>`).join('')}
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+//  ANALYTICS TAB
+// ══════════════════════════════════════════════
+function renderAnalytics(){
+  const ws = Object.values(_allWs);
+  if(!ws.length){
+    document.getElementById('adv-kpis').innerHTML='';
+    document.getElementById('analytics-timeline').innerHTML='<p style="color:var(--muted);font-size:.82rem;text-align:center;padding:20px">لا توجد ورش بعد</p>';
+    return;
+  }
+
+  // Advanced KPI cards
+  const allTrainees = ws.reduce((s,w)=>s+Object.keys(w.trainees||{}).length,0);
+  const allScores = ws.flatMap(w=>Object.values(w.results||{}).flatMap(t=>Object.values(t))).map(r=>r.quizScore).filter(s=>s!==undefined);
+  const avgScore = allScores.length?Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length):0;
+  const passRate = allScores.length?Math.round(allScores.filter(s=>s>=60).length/allScores.length*100):0;
+  const allEvals = ws.flatMap(w=>Object.values(w.evaluations||{}));
+  const evalVals = allEvals.flatMap(e=>Object.values(e.scores||{}));
+  const evalAvg = evalVals.length?(evalVals.reduce((a,b)=>a+b,0)/evalVals.length).toFixed(1):'—';
+  const attAll = ws.reduce((s,w)=>{const tr=Object.keys(w.trainees||{});return s+tr.reduce((a,tid)=>a+Object.values(w.attendance?.[tid]||{}).filter(v=>v==='present').length,0);},0);
+  const attTotal = ws.reduce((s,w)=>s+Object.keys(w.trainees||{}).length*5,0);
+  const avgAtt = attTotal?Math.round(attAll/attTotal*100):0;
+  const completed = ws.reduce((s,w)=>{const tr=Object.keys(w.trainees||{});return s+tr.filter(tid=>DAYS.every(d=>w.results?.[tid]?.[d]?.quizScore!==undefined)).length;},0);
+  const excellent = allScores.filter(s=>s>=85).length;
+  const weak = allScores.filter(s=>s<60).length;
+
+  document.getElementById('adv-kpis').innerHTML=[
+    ['🏢','الورش الكلية',ws.length,'g'],
+    ['👥','إجمالي المتدربين',allTrainees,'b'],
+    ['📊','متوسط الأداء',avgScore+'%','go'],
+    ['✅','نسبة النجاح',passRate+'%','g'],
+    ['📅','متوسط الحضور',avgAtt+'%','b'],
+    ['⭐','تقييم المدربين',evalAvg+(evalAvg!=='—'?'/5':''),'go'],
+    ['🏆','أكملوا البرنامج',completed,'g'],
+    ['🌟','متدرب ممتاز ≥85%',excellent,'go'],
+    ['⚠️','يحتاج دعماً <60%',weak,'r'],
+  ].map(([ic,l,v,c])=>`<div class="kpi ${c}" style="background:#fff;box-shadow:0 4px 16px rgba(10,92,62,.1)">
+    <div style="font-size:1.4rem;margin-bottom:4px">${ic}</div>
+    <div class="v">${v}</div>
+    <div class="l">${l}</div>
+  </div>`).join('');
+
+  // Timeline - performance per workshop
+  const maxAvg = Math.max(...ws.map(w=>{
+    const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);
+    return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):0;
+  }),1);
+
+  document.getElementById('analytics-timeline').innerHTML = ws.map((w,i)=>{
+    const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);
+    const avg=s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):0;
+    const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';
+    const medals=['🥇','🥈','🥉'];
+    return`<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:.76rem;font-weight:700;margin-bottom:4px">
+        <span>${medals[i]||'📌'} ${w.name.slice(0,20)}</span>
+        <span style="color:${col}">${avg?avg+'%':'لا بيانات'}</span>
+      </div>
+      <div style="background:var(--border);border-radius:20px;height:12px;overflow:hidden">
+        <div style="width:${avg?Math.round(avg/maxAvg*100):0}%;height:100%;background:${col};border-radius:20px;transition:width 1.2s ease"></div>
+      </div>
+      <div style="font-size:.68rem;color:var(--muted);margin-top:2px">${Object.keys(w.trainees||{}).length} متدرب · ${w.startDate||'—'}</div>
+    </div>`;
+  }).join('') || '<p style="color:var(--muted);text-align:center;padding:20px">لا بيانات بعد</p>';
+
+  // Level distribution across all workshops
+  const ex=allScores.filter(s=>s>=85).length, gd=allScores.filter(s=>s>=70&&s<85).length, ac=allScores.filter(s=>s>=60&&s<70).length, wk=allScores.filter(s=>s<60).length;
+  const tot2=allScores.length||1;
+  document.getElementById('analytics-levels').innerHTML=[
+    ['🏆 ممتاز ≥85%',ex,'var(--g1)'],
+    ['🎯 جيد 70-84%',gd,'var(--blue)'],
+    ['✅ مقبول 60-69%',ac,'var(--gold)'],
+    ['⚠️ ضعيف <60%',wk,'var(--red)']
+  ].map(([l,n,c])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0"></div>
+      <div style="flex:1;font-size:.78rem;font-weight:700">${l}</div>
+      <div style="flex:2;background:var(--border);border-radius:20px;height:12px;overflow:hidden">
+        <div style="width:${Math.round(n/tot2*100)}%;height:100%;background:${c};border-radius:20px"></div>
+      </div>
+      <div style="font-size:.78rem;font-weight:900;color:${c};min-width:30px;text-align:left">${n}</div>
+      <div style="font-size:.68rem;color:var(--muted);min-width:35px">${Math.round(n/tot2*100)}%</div>
+    </div>`).join('');
+
+  // Top 10 trainees across all workshops
+  const allRanked = ws.flatMap(w=>
+    Object.values(w.trainees||{}).map(t=>{
+      const s=DAYS.map(d=>w.results?.[t.id]?.[d]?.quizScore).filter(s=>s!==undefined);
+      const avg=s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null;
+      return{...t,avg,wsName:w.name};
+    }).filter(t=>t.avg!==null)
+  ).sort((a,b)=>b.avg-a.avg).slice(0,10);
+
+  const topEl = document.getElementById('analytics-top');
+  if(!allRanked.length){topEl.innerHTML='<p style="color:var(--muted);text-align:center;padding:20px">لا بيانات بعد</p>';return;}
+  const medals2=['🥇','🥈','🥉'];
+  topEl.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
+    ${allRanked.map((t,i)=>{
+      const col=t.avg>=80?'var(--g1)':t.avg>=60?'var(--gold)':'var(--red)';
+      const bg=i===0?'linear-gradient(135deg,#fef9c3,#fde68a)':i===1?'linear-gradient(135deg,#f1f5f9,#e2e8f0)':i===2?'linear-gradient(135deg,#fef3c7,#fde68a)':'#fff';
+      return`<div style="background:${bg};border:1.5px solid var(--border);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px">
+        <div style="font-size:1.4rem;flex-shrink:0">${medals2[i]||'#'+(i+1)}</div>
+        <div style="min-width:0">
+          <div style="font-weight:900;font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</div>
+          <div style="font-size:.7rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.wsName.slice(0,18)}</div>
+        </div>
+        <div style="font-size:1.1rem;font-weight:900;color:${col};margin-right:auto;flex-shrink:0">${t.avg}%</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+//  HONORS TAB — تكريم المتميزين
+// ══════════════════════════════════════════════
+function renderHonors(){
+  const ws = Object.values(_allWs);
+  const el = document.getElementById('honors-content');
+  if(!el) return;
+
+  if(!ws.length){el.innerHTML='<div class="card" style="text-align:center;padding:40px;color:var(--muted)"><div style="font-size:2.5rem">🏆</div><p>لا توجد ورش بعد</p></div>';return;}
+
+  // Best trainee per workshop
+  const bestPerWs = ws.map(w=>{
+    const ranked=Object.values(w.trainees||{}).map(t=>{
+      const s=DAYS.map(d=>w.results?.[t.id]?.[d]?.quizScore).filter(s=>s!==undefined);
+      const avg=s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null;
+      return{...t,avg};
+    }).filter(t=>t.avg!==null).sort((a,b)=>b.avg-a.avg);
+    return{ws:w, best:ranked[0]||null, ranked};
+  }).filter(x=>x.best);
+
+  // Best trainer by evaluation
+  const bestTrainers = ws.map(w=>{
+    const ev=Object.values(w.evaluations||{}).flatMap(e=>Object.values(e.scores||{}));
+    const avg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):null;
+    return{ws:w,evalAvg:avg};
+  }).filter(x=>x.evalAvg!==null).sort((a,b)=>parseFloat(b.evalAvg)-parseFloat(a.evalAvg));
+
+  el.innerHTML=`
+    <!-- Best Trainers -->
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;border-bottom:2px solid var(--g4);padding-bottom:8px">
+        <div style="width:4px;height:20px;background:var(--gold);border-radius:2px"></div>
+        <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">⭐ أفضل المدربين تقييماً</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">
+        ${bestTrainers.slice(0,6).map((x,i)=>`
+          <div style="background:${i===0?'linear-gradient(135deg,#fffbeb,#fef3c7)':'#fff'};border:1.5px solid ${i===0?'#fde68a':'var(--border)'};border-radius:14px;padding:16px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <div style="font-size:1.6rem">${['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣'][i]}</div>
+              <div>
+                <div style="font-weight:900;font-size:.9rem">${x.ws.trainerName}</div>
+                <div style="font-size:.72rem;color:var(--muted)">${x.ws.name.slice(0,20)}</div>
+              </div>
+            </div>
+            <div style="font-size:1.5rem;font-weight:900;color:#f59e0b;text-align:center">${x.evalAvg} ⭐</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Best Trainees per workshop -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;border-bottom:2px solid var(--g4);padding-bottom:8px">
+        <div style="width:4px;height:20px;background:var(--g1);border-radius:2px"></div>
+        <h3 style="font-weight:900;color:var(--g1);font-size:.95rem">🏆 أفضل متدرب في كل ورشة</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
+        ${bestPerWs.map(({ws:w,best,ranked})=>`
+          <div style="border:1.5px solid var(--border);border-radius:14px;overflow:hidden">
+            <div style="background:linear-gradient(135deg,var(--g1),var(--g2));padding:12px 16px;color:#fff">
+              <div style="font-size:.78rem;opacity:.85;margin-bottom:2px">🏢 ${w.name.slice(0,22)}</div>
+              <div style="font-size:.85rem;font-weight:700">👨‍🏫 ${w.trainerName}</div>
+            </div>
+            <div style="padding:14px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#fef9c3,#fde68a);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">🥇</div>
+                <div>
+                  <div style="font-weight:900;font-size:.92rem">${best.name}</div>
+                  <div style="font-size:.74rem;color:var(--muted)">${best.dept}</div>
+                </div>
+                <div style="font-size:1.3rem;font-weight:900;color:var(--g1);margin-right:auto">${best.avg}%</div>
+              </div>
+              ${ranked.slice(1,3).map((t,i)=>`
+                <div style="display:flex;justify-content:space-between;padding:5px 0;border-top:1px solid var(--border);font-size:.78rem">
+                  <span>${['🥈','🥉'][i]} ${t.name}</span>
+                  <strong style="color:var(--g1)">${t.avg}%</strong>
+                </div>`).join('')}
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+//  PHASE 2 — CERTIFICATE
+// ══════════════════════════════════════════════
+function generateCertificate(trainee, wsData, avgScore){
+  const level = avgScore>=85?'ممتاز':avgScore>=70?'جيد جداً':avgScore>=60?'مقبول':'مقبول';
+  const MOPH_URL = 'https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/moph_logo.png';
+  const ACES_URL = 'https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/aces_logo.png';
+  const dateAr = new Date().toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'});
+  const certWindow = window.open('','_blank','width=900,height=680');
+  if(!certWindow){ toast('❌ يرجى السماح بالنوافذ المنبثقة'); return; }
+  certWindow.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>شهادة — '+trainee.name+'</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Tajawal,sans-serif;direction:rtl;background:#f5f5f0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.cert{width:820px;min-height:580px;background:#fff;border:10px solid #0a5c3e;position:relative;padding:36px 48px}.cert::before{content:"";position:absolute;inset:7px;border:2.5px solid #c8830a;pointer-events:none}.watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:.04;font-size:110px;font-weight:900;color:#0a5c3e;pointer-events:none}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #e5e7eb}.cert-main-title{text-align:center;margin-bottom:16px}.name-section{text-align:center;padding:14px 0;margin:14px 0;border-top:2px dashed #e5e7eb;border-bottom:2px dashed #e5e7eb}.trainee-name{font-size:28px;font-weight:900;color:#0a5c3e;margin:6px 0}.info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0;text-align:center}.info-item{background:#f9fafb;border-radius:10px;padding:11px}.info-val{font-size:16px;font-weight:900;color:#0a5c3e}.info-lbl{font-size:11px;color:#6b7280;margin-top:2px}.score-badge{display:inline-block;background:linear-gradient(135deg,#0a5c3e,#12a06e);color:#fff;font-size:14px;font-weight:800;padding:5px 18px;border-radius:20px;margin:6px 0}.footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:20px;padding-top:14px;border-top:2px solid #e5e7eb}.sig-box{text-align:center;min-width:150px}.sig-line{border-bottom:2px solid #374151;margin-bottom:5px;height:36px}.sig-lbl{font-size:12px;color:#374151;font-weight:700}.sig-sub{font-size:10px;color:#9ca3af}@media print{body{background:#fff;padding:0}.no-print{display:none!important}.cert{box-shadow:none}}</style></head><body>');
+  certWindow.document.write('<div class="cert"><div class="watermark">ACES</div>');
+  certWindow.document.write('<div class="header"><img src="'+MOPH_URL+'" style="height:50px;object-fit:contain" onerror="this.style.display=\'none\'"><div style="text-align:center"><div style="font-size:11px;color:#6b7280;letter-spacing:2px">Certificate of Completion</div><div style="font-size:20px;font-weight:900;color:#0a5c3e">شهادة إتمام</div></div><img src="'+ACES_URL+'" style="height:50px;object-fit:contain" onerror="this.style.display=\'none\'"></div>');
+  certWindow.document.write('<div class="cert-main-title"><div style="font-size:12px;color:#6b7280;margin-bottom:3px">برنامج تدريبي في</div><div style="font-size:28px;font-weight:900;color:#0a5c3e">سحب العينات الغذائية</div><div style="font-size:12px;color:#6b7280">Food Sampling Training Program — 5 Days</div></div>');
+  certWindow.document.write('<div class="name-section"><div style="font-size:13px;color:#6b7280">يُشهد بأن المتدرب/ة</div><div class="trainee-name">'+trainee.name+'</div><div style="font-size:12px;color:#6b7280">'+trainee.dept+'</div><div><span class="score-badge">'+level+' — '+avgScore+'%</span></div></div>');
+  certWindow.document.write('<div class="info-grid"><div class="info-item"><div class="info-val">'+wsData.name.slice(0,18)+'</div><div class="info-lbl">اسم الورشة</div></div><div class="info-item"><div class="info-val">'+wsData.trainerName+'</div><div class="info-lbl">المدرب</div></div><div class="info-item"><div class="info-val">'+dateAr+'</div><div class="info-lbl">تاريخ الإتمام</div></div></div>');
+  certWindow.document.write('<div class="footer"><div class="sig-box"><div class="sig-line"></div><div class="sig-lbl">'+wsData.trainerName+'</div><div class="sig-sub">المدرب</div></div><div style="text-align:center"><div style="font-size:10px;color:#9ca3af;margin-bottom:3px">'+(wsData.org||'وزارة الصحة العامة — دولة قطر')+'</div><div style="background:#0a5c3e;color:#fff;font-size:10px;font-weight:700;padding:4px 14px;border-radius:20px">صادر: '+new Date().toLocaleDateString('ar-SA')+'</div></div><div class="sig-box"><div class="sig-line"></div><div class="sig-lbl">المشرف العام</div><div class="sig-sub">ACES System</div></div></div>');
+  certWindow.document.write('</div><div class="no-print" style="text-align:center;margin-top:14px;padding-bottom:14px"><button onclick="window.print()" style="background:#0a5c3e;color:#fff;border:none;border-radius:10px;padding:9px 22px;font-family:Tajawal,sans-serif;font-size:.88rem;font-weight:800;cursor:pointer;margin:4px">🖨️ طباعة / حفظ PDF</button><button onclick="window.close()" style="background:#f3f4f6;color:#374151;border:none;border-radius:10px;padding:9px 22px;font-family:Tajawal,sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;margin:4px">✕ إغلاق</button></div></body></html>');
+  certWindow.document.close();
+}
+
+function openCertificatesModal(wsId){
+  const w = _allWs[wsId]; if(!w) return;
+  const trainees = Object.values(w.trainees||{});
+  const eligible = trainees.map(t=>{
+    const s=DAYS.map(d=>w.results?.[t.id]?.[d]?.quizScore).filter(s=>s!==undefined);
+    const avg=s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null;
+    return{...t,avg};
+  }).filter(t=>t.avg!==null&&t.avg>=60);
+
+  if(!eligible.length){ toast('⚠️ لا يوجد متدربون ناجحون (≥60%) لإصدار شهادات'); return; }
+
+  openModal('🎓 إصدار الشهادات', '<div style="background:var(--g4);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center"><div style="font-size:2rem;margin-bottom:6px">🎓</div><div style="font-weight:900;color:var(--g1)">'+eligible.length+' متدرب مؤهل للشهادة</div><div style="font-size:.8rem;color:var(--muted);margin-top:4px">المتدربون الناجحون ≥60%</div></div><div style="max-height:240px;overflow-y:auto;margin-bottom:14px">'+eligible.map(t=>'<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.82rem"><span>'+t.name+'</span><div style="display:flex;gap:8px;align-items:center"><span style="font-weight:800;color:var(--g1)">'+t.avg+'%</span><button onclick="generateCertificate({name:\''+t.name+'\',dept:\''+t.dept+'\'},_allWs[\''+wsId+'\'],'+t.avg+')" style="background:var(--g4);border:1.5px solid var(--border);border-radius:7px;padding:3px 9px;font-family:Tajawal,sans-serif;font-size:.7rem;font-weight:700;cursor:pointer;color:var(--g1)">🎓 شهادة</button></div></div>').join('')+'</div>');
+}
+
+// ══════════════════════════════════════════════
+//  PHASE 2 — EXCEL ALL WORKSHOPS
+// ══════════════════════════════════════════════
+function exportAllExcel(){
+  const ws = Object.values(_allWs);
+  if(!ws.length){ toast('⚠️ لا توجد ورش'); return; }
+  const rows = [['اسم الورشة','المدرب','الجهة','تاريخ البداية','تاريخ النهاية','اسم المتدرب','الرقم الوظيفي','الجهة','يوم 1','يوم 2','يوم 3','يوم 4','يوم 5','المتوسط','المستوى','الحضور']];
+  ws.forEach(w=>{
+    Object.values(w.trainees||{}).forEach(t=>{
+      const scores=DAYS.map(d=>w.results?.[t.id]?.[d]?.quizScore??'');
+      const avgs=scores.filter(s=>s!=='');
+      const avg=avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):null;
+      const level=avg===null?'—':avg>=85?'ممتاز':avg>=70?'جيد جداً':avg>=60?'مقبول':'ضعيف';
+      const att=Object.values(w.attendance?.[t.id]||{}).filter(v=>v==='present').length;
+      rows.push([w.name,w.trainerName,w.org||'—',w.startDate||'—',w.endDate||'—',t.name,t.sid||'—',t.dept,...scores,avg!==null?avg+'%':'—',level,att+'/5']);
+    });
+    rows.push([]);
+  });
+  const csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+(v||'').toString().replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='ACES_All_Workshops_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  toast('📊 تم تصدير بيانات جميع الورش');
+}
+
+// ══════════════════════════════════════════════
+//  PHASE 2 — BACKUP
+// ══════════════════════════════════════════════
+async function exportBackup(){
+  const btn=document.getElementById('backup-btn');
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spinner"></span> جارٍ...';}
+  const data=await fbGet('workshops');
+  if(!data){toast('⚠️ لا بيانات');if(btn){btn.disabled=false;btn.innerHTML='💾 نسخة احتياطية';}return;}
+  const backup={version:'1.0',exportedAt:new Date().toISOString(),workshops:data};
+  const a=document.createElement('a');
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(backup,null,2));
+  a.download='ACES_Backup_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  toast('✅ تم تصدير النسخة الاحتياطية');
+  if(btn){btn.disabled=false;btn.innerHTML='💾 نسخة احتياطية';}
+}
+
+async function importBackup(event){
+  const file=event.target.files[0]; if(!file)return;
+  const text=await file.text();
+  let backup;
+  try{backup=JSON.parse(text);}catch(e){toast('❌ ملف غير صالح');return;}
+  if(!backup.workshops){toast('❌ ملف غير صحيح');return;}
+  const cnt=Object.keys(backup.workshops).length;
+  if(!confirm('استعادة '+cnt+' ورشة؟\\nتاريخ: '+(backup.exportedAt?.slice(0,10)||'غير معروف')+'\\n\\n⚠️ سيتم الدمج مع البيانات الموجودة'))return;
+  for(const[id,ws] of Object.entries(backup.workshops)){
+    const ex=await fbGet('workshops/'+id);
+    if(!ex) await fbSet('workshops/'+id,ws);
+  }
+  toast('✅ تم استعادة النسخة الاحتياطية');
+  loadAdmin();
+}
+
+
+// ══════════════════════════════════════════════
+//  PHASE 3 — EXAM TIMER
+// ══════════════════════════════════════════════
+async function setExamTimer(dayId){
+  openModal('⏱️ تحديد وقت الاختبار — اليوم '+dayId,`
+    <div style="background:var(--blue2);border:1.5px solid #93c5fd;border-radius:12px;padding:14px;margin-bottom:16px;text-align:center">
+      <div style="font-size:1.8rem;margin-bottom:6px">⏱️</div>
+      <div style="font-weight:900;color:var(--blue)">حدد مدة الاختبار باللدقائق</div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:3px">سيظهر عداد تنازلي للمتدرب أثناء الاختبار</div>
+    </div>
+    <div class="form-g">
+      <label class="inp-label">مدة الاختبار (بالدقائق)</label>
+      <input class="inp" id="timer-minutes" type="number" min="5" max="120" value="30" placeholder="30">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+      ${[15,20,30,45,60,90].map(m=>`<button onclick="document.getElementById('timer-minutes').value=${m}" 
+        style="background:var(--g4);border:1.5px solid var(--border);border-radius:9px;padding:8px;font-family:Tajawal,sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--g1)">${m} دقيقة</button>`).join('')}
+    </div>
+    <button class="btn btn-p btn-wide" onclick="confirmSetTimer(${dayId})">⏱️ تعيين الوقت وفتح الاختبار</button>
+  `);
+}
+
+async function confirmSetTimer(dayId){
+  const mins = parseInt(document.getElementById('timer-minutes')?.value||30);
+  if(mins<1||mins>180){ toast('⚠️ مدة غير صالحة'); return; }
+  const endTime = Date.now() + mins*60*1000;
+  await fbSet(`workshops/${_wsId}/exam_approvals/${dayId}`, 'open');
+  await fbSet(`workshops/${_wsId}/exam_timer/${dayId}`, {
+    minutes: mins,
+    endTime: endTime,
+    startedAt: new Date().toISOString()
+  });
+  closeModal();
+  updateExamBtns();
+  toast(`✅ اليوم ${dayId}: الاختبار مفتوح لمدة ${mins} دقيقة`);
+}
+
+async function updateExamBtns(){
+  for(let d=1;d<=5;d++){
+    const status=await fbGet(`workshops/${_wsId}/exam_approvals/${d}`);
+    const timer=await fbGet(`workshops/${_wsId}/exam_timer/${d}`);
+    const btn=document.getElementById('exam-btn-'+d);
+    if(!btn) continue;
+    if(status==='open'){
+      const remaining = timer?.endTime ? Math.max(0,Math.round((timer.endTime-Date.now())/60000)) : null;
+      const timeStr = remaining!==null ? ` (${remaining} د)` : '';
+      btn.style.background='linear-gradient(135deg,var(--g1),var(--g2))';
+      btn.style.color='#fff'; btn.style.borderColor='transparent';
+      btn.innerHTML=`✅ مفتوح${timeStr} — إغلاق`;
+    } else {
+      btn.style.background='var(--g4)'; btn.style.color='var(--g1)';
+      btn.style.borderColor='var(--border)';
+      btn.innerHTML='📝 فتح الاختبار';
+    }
+  }
+}
+
+async function toggleExam(dayId){
+  const currentStatus=await fbGet(`workshops/${_wsId}/exam_approvals/${dayId}`);
+  if(currentStatus==='open'){
+    await fbSet(`workshops/${_wsId}/exam_approvals/${dayId}`,'closed');
+    await fbSet(`workshops/${_wsId}/exam_timer/${dayId}`,null);
+    toast('🔒 تم إغلاق اختبار اليوم '+dayId);
+    updateExamBtns();
+  } else {
+    setExamTimer(dayId);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  PHASE 3 — LIVE MONITORING
+// ══════════════════════════════════════════════
+async function renderLiveMonitor(){
+  const el=document.getElementById('live-monitor-area');
+  if(!el) return;
+
+  // Show loading immediately
+  el.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted)"><div style="font-size:2rem;margin-bottom:8px">🔄</div><p>جارٍ تحميل بيانات المتدربين...</p></div>';
+
+  // Ensure we have trainees - reload from Firebase if needed
+  let trainees = _trainees||[];
+  if(!trainees.length && _wsId){
+    const wsData = await fbGet(`workshops/${_wsId}`);
+    if(wsData){
+      _ws = wsData;
+      trainees = wsData.trainees ? Object.values(wsData.trainees) : [];
+      _trainees = trainees;
+      _results = wsData.results||{};
+    }
+  }
+
+  if(!trainees.length){
+    el.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:10px">👥</div><p>لا يوجد متدربون مسجلون في هذه الورشة</p></div>';
+    return;
+  }
+
+  // Fetch live data from Firebase
+  const [examApprovals, quizProgress, results] = await Promise.all([
+    fbGet(`workshops/${_wsId}/exam_approvals`),
+    fbGet(`workshops/${_wsId}/quiz_progress`),
+    fbGet(`workshops/${_wsId}/results`)
+  ]);
+
+  const activeDay = examApprovals ? Object.entries(examApprovals).find(([,v])=>v==='open')?.[0] : null;
+
+  // Count stats
+  const completed = activeDay ? trainees.filter(t=>results?.[t.id]?.[activeDay]?.quizScore!==undefined).length : 0;
+  const inProgress = activeDay ? trainees.filter(t=>!results?.[t.id]?.[activeDay] && quizProgress?.[t.id]?.[activeDay]?.answers?.some(a=>a!==null)).length : 0;
+  const waiting = trainees.length - completed - inProgress;
+
+  el.innerHTML=`
+    <!-- Status bar -->
+    ${activeDay?`
+    <div style="background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:14px;padding:14px 18px;margin-bottom:16px;color:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-weight:900;font-size:.95rem">📝 اختبار اليوم ${activeDay} مفتوح الآن</div>
+        <div style="font-size:.78rem;opacity:.85;margin-top:2px">${trainees.length} متدرب مسجل</div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div style="text-align:center;background:rgba(255,255,255,.15);border-radius:10px;padding:8px 14px">
+          <div style="font-size:1.2rem;font-weight:900">${completed}</div>
+          <div style="font-size:.68rem;opacity:.85">✅ أنهوا</div>
+        </div>
+        <div style="text-align:center;background:rgba(255,255,255,.15);border-radius:10px;padding:8px 14px">
+          <div style="font-size:1.2rem;font-weight:900">${inProgress}</div>
+          <div style="font-size:.68rem;opacity:.85">📝 جارٍ</div>
+        </div>
+        <div style="text-align:center;background:rgba(255,255,255,.15);border-radius:10px;padding:8px 14px">
+          <div style="font-size:1.2rem;font-weight:900">${waiting}</div>
+          <div style="font-size:.68rem;opacity:.85">⏳ لم يبدأ</div>
+        </div>
+      </div>
+    </div>`:`
+    <div style="background:var(--gold2);border:1.5px solid #fde68a;border-radius:12px;padding:14px 18px;margin-bottom:16px;color:#92400e;font-weight:700;text-align:center">
+      ⏸️ لا يوجد اختبار مفتوح حالياً — افتح اختبار يوم من تبويب <strong>طلبات الدخول</strong>
+    </div>`}
+
+    <!-- Trainees grid -->
+    <div style="display:grid;grid-template-columns:repeat(auto-f    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
+      ${trainees.map(t=>{
+        const dayResult = activeDay ? results?.[t.id]?.[activeDay] : null;
+        const dayProgress = activeDay ? quizProgress?.[t.id]?.[activeDay] : null;
+        const answers = dayProgress?.answers || [];
+        const answered = answers.filter(a=>a!==null&&a!==undefined).length;
+        const total = answers.length || 26;
+        const pct = total?Math.round(answered/total*100):0;
+        const status = dayResult ? 'completed' : (answered>0 ? 'in-progress' : 'waiting');
+        const borderCol = status==='completed'?'#6ee7b7':status==='in-progress'?'#93c5fd':'var(--border)';
+        const statusBg = status==='completed'?'var(--g4)':status==='in-progress'?'var(--blue2)':'var(--bg)';
+        const statusCol = status==='completed'?'var(--g1)':status==='in-progress'?'var(--blue)':'var(--muted)';
+        const statusIcon = status==='completed'?'✅':status==='in-progress'?'📝':'⏳';
+        const statusLabel = status==='completed'?'أنهى — '+dayResult.quizScore+'%':status==='in-progress'?answered+'/'+total+' سؤال ('+pct+'%)':'لم يبدأ بعد';
+        return`<div style="background:#fff;border:2px solid ${borderCol};border-radius:14px;padding:13px">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+            <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.95rem;flex-shrink:0">${t.name.charAt(0)}</div>
+            <div style="min-width:0;flex:1">
+              <div style="font-weight:900;font-size:.83rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.name}</div>
+              <div style="font-size:.68rem;color:var(--muted)">${t.dept}</div>
+            </div>
+            <div style="font-size:1.1rem">${statusIcon}</div>
+          </div>
+          <div style="background:var(--border);border-radius:20px;height:7px;overflow:hidden;margin-bottom:6px">
+            <div style="width:${pct}%;height:100%;background:${status==='completed'?'var(--g1)':status==='in-progress'?'var(--blue)':'var(--border)'};border-radius:20px;transition:width .5s"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="background:${statusBg};border-radius:8px;padding:4px 8px;font-size:.72rem;font-weight:700;color:${statusCol}">${statusLabel}</div>
+          </div>
+          ${answers.length?`<div style="display:flex;flex-wrap:wrap;gap:2px;margin-bottom:8px">
+            ${answers.map((a,i)=>`<div style="width:13px;height:13px;border-radius:2px;background:${a!==null&&a!==undefined?(status==='completed'?'var(--g1)':'var(--blue)'):'#e5e7eb'};display:flex;align-items:center;justify-content:center" title="سؤال ${i+1}"></div>`).join('')}
+          </div>`:''}
+          ${status!=='waiting'?`<button onclick="viewTraineeAnswers('${t.id}','${t.name.replace(/'/g,'\'')}',${activeDay||0})"
+            style="width:100%;background:var(--g4);border:1.5px solid var(--border);border-radius:9px;padding:6px;font-family:Tajawal,sans-serif;font-size:.76rem;font-weight:800;cursor:pointer;color:var(--g1)">
+            🔍 عرض الإجابات
+          </button>`:''}
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+//  PHASE 3 — ANNUAL STATISTICS
+// ══════════════════════════════════════════════
+function renderAnnualStats(){
+  const el=document.getElementById('annual-stats-area');
+  if(!el) return;
+  const ws=Object.values(_allWs);
+  if(!ws.length){el.innerHTML='<p style="color:var(--muted);text-align:center;padding:40px">لا توجد بيانات</p>';return;}
+
+  // Group by year/month
+  const byMonth={};
+  ws.forEach(w=>{
+    const m=w.startDate?.slice(0,7)||'غير محدد';
+    if(!byMonth[m]) byMonth[m]={count:0,trainees:0,scores:[],evals:[]};
+    byMonth[m].count++;
+    byMonth[m].trainees+=Object.keys(w.trainees||{}).length;
+    Object.values(w.results||{}).forEach(t=>Object.values(t).forEach(r=>{if(r.quizScore!==undefined)byMonth[m].scores.push(r.quizScore);}));
+    Object.values(w.evaluations||{}).forEach(e=>Object.values(e.scores||{}).forEach(v=>byMonth[m].evals.push(v)));
+  });
+
+  const months=Object.keys(byMonth).sort();
+  const allScores=ws.flatMap(w=>Object.values(w.results||{}).flatMap(t=>Object.values(t))).map(r=>r.quizScore).filter(s=>s!==undefined);
+  const yearAvg=allScores.length?Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length):0;
+  const yearPass=allScores.length?Math.round(allScores.filter(s=>s>=60).length/allScores.length*100):0;
+  const totalTrainees=ws.reduce((s,w)=>s+Object.keys(w.trainees||{}).length,0);
+  const allEvals=ws.flatMap(w=>Object.values(w.evaluations||{}).flatMap(e=>Object.values(e.scores||{})));
+  const yearEval=allEvals.length?(allEvals.reduce((a,b)=>a+b,0)/allEvals.length).toFixed(1):'—';
+
+  const maxT=Math.max(...months.map(m=>byMonth[m].trainees),1);
+  const maxS=Math.max(...months.map(m=>byMonth[m].scores.length?Math.round(byMonth[m].scores.reduce((a,b)=>a+b,0)/byMonth[m].scores.length):0),1);
+
+  el.innerHTML=`
+    <!-- Year Summary KPIs -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px">
+      ${[
+        ['📅','إجمالي الورش',ws.length,'g'],
+        ['👥','إجمالي المتدربين',totalTrainees,'b'],
+        ['📊','متوسط الأداء السنوي',yearAvg+'%','go'],
+        ['✅','نسبة النجاح السنوية',yearPass+'%','g'],
+        ['⭐','متوسط التقييم السنوي',yearEval+(yearEval!=='—'?'/5':''),'go'],
+      ].map(([ic,l,v,c])=>`<div class="kpi ${c}" style="background:#fff;box-shadow:0 4px 14px rgba(10,92,62,.1)">
+        <div style="font-size:1.3rem;margin-bottom:3px">${ic}</div>
+        <div class="v">${v}</div><div class="l">${l}</div>
+      </div>`).join('')}
+    </div>
+
+    <!-- Monthly Chart -->
+    <div class="chart-card" style="margin-bottom:14px">
+      <h3 style="margin-bottom:14px">📅 الأداء الشهري للورش</h3>
+      ${months.length?months.map(m=>{
+        const d=byMonth[m];
+        const avg=d.scores.length?Math.round(d.scores.reduce((a,b)=>a+b,0)/d.scores.length):0;
+        const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';
+        const tPct=Math.round(d.trainees/maxT*100);
+        const sPct=avg?Math.round(avg/maxS*100):0;
+        const monthNames={'01':'يناير','02':'فبراير','03':'مارس','04':'أبريل','05':'مايو','06':'يونيو','07':'يوليو','08':'أغسطس','09':'سبتمبر','10':'أكتوبر','11':'نوفمبر','12':'ديسمبر'};
+        const [yr,mn]=m.split('-');
+        const label=(monthNames[mn]||mn)+' '+(yr||'');
+        return`<div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;font-size:.76rem;font-weight:700;margin-bottom:4px;flex-wrap:wrap;gap:4px">
+            <span>${label} — ${d.count} ورشة</span>
+            <div style="display:flex;gap:10px">
+              <span style="color:var(--blue)">👥 ${d.trainees}</span>
+              <span style="color:${col}">📊 ${avg?avg+'%':'لا بيانات'}</span>
+            </div>
+          </div>
+          <div style="background:var(--border);border-radius:20px;height:10px;overflow:hidden;margin-bottom:3px">
+            <div style="width:${sPct}%;height:100%;background:${col};border-radius:20px;transition:width 1s"></div>
+          </div>
+          <div style="background:#e0f2fe;border-radius:20px;height:7px;overflow:hidden">
+            <div style="width:${tPct}%;height:100%;background:var(--blue);border-radius:20px"></div>
+          </div>
+        </div>`;
+      }).join(''):'<p style="color:var(--muted);text-align:center;padding:20px">لا بيانات شهرية</p>'}
+    </div>
+
+    <!-- All Workshops Summary Table -->
+    <div class="chart-card">
+      <h3 style="margin-bottom:12px">📋 ملخص جميع الورش</h3>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.78rem">
+        <thead><tr style="background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff">
+          <th style="padding:9px 11px;text-align:right">#</th>
+          <th style="padding:9px 11px;text-align:right">الورشة</th>
+          <th style="padding:9px 11px;text-align:right">المدرب</th>
+          <th style="padding:9px 11px;text-align:center">المتدربون</th>
+          <th style="padding:9px 11px;text-align:center">متوسط الأداء</th>
+          <th style="padding:9px 11px;text-align:center">نسبة النجاح</th>
+          <th style="padding:9px 11px;text-align:center">التقييم</th>
+          <th style="padding:9px 11px;text-align:center">الحالة</th>
+        </tr></thead>
+        <tbody>
+          ${ws.map((w,i)=>{
+            const sc=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);
+            const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b,0)/sc.length):null;
+            const pass=sc.length?Math.round(sc.filter(s=>s>=60).length/sc.length*100):null;
+            const ev=Object.values(w.evaluations||{}).flatMap(e=>Object.values(e.scores||{}));
+            const evAvg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
+            const today=new Date().toISOString().slice(0,10);
+            const isActive=!w.endDate||w.endDate>=today;
+            const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':avg!==null?'var(--red)':'var(--muted)';
+            return`<tr style="background:${i%2?'#f9fbfa':'#fff'}">
+              <td style="padding:8px 11px">${i+1}</td>
+              <td style="padding:8px 11px;font-weight:800">${w.name.slice(0,20)}</td>
+              <td style="padding:8px 11px;color:var(--muted)">${w.trainerName}</td>
+              <td style="padding:8px 11px;text-align:center;font-weight:700">${Object.keys(w.trainees||{}).length}</td>
+              <td style="padding:8px 11px;text-align:center;font-weight:900;color:${col}">${avg!==null?avg+'%':'—'}</td>
+              <td style="padding:8px 11px;text-align:center;font-weight:700;color:${pass>=60?'var(--g1)':'var(--red)'}">${pass!==null?pass+'%':'—'}</td>
+              <td style="padding:8px 11px;text-align:center">${evAvg!=='—'?evAvg+'⭐':'—'}</td>
+              <td style="padding:8px 11px;text-align:center"><span style="background:${isActive?'var(--g4)':'#f3f4f6'};color:${isActive?'var(--g1)':'var(--muted)'};padding:3px 9px;border-radius:20px;font-size:.7rem;font-weight:700">${isActive?'🟢 نشطة':'⚫ منتهية'}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+
+
+// Quiz data for viewing trainee answers
+window.QUIZ_DATA = {
+  1: {
+    title: 'اختبار اليوم الأول — ISO 2859-1 وأساسيات سحب العينات',
+    questions: [
+      // صح / خطأ (13 سؤال)
+      {type:'tf',q:'وفقاً لمعيار ISO 2859-1، عند استخدام مستوى الفحص العادي (Level II) ورمز الحجم N مع AQL = 1.0، يكون عدد العينة 80 وحدة وحد القبول Ac = 2.',opts:['صح','خطأ'],ans:0,exp:'صح. وفقاً لجداول ISO 2859-1، هذه الأرقام صحيحة للفحص العادي.'},
+      {type:'tf',q:'في نظام ISO 2859-1، تنتقل الدفعة من الفحص العادي إلى الفحص المشدد (Tightened) عند رفض دفعتين أو أكثر من أصل 5 دفعات متتالية.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو الشرط المحدد في ISO 2859-1 للانتقال للفحص المشدد.'},
+      {type:'tf',q:'حد الجودة الحدية (LTPD أو RQL) هو مستوى الجودة الذي يُحدد الحد الأدنى المقبول من وجهة نظر المنتج.',opts:['صح','خطأ'],ans:1,exp:'خطأ. LTPD/RQL هو من وجهة نظر المستهلك وليس المنتج.'},
+      {type:'tf',q:'في منطقة الرفض الإحصائي، يكون احتمال رفض الدفعة الجيدة (خطأ النوع الأول α) أعلى من احتمال قبول الدفعة الرديئة (خطأ النوع الثاني β).',opts:['صح','خطأ'],ans:1,exp:'خطأ. لا يمكن الجزم بذلك — يعتمد على الخطة المحددة.'},
+      {type:'tf',q:'العينة العشوائية الطبقية (Stratified Random Sampling) تُقسّم الدفعة إلى طبقات متجانسة وتُسحب منها عينات بنسب متساوية أو متناسبة.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو التعريف الدقيق للعينة الطبقية.'},
+      {type:'tf',q:'في خطة العينة المزدوجة (Double Sampling)، إذا كان عدد العيوب بين Ac1 و Re1 يُتخذ قرار الرفض فوراً.',opts:['صح','خطأ'],ans:1,exp:'خطأ. في هذه الحالة تُسحب عينة ثانية.'},
+      {type:'tf',q:'وفقاً للائحة GSO 1016، تُصنَّف بكتيريا Clostridium botulinum في المعلبات ضمن الفئة الخطرة التي تستوجب الإجراء الفوري.',opts:['صح','خطأ'],ans:0,exp:'صح. هذه البكتيريا خطرة جداً وتستوجب إجراء فورياً.'},
+      {type:'tf',q:'تشير منحنيات OC Curves إلى أنه كلما زاد حجم العينة، كلما انحدر المنحنى بشكل أحد وأصبحت الخطة أكثر تمييزاً.',opts:['صح','خطأ'],ans:0,exp:'صح. زيادة حجم العينة تزيد من قدرة التمييز.'},
+      {type:'tf',q:'الانتقال من الفحص المشدد إلى إيقاف الفحص (Discontinuation) في ISO 2859-1 يحدث عند رفض 10 دفعات.',opts:['صح','خطأ'],ans:1,exp:'خطأ. الإيقاف يحدث عند رفض 5 دفعات وليس 10.'},
+      {type:'tf',q:'محرك درجة التبديل (Switching Score) يبدأ من 0 ويزيد بمقدار 3 عند كل قبول نظيف.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو التعريف الصحيح لمحرك التبديل.'},
+      {type:'tf',q:'الفرق بين عدم القبول (Rejection) وعدم الامتثال (Non-conformance) أن الأول قرار إداري والثاني وصف تقني.',opts:['صح','خطأ'],ans:0,exp:'صح. الرفض إداري والعيب وصف تقني.'},
+      {type:'tf',q:'في نموذج العينات المخبرية، تمثّل وحدة العينة الجزء الذي يُرسَل للمختبر وقد تختلف عن وحدة الدفعة.',opts:['صح','خطأ'],ans:0,exp:'صح. وحدة العينة قد تختلف عن وحدة الدفعة.'},
+      {type:'tf',q:'نظام الأمان الإحصائي يتطلب مراجعة خطط أخذ العينات سنوياً فقط.',opts:['صح','خطأ'],ans:1,exp:'خطأ. المراجعة تُجرى عند أي تغيير جوهري كتغيير المورد.'},
+      // اختيار متعدد (13 سؤال)
+      {type:'mc',q:'دفعة 3500 وحدة، Level II، AQL=0.65%. وُجد 3 وحدات معيبة. ما القرار؟',opts:['قبول — 3 = Ac وفق الجدول','رفض — تجاوز Ac','سحب عينة ثانية','إعادة الفحص'],ans:0,exp:'وفق ISO 2859-1، رمز L مع AQL 0.65% يعطي Ac=3، فعدد العيوب = Ac ← قبول.'},
+      {type:'mc',q:'خطة مزدوجة: n1=80، d1=3، Ac1=1، Re1=4. ما الإجراء التالي؟',opts:['رفض فوري','قبول فوري','سحب عينة ثانية n2=80','إعادة فحص بخطة مفردة'],ans:2,exp:'d1=3 بين Ac1 وRe1 ← منطقة رمادية ← سحب عينة ثانية.'},
+      {type:'mc',q:'عينات متعددة: أعداد تراكمية 1،2،4،5. Re التراكمية=5، Ac=3. القرار؟',opts:['قبول','رفض — العدد = Re','سحب خامسة','إيقاف الفحص'],ans:1,exp:'العدد التراكمي = Re ← رفض فوري.'},
+      {type:'mc',q:'ما المدخل الأساسي الذي يحدد حجم العينة n قبل الوصول للموقع؟',opts:['نوع المنتج فقط','N + IL + AQL معاً','خبرة المفتش','ساعات العمل المتاحة'],ans:1,exp:'ثلاثة مدخلات: N + مستوى الفحص + AQL.'},
+      {type:'mc',q:'فحص زيوت سائبة 50,000 لتر. أي بروتوكول سحب صحيح؟',opts:['عينة واحدة من الأعلى','من الثلث العلوي والأوسط والسفلي مع Flushing','من مخرج الصرف السفلي','فحص الشهادات فقط'],ans:1,exp:'السحب من المستويات الثلاثة مع التحريك والـ Flushing يضمن التمثيل الصحيح.'},
+      {type:'mc',q:'ما الفرق بين تحضير الحبوب الكبيرة (>25جم) والعينات الصغيرة (<5جم)؟',opts:['لا فرق','الكبيرة تُكسر قبل الطحن، الصغيرة تُستخدم مباشرة','الكبيرة تُغمر في الماء','الصغيرة تحتاج طحناً أدق'],ans:1,exp:'الحبوب الكبيرة تحتاج تكسيراً مسبقاً للحصول على توزيع متجانس.'},
+      {type:'mc',q:'ما الدلالة القانونية لـ"العينة الممثلة الممتثلة"؟',opts:['أي عينة من الدفعة','بروتوكول معتمد + بطاقة رسمية + شروط حفظ','عينة نتائجها مقبولة فقط','عينة وقّع عليها المفتش'],ans:1,exp:'ثلاثة عناصر: بروتوكول + توثيق + حفظ. أي إخلال يُبطل قيمتها القانونية.'},
+      {type:'mc',q:'تقسيم 500جم بالربع (Quartering) للحصول على 25جم. كم مرة؟',opts:['مرة واحدة','مرتان','ثلاث مرات','لا يُستخدم للمساحيق'],ans:2,exp:'500←250←125←62.5، ثم تُؤخذ 25جم.'},
+      {type:'mc',q:'بسترة 71°C/14 ثانية بدلاً من 72°C/15 ثانية. التصنيف والإجراء؟',opts:['مخالفة بسيطة','تنبيه كتابي','Critical — إيقاف فوري + سحب عينات','تشديد الفحص فقط'],ans:2,exp:'الانحراف عن معايير البسترة = مخالفة Critical تستوجب إيقاف فورياً.'},
+      {type:'mc',q:'إرسالية 50,000 كيس. الحد الأدنى لنقاط السحب؟',opts:['5 نقاط','7 نقاط','14 نقطة كحد أدنى','20 نقطة'],ans:2,exp:'وفق الجدول القياسي للإرساليات الكبيرة: حد أدنى 14 نقطة.'},
+      {type:'mc',q:'ما الأثر القانوني لسحب عينة بدون بطاقة رسمية؟',opts:['تُقبل مع تحفظ','يحق الطعن وإبطال العينة كدليل','تُخفَّض درجة المخالفة','تُحوَّل للتحكيم'],ans:1,exp:'غياب البطاقة يُتيح الطعن وإبطال العينة قانونياً.'},
+      {type:'mc',q:'الفرق بين العينة المركبة والتمثيلية؟',opts:['لا فرق','المركبة من نقاط متعددة تُمزج، التمثيلية قد تكون من نقطة واحدة','المركبة للكيمياء فقط','التمثيلية أصغر دائماً'],ans:1,exp:'المركبة دائماً متعددة النقاط، التمثيلية قد تكون من نقطة واحدة إذا كانت الدفعة متجانسة.'}
+    ]
+  },
+  2: {
+    title: 'اختبار اليوم الثاني — التفتيش الغذائي وأنواع العينات',
+    questions: [
+      {type:'tf',q:'التفتيش الغذائي هو الجزء الواقعي للسلسلة الغذائية الذي يهدف إلى مراقبة المنشآت والإجراءات والمواصفات الفنية.',opts:['صح','خطأ'],ans:0,exp:'صح. التفتيش هو التطبيق الميداني لمعايير الجودة.'},
+      {type:'tf',q:'الركيزة الثالثة من الأركان الخمس للتفتيش هي "الحياد والموضوعية" فقط دون اشتراط توثيق أو متابعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. الأركان تشمل التوثيق والمتابعة ضمن متطلباتها.'},
+      {type:'tf',q:'النظام المبني على المخاطر يُخصص موارد الفحص بناءً على مستوى الخطورة المحتملة.',opts:['صح','خطأ'],ans:0,exp:'صح. يركّز الموارد على النقاط الأعلى خطورة.'},
+      {type:'tf',q:'العينة الاحتزازية تُعدّ عينة احتمالية لأن المفتش يختارها بحكمه الشخصي.',opts:['صح','خطأ'],ans:1,exp:'خطأ. الاحتزازية غير احتمالية — العشوائية هي الاحتمالية.'},
+      {type:'tf',q:'في نموذج العينات المخبرية، تمثّل وحدة العينة الجزء الذي يُرسَل للمختبر وهي أصغر مستويات التسلسل.',opts:['صح','خطأ'],ans:0,exp:'صح. وحدة العينة هي أصغر مستوى في التسلسل.'},
+      {type:'tf',q:'مستوى الجودة المقبول (AQL) هو الحد الأدنى من العيوب الذي يجب أن تحتويه الدفعة كي تُقبل.',opts:['صح','خطأ'],ans:1,exp:'خطأ. AQL هو أسوأ متوسط مقبول وليس حداً أدنى للعيوب.'},
+      {type:'tf',q:'الفحص المشدد يُطبَّق عندما تتحسن الجودة لمكافأة المورد.',opts:['صح','خطأ'],ans:1,exp:'خطأ. المشدد يُطبَّق عند تدهور الجودة وليس تحسنها.'},
+      {type:'tf',q:'العينة الموسّعة تُجمع من نقاط سحب متعددة وتُمزج لتمثيل التباين الكلي.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو التعريف الصحيح للعينة الموسّعة.'},
+      // MCQ
+      {type:'mc',q:'ما الهدف الأساسي من التفتيش في المحور الأول لقائمة التفتيش الميداني؟',opts:['التحقق من الأسعار','مراقبة البيئة والمنشأة ومصادر التلوث','إجراء اختبارات مخبرية فورية','إعداد تقارير إدارية'],ans:1,exp:'المحور الأول يركز على البيئة الحيوية والمنشأة العامة.'},
+      {type:'mc',q:'أي من التالي يُصنَّف مخالفة Critical تستوجب إجراءً فورياً؟',opts:['خلل بسيط في لافتة التسعير','ارتفاع طفيف في حرارة التخزين 1°C','تلوث ميكروبيولوجي بمسببات خطيرة','عدم تطابق لون التغليف'],ans:2,exp:'التلوث بمسببات أمراض خطيرة = مخالفة Critical.'},
+      {type:'mc',q:'الفرق بين النظام التقليدي والمبني على المخاطر؟',opts:['التقليدي رقمي والمخاطر يدوي','التقليدي يوزع بالتساوي، المخاطر يركّز على الخطورة العالية','لا فرق في النتائج','التقليدي أسرع دائماً'],ans:1,exp:'المخاطر يركّز على النقاط الأعلى خطورة بدلاً من التوزيع المتساوي.'},
+      {type:'mc',q:'أيٌّ من التالي عينة احتمالية؟',opts:['الاحتزازية','عينة الملاءمة','العشوائية البسيطة','عدسة المحقق'],ans:2,exp:'العشوائية البسيطة تُعطي كل وحدة فرصة متساوية ومعروفة.'},
+      {type:'mc',q:'ما العناصر الثلاثة الأساسية لمنظومة تقييم المخاطر المتكاملة؟',opts:['السعر والكمية والتاريخ','المادة الغذائية والعادة والقدرة الإدارية','نوع المنشأة وعدد العمال والموقع','الموقع والتاريخ والمصنّع'],ans:1,exp:'المنظومة تُبنى على: المادة الغذائية + العادة الغذائية + القدرة الإدارية.'},
+      {type:'mc',q:'الفرق بين Variables Sampling وAttributes Sampling؟',opts:['Variables تحتاج عينة أكبر','Variables تقيس كمياً، Attributes تحكم بقبول/رفض','Attributes أدق في كل الحالات','لا فرق إلا في الاسم'],ans:1,exp:'Variables تقيس الوزن والرطوبة وغيرها، Attributes تُصنّف القبول أو الرفض.'},
+      {type:'mc',q:'ما الذي يميّز مطاعم الكاترينج من حيث متطلبات الفحص؟',opts:['لا توجد فروق','تتطلب فحص وجبات تجريبية وعينات حية','المطاعم العادية أشد رقابة','الكاترينج معفى من الفحص المفاجئ'],ans:1,exp:'الكاترينج يخدم أعداداً كبيرة دفعة واحدة فيتطلب فحصاً إضافياً.'}
+    ]
+  },
+  3: {
+    title: 'اختبار اليوم الثالث — المخاطر الإحصائية وGSO 1016',
+    questions: [
+      {type:'tf',q:'خطأ النوع الأول (Type I Error) هو خطأ المنتج: احتمال رفض دفعة جيدة.',opts:['صح','خطأ'],ans:0,exp:'صح. خطأ النوع الأول = α = خطأ المنتج.'},
+      {type:'tf',q:'خطأ النوع الثاني يُعرَّف بأنه خطأ المنتج أيضاً ويُرمز له بـ α.',opts:['صح','خطأ'],ans:1,exp:'خطأ. النوع الثاني = β = خطأ المستهلك، وليس α.'},
+      {type:'tf',q:'وفق GSO 1016، يُشترط للحوم الحمراء الطازجة غياب Salmonella تماماً.',opts:['صح','خطأ'],ans:0,exp:'صح. غياب تام لـ Salmonella في اللحوم الطازجة.'},
+      {type:'tf',q:'في خطة الفحص الأحادي، إذا كان عدد العيوب يساوي Re تُقبَل الدفعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. إذا كان العدد = Re تُرفض الدفعة.'},
+      {type:'tf',q:'Acceptance Sampling يحمي الجودة بتكلفة محسوبة بدلاً من الفحص الشامل 100%.',opts:['صح','خطأ'],ans:0,exp:'صح. سحب العينات يحقق توازناً اقتصادياً.'},
+      {type:'tf',q:'المرونة في تطبيق المواصفة تعني أن المفتش يستطيع تجاهل أي اشتراط.',opts:['صح','خطأ'],ans:1,exp:'خطأ. المرونة ضمن الحدود المسموح بها فقط.'},
+      {type:'tf',q:'"العيب" (Defect) و"عدم المطابقة" (Nonconformity) مترادفان تماماً.',opts:['صح','خطأ'],ans:1,exp:'خطأ. Defect لا يُلبّي الاستخدام، Nonconformity لا تستوفي متطلباً محدداً.'},
+      {type:'tf',q:'في الفحص الأحادي، إذا كان Ac < d < Re يُقبَل مباشرة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. في الأحادي Re = Ac+1 دائماً فلا توجد منطقة رمادية.'},
+      // MCQ
+      {type:'mc',q:'الفرق الجوهري بين خطأ النوع الأول والثاني؟',opts:['كلاهما يضر المستهلك','النوع الأول يضر المنتج، الثاني يضر المستهلك','النوع الأول يضر المستهلك، الثاني يضر المنتج','كلاهما يضر المنتج'],ans:1,exp:'α = خطر المنتج (رفض جيد)، β = خطر المستهلك (قبول رديء).'},
+      {type:'mc',q:'في معمارية N→n→c→M، ماذا يمثّل "c"؟',opts:['حجم الدفعة','حجم العينة','عدد العيوب المقبول Ac','المستوى الميكروبيولوجي'],ans:2,exp:'c = Acceptance Number = Ac.'},
+      {type:'mc',q:'الحد المسموح به لـ Salmonella في الدواجن المجمدة وفق GSO 1016؟',opts:['100 وحدة/غرام','غياب تام','10 وحدات/غرام','5×10²'],ans:1,exp:'GSO 1016 تشترط غياباً تاماً لـ Salmonella.'},
+      {type:'mc',q:'الفرق بين Class A وClass B في خطط الفحص؟',opts:['A يجمع الأصناف في عينة واحدة، B يفحص كل صنف مستقلاً','لا فرق','A للجافة، B للمبردة','B حجم عينة أكبر دائماً'],ans:0,exp:'Class A مشترك، Class B مستقل لكل صنف.'},
+      {type:'mc',q:'السهم ↑ في جدول ISO 2859 يعني؟',opts:['ارفع حجم الدفعة','انتقل للصف الأعلى للحصول على Ac/Re صريحة','انتقل لمستوى أشد','رفض تلقائي'],ans:1,exp:'السهم ↑ = الانتقال للصف الأعلى لأول خطة تحتوي قيم واضحة.'},
+      {type:'mc',q:'بعد تحديد Code Letter، ما الخطوة الثالثة؟',opts:['إرسال العينة مباشرة','الرجوع للجدول الرئيسي لاستخراج n وAc وRe','تحديد N','تسجيل المخالفات'],ans:1,exp:'الخطوة الثالثة: الرجوع للجدول الرئيسي لاستخراج n وAc وRe.'},
+      {type:'mc',q:'ميزة العينة المزدوجة على المفردة؟',opts:['أسرع وأبسط دائماً','تُقلل متوسط حجم العينة الكلي','تُلغي الحاجة لـAQL','لا ميزة'],ans:1,exp:'المزدوجة تُقلل متوسط العينة لأن الحالات الحدية فقط تحتاج عينة ثانية.'}
+    ]
+  },
+  4: {
+    title: 'اختبار اليوم الرابع — ISO 2859-1 وقواعد الانتقال',
+    questions: [
+      {type:'tf',q:'يبدأ الانتقال للفحص المشدد عند رفض دفعتين أو أكثر من أصل 5 متتالية في الفحص العادي.',opts:['صح','خطأ'],ans:0,exp:'صح. هذه هي قاعدة الانتقال للفحص المشدد.'},
+      {type:'tf',q:'الانتقال للفحص المخفف يحدث تلقائياً بعد قبول 10 دفعات متتالية فقط.',opts:['صح','خطأ'],ans:1,exp:'خطأ. يحتاج أيضاً محرك التبديل ≥30 وموافقة الجهة المختصة.'},
+      {type:'tf',q:'محرك التبديل يبدأ من 0 ويزيد بمقدار 3 عند كل قبول نظيف.',opts:['صح','خطأ'],ans:0,exp:'صح. عند بلوغ 30 يصبح أحد شروط الانتقال للمخفف.'},
+      {type:'tf',q:'إيقاف الفحص (Discontinuation) يحدث عند رفض 10 دفعات في الفحص المشدد.',opts:['صح','خطأ'],ans:1,exp:'خطأ. الإيقاف عند رفض 5 دفعات وليس 10.'},
+      {type:'tf',q:'AQL = 0 يمثّل أعلى معايير الجودة في ISO 2859-1.',opts:['صح','خطأ'],ans:1,exp:'خطأ. AQL=0 غير قياسي وغير قابل للتطبيق.'},
+      {type:'tf',q:'العينة العشوائية البسيطة تُعطي كل وحدة فرصة متساوية للاختيار.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو جوهر العشوائية البسيطة.'},
+      {type:'tf',q:'Composite Sampling تُقلل التكلفة بتجميع عينات من نقاط مختلفة وتحليلها كعينة واحدة.',opts:['صح','خطأ'],ans:0,exp:'صح. دمج العينات يُقلل تكاليف التحليل المخبري.'},
+      {type:'tf',q:'إذا كان عدد العيوب = Re في شجرة قرار الخطة المفردة تُقبَل الدفعة مشروطاً.',opts:['صح','خطأ'],ans:1,exp:'خطأ. إذا d = Re تُرفض فوراً بدون أي شرط.'},
+      // MCQ
+      {type:'mc',q:'متى يُطبَّق الفحص المشدد وفق ISO 2859-1؟',opts:['عند تحسن الجودة','رفض 2+ من 5 دفعات متتالية في العادي','قبول 10 دفعات + محرك≥30','انخفاض حجم الدفعة'],ans:1,exp:'الفحص المشدد يُطبَّق عند رفض 2 أو أكثر من 5 دفعات متتالية.'},
+      {type:'mc',q:'شرط العودة من المشدد للعادي؟',opts:['قبول دفعة واحدة','قبول 5 دفعات متتالية في المشدد','موافقة المورد','انقضاء 30 يوماً'],ans:1,exp:'العودة تتطلب قبول 5 دفعات متتالية أثناء الفحص المشدد.'},
+      {type:'mc',q:'ماذا تعني قيم AQL غير القياسية (Non-Standard AQL)؟',opts:['محظورة تماماً','تستلزم خطتين مجاورتين لتحديد n وAc/Re','خاصة بالأغذية الطازجة','للفحص المخفف حصراً'],ans:1,exp:'تستلزم استخدام خطتين مجاورتين وتحليلاً إضافياً.'},
+      {type:'mc',q:'دفعة 750 وحدة، Level II، AQL=0.65%. ما رمز العينة والخطوة التالية؟',opts:['رمز J ← سحب 50 مباشرة','رمز J ← الرجوع لجدول II-A','رمز K ← سحب 125','رمز H ← الفحص المشدد'],ans:1,exp:'دفعة 750 مع Level II = رمز J، ثم الرجوع للجدول لاستخراج n وAc وRe.'},
+      {type:'mc',q:'ماذا يحدث عند ظهور سهم ↑ أو ↓ في الجدول؟',opts:['رفض تلقائي','اتبع السهم لأول خطة بقيم Ac/Re صريحة','أضف 10% للعينة','انتقل للمشدد'],ans:1,exp:'السهم يعني الانتقال لأقرب خطة تحتوي قيم Ac/Re واضحة.'},
+      {type:'mc',q:'ميزة الطريقة الطبقية عند وجود تباين كبير في الدفعة؟',opts:['تُقلل العينة بلا قيود','تضمن تمثيل كل طبقة بنسبة متناسبة','لا فرق مع العشوائية البسيطة','أسرع تطبيقاً دائماً'],ans:1,exp:'الطبقية تضمن التمثيل المتناسب لكل طبقة في الدفعة.'},
+      {type:'mc',q:'الفرق بين عينة عدسة المحقق وباقي العينات غير الاحتمالية؟',opts:['لا فرق','عدسة المحقق تستهدف مناطق الشك والخطر تحديداً','عدسة المحقق احتمالية مُصغّرة','غير الاحتمالية أدق إحصائياً'],ans:1,exp:'عدسة المحقق متخصصة في استهداف مناطق الشك، باقي غير الاحتمالية للملاءمة العامة.'}
+    ]
+  },
+  5: {
+    title: 'اختبار اليوم الخامس — التقييم الشامل',
+    questions: [
+      {type:'tf',q:'خطط المتغيرات تحتاج حجم عينة أصغر من خطط الصفات لنفس مستوى الحماية.',opts:['صح','خطأ'],ans:0,exp:'صح. المتغيرات تستغل البيانات الكمية بكفاءة أعلى.'},
+      {type:'tf',q:'إذا كان عدد العيوب = Ac بالضبط في العينة المفردة تُرفض الدفعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. إذا d = Ac تُقبَل الدفعة — الرفض عند d ≥ Re.'},
+      {type:'tf',q:'النظام المبني على المخاطر يركّز على النقاط ذات الخطورة العالية.',opts:['صح','خطأ'],ans:0,exp:'صح. يُحسّن كفاءة الموارد بتوجيهها نحو المناطق الأعلى خطورة.'},
+      {type:'tf',q:'AQL يمثّل أسوأ متوسط جودة مقبول للعملية الإنتاجية.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو التعريف الدقيق لـ AQL.'},
+      {type:'tf',q:'الانتقال للمخفف يحدث تلقائياً بعد قبول 5 دفعات متتالية.',opts:['صح','خطأ'],ans:1,exp:'خطأ. يحتاج 10 دفعات + محرك ≥30 + موافقة الجهة المختصة.'},
+      {type:'tf',q:'الفحص المشدد يعني رفع حجم العينة أو تشديد حد القبول أو كليهما.',opts:['صح','خطأ'],ans:0,exp:'صح. الفحص المشدد يشمل رفع العينة وتشديد Ac.'},
+      {type:'tf',q:'العينة العشوائية البسيطة تضمن تمثيل جميع طبقات الدفعة تلقائياً.',opts:['صح','خطأ'],ans:1,exp:'خطأ. للتمثيل الطبقي يجب استخدام Stratified Sampling.'},
+      {type:'tf',q:'في العينة المزدوجة، تُسحب العينة الثانية فقط عند الوقوع في المنطقة الرمادية.',opts:['صح','خطأ'],ans:0,exp:'صح. المنطقة الرمادية هي الحالة الوحيدة التي تستدعي عينة ثانية.'},
+      {type:'tf',q:'خطأ النوع الأول α هو احتمال رفض دفعة جيدة.',opts:['صح','خطأ'],ans:0,exp:'صح. α = خطر المنتج = رفض الجيد.'},
+      {type:'tf',q:'رموز حجم العينة في ISO 2859-1 تعتمد فقط على حجم الدفعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. تعتمد على حجم الدفعة ومستوى الفحص معاً.'},
+      {type:'tf',q:'Lab Funnel يُصور تدرج الوحدات من الإرسالية لوحدة التحليل المخبري.',opts:['صح','خطأ'],ans:0,exp:'صح. نموذج القمع يُصور الانتقال التدريجي من الإرسالية لوحدة التحليل.'},
+      {type:'tf',q:'المخالفات البسيطة تستوجب نفس إجراءات المعالجة الفورية للمخالفات الخطيرة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. إجراءات مختلفة — الخطيرة أشد بكثير.'},
+      {type:'tf',q:'منحنى OC Curve يوضح العلاقة بين جودة الدفعة الواردة واحتمال قبولها.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو التعريف الدقيق لـ OC Curve.'},
+      // MCQ
+      {type:'mc',q:'دفعة 700 وحدة، Level II. ما رمز حجم العينة؟',opts:['رمز J','رمز K','رمز L','رمز H'],ans:1,exp:'دفعة 501-1200 مع Level II = رمز J.'},
+      {type:'mc',q:'رمز J مع AQL=1.0%. ما n وAc الصحيحان؟',opts:['n=80, Ac=2','n=50, Ac=1','n=125, Ac=3','n=80, Ac=1'],ans:0,exp:'رمز J مع AQL 1.0% يعطي n=80 وAc=2.'},
+      {type:'mc',q:'شرط الانتقال للفحص المخفف وفق ISO 2859-1؟',opts:['قبول 10 دفعات فقط','10 دفعات + محرك≥30 + موافقة الجهة','5 دفعات فقط','رفض أقل من 1% خلال شهر'],ans:1,exp:'ثلاثة شروط مجتمعة: 10 دفعات + محرك ≥30 + موافقة.'},
+      {type:'mc',q:'ماذا يحدث لمحرك التبديل عند رفض دفعة أثناء الفحص العادي؟',opts:['يُخصم منه 3 نقاط','يُعاد لصفر','يبقى كما هو','ينتقل للمشدد مباشرة'],ans:1,exp:'عند الرفض يُعاد المحرك لصفر.'},
+      {type:'mc',q:'الأداة الأنسب لسحب عينات الأغذية الجافة من أكياس مغلقة؟',opts:['Vacuum Sampler','المسبار (Probe/Trier)','Sampling Auger','Trier للجبن'],ans:1,exp:'المسبار هو الأداة المعيارية للأغذية الجافة في الأكياس.'},
+      {type:'mc',q:'متطلب التعقيم الحراري للمعلبات غير الحمضية؟',opts:['100°C/30 دقيقة','121°C/≥25 دقيقة','90°C/20 دقيقة','121°C/10 دقائق'],ans:1,exp:'التعقيم الصحيح للمعلبات: 121°C لمدة لا تقل عن 25 دقيقة.'},
+      {type:'mc',q:'الفرق بين المرآة الإحصائية وعدسة المحقق؟',opts:['المرآة تمثّل الدفعة كاملة، العدسة تستهدف الخطر','لا فرق','المرآة أسرع','العدسة للمختبرات فقط'],ans:0,exp:'المرآة عشوائية كاملة، العدسة موجّهة نحو مناطق الشك.'},
+      {type:'mc',q:'الحد الأدنى لنقاط سحب شاحنة 90 طن حبوب؟',opts:['4 نقاط','7 نقاط','11 نقطة','15 نقطة'],ans:2,exp:'لشاحنة 90 طن: الحد الأدنى 11 نقطة سحب.'},
+      {type:'mc',q:'تعريف Flushing عند سحب عينات السوائل؟',opts:['تسريع ضخ السائل','تصريف الكميات الأولى لتجنب تلوث جدران الأنبوب','تبريد السائل','تصفية العينة'],ans:1,exp:'Flushing = تصريف الكميات الأولى لإزالة التلوث المتراكم في الجدران.'},
+      {type:'mc',q:'ما الخطوة الأولى عند اكتشاف مخالفة Critical؟',opts:['رفع تقرير خلال 48 ساعة','التوثيق الفوري والإجراء الفوري مع إخطار سلسلة القيادة','أخذ عينات إضافية أولاً','انتظار موافقة المختبر'],ans:1,exp:'التوثيق + الإجراء الفوري + إخطار سلسلة القيادة — فوراً.'},
+      {type:'mc',q:'العامل الأكثر تأثيراً في الحفاظ على سلامة العينة أثناء النقل؟',opts:['نوع الوعاء فقط','التحكم في الحرارة والزمن ومنع التلوث المتبادل','حجم العينة','اسم المفتش'],ans:1,exp:'ثلاثة عوامل: درجة الحرارة + أقصر وقت + منع التلوث المتبادل.'}
+    ]
+  }
+};;
+
+// ══════════════════════════════════════════════
+//  VIEW TRAINEE ANSWERS
+// ══════════════════════════════════════════════
+async function viewTraineeAnswers(tid, name, dayId){
+  if(!dayId){ toast('⚠️ لا يوجد اختبار مفتوح'); return; }
+  
+  // Get progress or results
+  let answers = [];
+  const progress = await fbGet(`workshops/${_wsId}/quiz_progress/${tid}/${dayId}`);
+  const result = await fbGet(`workshops/${_wsId}/results/${tid}/${dayId}`);
+  
+  if(progress?.answers) answers = progress.answers;
+  else if(result) answers = new Array(26).fill(null); // completed, no progress left
+  
+  const questions = (window.QUIZ_DATA||{})[dayId]?.questions || [];
+  const hasQuestions = questions.length > 0;
+  const totalQ = hasQuestions ? questions.length : answers.length || 26;
+  
+  const answered = answers.filter(a=>a!==null&&a!==undefined).length;
+  const correct = hasQuestions ? answers.filter((a,i)=>a!==null&&a===questions[i]?.ans).length : null;
+  const labels = ['أ','ب','ج','د'];
+  
+  const content = `
+    <div style="background:var(--g4);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <div style="font-weight:900;color:var(--g1)">${name}</div>
+      <div style="display:flex;gap:10px;font-size:.82rem;font-weight:700">
+        <span style="color:var(--blue)">📝 ${answered}/${totalQ} سؤال</span>
+        ${correct!==null?`<span style="color:var(--g1)">✅ ${correct} صحيح</span><span style="color:var(--red)">❌ ${answered-correct} خطأ</span>`:''}
+      </div>
+    </div>
+    <!-- Progress visual -->
+    <div style="margin-bottom:14px">
+      <div style="background:var(--border);border-radius:20px;height:10px;overflow:hidden;margin-bottom:6px">
+        <div style="width:${totalQ?Math.round(answered/totalQ*100):0}%;height:100%;background:var(--blue);border-radius:20px"></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:10px">
+        ${answers.map((a,i)=>{
+          const isAnswered=a!==null&&a!==undefined;
+          const isCorrect=hasQuestions&&isAnswered&&a===questions[i]?.ans;
+          const bg=!isAnswered?'#e5e7eb':hasQuestions?(isCorrect?'#6ee7b7':'#fca5a5'):'var(--blue)';
+          return`<div style="width:16px;height:16px;border-radius:3px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:.55rem;color:#fff;cursor:default" title="سؤال ${i+1}: ${isAnswered?'أجاب':'لم يجب'}">${isAnswered?'✓':'·'}</div>`;
+        }).join('')}
+      </div>
+      <div style="display:flex;gap:10px;font-size:.72rem;color:var(--muted);flex-wrap:wrap">
+        <span><span style="display:inline-block;width:10px;height:10px;background:${hasQuestions?'#6ee7b7':'var(--blue)'};border-radius:2px;margin-left:3px"></span>${hasQuestions?'صحيح':'أجاب'}</span>
+        ${hasQuestions?`<span><span style="display:inline-block;width:10px;height:10px;background:#fca5a5;border-radius:2px;margin-left:3px"></span>خطأ</span>`:''}
+        <span><span style="display:inline-block;width:10px;height:10px;background:#e5e7eb;border-radius:2px;margin-left:3px"></span>لم يصل بعد</span>
+      </div>
+    </div>
+    ${hasQuestions?`<div style="max-height:350px;overflow-y:auto">
+      ${questions.map((q,i)=>{
+        const a=answers[i]; const isAnswered=a!==null&&a!==undefined; const isCorrect=isAnswered&&a===q.ans;
+        const bg=!isAnswered?'#f9fafb':isCorrect?'#f0fdf4':'#fef2f2';
+        const border=!isAnswered?'var(--border)':isCorrect?'#6ee7b7':'#fca5a5';
+        return`<div style="background:${bg};border:1.5px solid ${border};border-radius:10px;padding:10px 12px;margin-bottom:7px">
+          <div style="display:flex;justify-content:space-between;font-size:.72rem;font-weight:700;margin-bottom:4px">
+            <span style="color:var(--muted)">س${i+1} — ${q.type==='tf'?'صح/خطأ':'اختيار متعدد'}</span>
+            <span style="color:${!isAnswered?'var(--muted)':isCorrect?'var(--g1)':'var(--red)'}">${!isAnswered?'⏭️ لم يجب':isCorrect?'✅ صحيح':'❌ خطأ'}</span>
+          </div>
+          <div style="font-size:.8rem;font-weight:700;margin-bottom:5px;line-height:1.5">${q.q}</div>
+          ${isAnswered?`<div style="display:flex;gap:5px;flex-wrap:wrap">
+            <span style="background:${isCorrect?'var(--g4)':'var(--red2)'};border-radius:7px;padding:2px 8px;font-size:.72rem;font-weight:700;color:${isCorrect?'var(--g1)':'var(--red)'}">إجابته: ${q.type==='tf'?q.opts[a]:(labels[a]||'')+' '+q.opts[a]}</span>
+            ${!isCorrect?`<span style="background:var(--g4);border-radius:7px;padding:2px 8px;font-size:.72rem;font-weight:700;color:var(--g1)">الصحيح: ${q.type==='tf'?q.opts[q.ans]:(labels[q.ans]||'')+' '+q.opts[q.ans]}</span>`:''}
+          </div>`:'<span style="font-size:.7rem;color:var(--muted)">لم يصل بعد</span>'}
+        </div>`;
+      }).join('')}
+    </div>`:'<div style="text-align:center;padding:20px;color:var(--muted);font-size:.82rem">⚠️ بيانات الأسئلة غير متاحة في هذه الواجهة<br>يمكن الاطلاع عليها من صفحة المتدرب</div>'}`;
+  
+  openModal(`🔍 إجابات ${name} — اليوم ${dayId}`, content);
+}
+
+function startSync(){
+  if(_fbLive)return; _fbLive=true;
+  console.log('🔴 startSync — role:', _role, 'wsId:', _wsId);
+  if(_role==='admin'){
+    fbListen('workshops',data=>{
+      _allWs=data||{};
+      if(document.getElementById('s-admin').classList.contains('active')){renderAdminKPIs();renderWSGrid();renderDLRequests();}
+    });
+  }
+  if(_role==='trainer'&&_wsId){
+    fbListen(`workshops/${_wsId}`,data=>{
+      if(!data)return;
+      _ws=data;_trainees=data.trainees?Object.values(data.trainees):[];
+      _results=data.results||{};_attendance=data.attendance||{};
+      _evaluations=data.evaluations||{};_materials=data.materials||{};_photos=data.photos||[];
+      renderTrKPIs();renderTrTable();
+      const evTab=document.getElementById('tt-evaluations');if(evTab&&evTab.style.display!=='none')renderEvaluations();
+    });
+    fbListen(`workshops/${_wsId}/scan_requests`,data=>renderScans(data||{}));
+    // Watch exam approvals for real-time button updates
+    fbListen(`workshops/${_wsId}/exam_approvals`, ()=>updateExamBtns());
+  }
+}
+</script>
+
+<!-- docx.js for Word report generation - multiple CDN fallbacks -->
+<script>
+(function(){
+  const CDNs = [
+    'https://unpkg.com/docx@9.6.1/dist/index.iife.js',
+    'https://cdn.jsdelivr.net/npm/docx@9.6.1/dist/index.iife.js',
+    'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js',
+    'https://unpkg.com/docx@8.5.0/build/index.js',
+  ];
+  let idx = 0;
+  function tryNext(){
+    if(idx >= CDNs.length){ console.error('All docx CDNs failed'); return; }
+    const s = document.createElement('script');
+    s.src = CDNs[idx++];
+    s.onload = () => { window._docxReady = true; console.log('✅ docx loaded from:', s.src); };
+    s.onerror = () => { console.warn('CDN failed:', s.src); tryNext(); };
+    document.head.appendChild(s);
+  }
+  tryNext();
+})();
+</script>
+<script>
+// ══════════════════════════════════════════════
+//  WORD REPORT GENERATOR
+// ══════════════════════════════════════════════
+async function generateWordReport(lang="ar") {
+  // Wait for docx library to load
+  if(typeof docx === 'undefined' || !window._docxReady) {
+    const btnAr = document.getElementById('word-btn-ar');
+    const btnEn = document.getElementById('word-btn-en');
+    const activeBtn = lang==='ar' ? btnAr : btnEn;
+    if(activeBtn) activeBtn.innerHTML = '<span class="spinner"></span> جارٍ تحميل المكتبة...';
+    
+    let tries = 0;
+    while(typeof docx === 'undefined' && tries < 40){
+      await new Promise(r=>setTimeout(r,250));
+      tries++;
+    }
+    
+    if(typeof docx === 'undefined'){
+      // Try loading docx one more time
+      await new Promise((resolve) => {
+        const s = document.createElement('script');
+        s.src = 'https://unpkg.com/docx@9.6.1/dist/index.iife.js';
+        s.onload = () => { window._docxReady = true; resolve(); };
+        s.onerror = () => resolve();
+        document.head.appendChild(s);
+      });
+      await new Promise(r=>setTimeout(r,500));
+    }
+    
+    if(typeof docx === 'undefined'){
+      toast('❌ فشل تحميل مكتبة التقارير — تحقق من الإنترنت وأعد المحاولة');
+      if(activeBtn) activeBtn.innerHTML = lang==='ar'?'📄 تقرير عربي (Word)':'📄 English Report (Word)';
+      return;
+    }
+  }
+  const btn = document.getElementById(lang==='ar'?'word-btn-ar':'word-btn-en');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> جارٍ إنشاء التقرير...'; const btn2 = document.getElementById(lang==='ar'?'word-btn-en':'word-btn-ar'); if(btn2) btn2.disabled=true;
+
+  try {
+    const {
+      Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+      ImageRun, Header, AlignmentType, BorderStyle, WidthType,
+      ShadingType, VerticalAlign, PageBreak
+    } = docx;
+
+    const WS = _ws;
+    const LANG = lang;
+    const RTL = lang === 'ar';
+    const DAYS = [1,2,3,4,5];
+    const TT = {
+      ar:{reportTitle:'التقرير النهائي للورشة التدريبية',subtitle:'سحب العينات الغذائية — 5 أيام',summary:'ملخص الورشة',wsInfo:'بيانات الورشة',traineesList:'قائمة المتدربين ودرجاتهم',attendance:'إحصائيات الحضور',evaluations:'تقييمات المدرب',photos:'صور الورشة',footer:'نظام ACES لإدارة ورش تدريب سحب العينات الغذائية',kpi1:'عدد المتدربين',kpi2:'متوسط الأداء',kpi3:'نسبة الحضور',kpi4:'تقييم المدرب',f1:'اسم الورشة',f2:'اسم المدرب',f3:'تاريخ البداية',f4:'تاريخ النهاية',f5:'الجهة المنظِّمة',f6:'الموقع',f7:'عدد المتدربين',f8:'نسبة النجاح',thName:'الاسم',thDept:'الجهة',thDay:'يوم',thAvg:'المتوسط',thLevel:'المستوى',thTrainee:'المتدرب',thTotal:'المجموع',present:'✅ حاضر',absent:'❌ غائب',excused:'⚡ معذور',evalAvg:'المتوسط العام',evalCount:'عدد التقييمات',partRate:'نسبة المشاركة',repDate:'تاريخ التقرير',crit:'المحور',score:'المتوسط',rating:'التقييم',cmts:'تعليقات المتدربين',issued:'إصدار',comp:'أكمل البرنامج',absShort:'غ',ex:'ممتاز',vg:'جيد جداً',gd:'مقبول',wk:'ضعيف',ec:['وضوح الشرح والأسلوب','التنظيم والتحضير','التفاعل مع المتدربين','الإلمام بالمادة العلمية','الرضا العام'],trLbl:'المدرب: ',units:' متدرب',traineesUnit:'متدرب',locale:'ar-EG'},
+      en:{reportTitle:'Final Workshop Training Report',subtitle:'Food Sampling — 5-Day Program',summary:'Workshop Summary',wsInfo:'Workshop Information',traineesList:'Trainees Performance',attendance:'Attendance Statistics',evaluations:'Trainer Evaluations',photos:'Workshop Photos',footer:'ACES Food Sampling Training Workshop Management System',kpi1:'Total Trainees',kpi2:'Avg Performance',kpi3:'Attendance Rate',kpi4:'Trainer Rating',f1:'Workshop Name',f2:'Trainer Name',f3:'Start Date',f4:'End Date',f5:'Organizing Entity',f6:'Location',f7:'No. of Trainees',f8:'Pass Rate (≥60%)',thName:'Name',thDept:'Department',thDay:'Day',thAvg:'Average',thLevel:'Level',thTrainee:'Trainee',thTotal:'Total',present:'✅ Present',absent:'❌ Absent',excused:'⚡ Excused',evalAvg:'Overall Average',evalCount:'No. of Evaluations',partRate:'Participation Rate',repDate:'Report Date',crit:'Criteria',score:'Score',rating:'Rating',cmts:'Trainee Comments',issued:'Issued by',comp:'Completed Program',absShort:'A',ex:'Excellent',vg:'Very Good',gd:'Acceptable',wk:'Weak',ec:['Clarity & Delivery','Organization & Preparation','Interaction with Trainees','Subject Knowledge','Overall Satisfaction'],trLbl:'Trainer: ',units:' Trainees',traineesUnit:'Trainees',locale:'en-GB'}
+    };
+    const T2 = TT[lang] || TT.ar;
+    const FONT2 = RTL ? 'Arial' : 'Calibri';
+    const ALIGN2 = RTL ? AlignmentType.RIGHT : AlignmentType.LEFT;
+    const DAY_NAMES = {1:'التقييم المبدئي',2:'التفتيش ومراقبة الجودة',3:'استراتيجيات سحب العينات',4:'التطبيق الميداني',5:'التقييم الشامل'};
+    const EVAL_CRIT = ['وضوح الشرح والأسلوب','التنظيم والتحضير','التفاعل مع المتدربين','الإلمام بالمادة العلمية','الرضا العام'];
+    const EVAL_KEYS = ['clarity','organization','interaction','knowledge','overall'];
+
+    const trainees = _trainees;
+    const getAvg = tid => { const s=DAYS.map(d=>_results[tid]?.[d]?.quizScore).filter(s=>s!==undefined); return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null; };
+    const getAtt = tid => Object.values(_attendance[tid]||{}).filter(v=>v==='present').length;
+    const avgs = trainees.map(t=>getAvg(t.id)).filter(a=>a!==null);
+    const overall = avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):0;
+    const passed = avgs.filter(a=>a>=60).length;
+    const totalAtt = trainees.reduce((s,t)=>s+getAtt(t.id),0);
+    const attPct = trainees.length?Math.round(totalAtt/(trainees.length*5)*100):0;
+    const evals = Object.values(_evaluations);
+    const evVals = evals.flatMap(e=>Object.values(e.scores||{}));
+    const evAvg = evVals.length?(evVals.reduce((a,b)=>a+b,0)/evVals.length).toFixed(1):'—';
+
+    // Logos embedded as base64
+    const acesB64_url = 'https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/aces_logo.png';
+    const mophB64_url = 'https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/moph_logo.png';
+    async function fetchLogo(url){try{const r=await fetch(url);if(r.ok)return await r.arrayBuffer();}catch(e){}return null;}
+    const [acesLogo,mophLogo] = await Promise.all([fetchLogo(ACES_URL),fetchLogo(MOPH_URL)]);
+
+    const brd = { style: BorderStyle.SINGLE, size: 1, color: 'B8D8CC' };
+    const brds = { top:brd, bottom:brd, left:brd, right:brd };
+    const hBrd = { style: BorderStyle.SINGLE, size: 4, color: '0A5C3E' };
+    const hBrds = { top:hBrd, bottom:hBrd, left:hBrd, right:hBrd };
+
+    const C = (text, w, o={}) => new TableCell({
+      width:{size:w,type:WidthType.DXA}, borders:o.b||brds,
+      shading:o.fill?{fill:o.fill,type:ShadingType.CLEAR}:undefined,
+      verticalAlign:VerticalAlign.CENTER,
+      margins:{top:80,bottom:80,left:120,right:120},
+      children:[new Paragraph({
+        alignment:o.ctr?AlignmentType.CENTER:AlignmentType.RIGHT,
+        children:[new TextRun({text:String(text||'—'),font:'Arial',size:o.sz||18,bold:o.bold||false,color:o.col||'000000',rtl:true})]
+      })]
+    });
+
+    const H = t => new Paragraph({spacing:{before:240,after:120},border:{bottom:{style:BorderStyle.SINGLE,size:8,color:'0A5C3E',space:4}},children:[new TextRun({text:t,font:'Arial',size:26,bold:true,color:'0A5C3E',rtl:true})]});
+    const P = (t,o={}) => new Paragraph({alignment:o.ctr?AlignmentType.CENTER:AlignmentType.RIGHT,spacing:{before:o.bf||60,after:o.af||60},children:[new TextRun({text:String(t||''),font:'Arial',size:o.sz||20,bold:o.bold||false,color:o.col||'000000',rtl:true})]});
+    const SP = () => new Paragraph({spacing:{before:120,after:120},children:[new TextRun('')]});
+
+    const children = [];
+
+    // Logos header
+    const logoChildren = [];
+    if(mophLogo) logoChildren.push(new ImageRun({data:mophLogo,transformation:{width:120,height:48},type:'png'}));
+    logoChildren.push(new TextRun({text:'          ',font:'Arial',size:20}));
+    if(acesLogo) logoChildren.push(new ImageRun({data:acesLogo,transformation:{width:120,height:48},type:'png'}));
+    if(logoChildren.length > 1) children.push(new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:200},children:logoChildren}));
+
+    // Title
+    children.push(P('التقرير النهائي للورشة التدريبية',{ctr:true,sz:36,bold:true,col:'0A5C3E',bf:100,af:80}));
+    children.push(P(WS.name||'—',{ctr:true,sz:28,bold:true,col:'0E7A54',bf:0,af:60}));
+    children.push(P('سحب العينات الغذائية — 5 أيام',{ctr:true,sz:20,col:'4A7060',bf:0,af:40}));
+    children.push(new Paragraph({alignment:AlignmentType.CENTER,border:{bottom:{style:BorderStyle.SINGLE,size:12,color:'0A5C3E',space:4}},spacing:{before:0,after:200},children:[new TextRun({text:' ',font:'Arial',size:20})]}));
+
+    // KPI summary table
+    children.push(H(T2.summary));
+    children.push(new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[2256,2256,2257,2257],rows:[
+      new TableRow({children:[C(T2.kpi1,2256,{fill:'EAF6F1',bold:true,ctr:true,sz:20}),C(T2.kpi2,2256,{fill:'EAF6F1',bold:true,ctr:true,sz:20}),C(T2.kpi3,2257,{fill:'EAF6F1',bold:true,ctr:true,sz:20}),C(T2.kpi4,2257,{fill:'EAF6F1',bold:true,ctr:true,sz:20})]}),
+      new TableRow({children:[C(trainees.length+T2.units,2256,{ctr:true,sz:26,bold:true,col:'0A5C3E'}),C(overall+'%',2256,{ctr:true,sz:26,bold:true,col:overall>=80?'0A5C3E':overall>=60?'C8830A':'B83030'}),C(attPct+'%',2257,{ctr:true,sz:26,bold:true,col:attPct>=80?'0A5C3E':attPct>=60?'C8830A':'B83030'}),C(evAvg+(evAvg!=='—'?'⭐':''),2257,{ctr:true,sz:26,bold:true,col:'C8830A'})]})
+    ]}));
+    children.push(SP());
+
+    // Workshop info
+    children.push(H(T2.wsInfo));
+    const info=[[T2.f1,WS.name||'—'],[T2.f2,WS.trainerName||'—'],[T2.f3,WS.startDate||'—'],[T2.f4,WS.endDate||'—'],[T2.f5,WS.org||'—'],['الموقع',WS.location||'—'],[T2.f7,trainees.length+''],[T2.f8,trainees.length?Math.round(passed/trainees.length*100)+'%':'—']];
+    children.push(new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[3000,6026],rows:info.map((r,i)=>new TableRow({children:[C(r[0],3000,{fill:'EAF6F1',bold:true}),C(r[1],6026,{fill:i%2===0?'FFFFFF':'F9FAFB'})]}))}));
+    children.push(SP());
+
+    // Trainees performance
+    children.push(new Paragraph({children:[new PageBreak()]}));
+    children.push(H(T2.traineesList));
+    children.push(new Table({
+      width:{size:9026,type:WidthType.DXA},
+      columnWidths:[400,2000,1500,600,600,600,600,600,700,826],
+      rows:[
+        new TableRow({children:[C('#',400,{fill:'0A5C3E',bold:true,ctr:true,sz:16,col:'FFFFFF',b:hBrds}),C(T2.thName,2000,{fill:'0A5C3E',bold:true,sz:16,col:'FFFFFF',b:hBrds}),C(T2.thDept,1500,{fill:'0A5C3E',bold:true,sz:16,col:'FFFFFF',b:hBrds}),...DAYS.map(d=>C('يوم '+d,600,{fill:'0A5C3E',bold:true,ctr:true,sz:16,col:'FFFFFF',b:hBrds})),C('المتوسط',700,{fill:'0A5C3E',bold:true,ctr:true,sz:16,col:'FFFFFF',b:hBrds}),C('المستوى',826,{fill:'0A5C3E',bold:true,ctr:true,sz:16,col:'FFFFFF',b:hBrds})]}),
+        ...trainees.map((t,i)=>{
+          const avg=getAvg(t.id);
+          const level=avg===null?'—':avg>=85?'ممتاز':avg>=70?'جيد جداً':avg>=60?'مقبول':'ضعيف';
+          const avgCol=avg===null?'374151':avg>=80?'0A5C3E':avg>=60?'C8830A':'B83030';
+          const fill=i%2===0?'FFFFFF':'F2FBF7';
+          return new TableRow({children:[
+            C(i+1,400,{fill,ctr:true,sz:16}),C(t.name,2000,{fill,bold:true,sz:16}),C(t.dept,1500,{fill,sz:16}),
+            ...DAYS.map(d=>{
+              const r=_results[t.id]?.[d];
+              if(!r)return C('—',600,{fill,ctr:true,sz:16,col:'9CA3AF'});
+              if(r.absent)return C(T2.absShort,600,{fill:'FDE8E8',ctr:true,sz:16,col:'B83030',bold:true});
+              const s=r.quizScore;return C(s+'%',600,{fill,ctr:true,sz:16,col:s>=80?'0A5C3E':s>=60?'C8830A':'B83030',bold:true});
+            }),
+            C(avg!==null?avg+'%':'—',700,{fill,ctr:true,sz:18,bold:true,col:avgCol}),
+            C(level,826,{fill:avg>=85?'D1FAE5':avg>=70?'DBEAFE':avg>=60?'FFF7E6':'FDE8E8',ctr:true,sz:16,col:avg>=85?'065F46':avg>=70?'1E40AF':avg>=60?'78350F':'7F1D1D'})
+          ]});
+        })
+      ]
+    }));
+    children.push(SP());
+
+    // Attendance
+    children.push(H(T2.attendance));
+    const attIcons={present:T2.present,absent:T2.absent,excused:T2.excused,none:'—'};
+    const attFills={present:'D1FAE5',absent:'FDE8E8',excused:'FFF7E6',none:'FFFFFF'};
+    children.push(new Table({
+      width:{size:9026,type:WidthType.DXA},columnWidths:[2500,900,900,900,900,900,1026],
+      rows:[
+        new TableRow({children:[C('المتدرب',2500,{fill:'0A5C3E',bold:true,col:'FFFFFF',b:hBrds}),...DAYS.map(d=>C('اليوم '+d,900,{fill:'0A5C3E',bold:true,ctr:true,col:'FFFFFF',b:hBrds})),C('المجموع',1026,{fill:'0A5C3E',bold:true,ctr:true,col:'FFFFFF',b:hBrds})]}),
+        ...trainees.map((t,i)=>{
+          const att=_attendance[t.id]||{};
+          const total=Object.values(att).filter(v=>v==='present').length;
+          return new TableRow({children:[
+            C(t.name,2500,{fill:i%2===0?'FFFFFF':'F2FBF7',bold:true,sz:16}),
+            ...DAYS.map(d=>C(attIcons[att[d]||'none'],900,{fill:attFills[att[d]||'none'],ctr:true,sz:14})),
+            C(total+'/5',1026,{fill:total>=4?'D1FAE5':total>=3?'FFF7E6':'FDE8E8',ctr:true,bold:true,sz:18,col:total>=4?'065F46':total>=3?'78350F':'7F1D1D'})
+          ]});
+        })
+      ]
+    }));
+    children.push(SP());
+
+    // Evaluations
+    if(evals.length) {
+      children.push(new Paragraph({children:[new PageBreak()]}));
+      children.push(H('تقييمات المدرب من المتدربين'));
+      children.push(new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[2256,2256,2257,2257],rows:[
+        new TableRow({children:[C(T2.evalAvg,2256,{fill:'EAF6F1',bold:true,ctr:true}),C(T2.evalCount,2256,{fill:'EAF6F1',bold:true,ctr:true}),C(T2.partRate,2257,{fill:'EAF6F1',bold:true,ctr:true}),C(T2.repDate,2257,{fill:'EAF6F1',bold:true,ctr:true})]}),
+        new TableRow({children:[C(evAvg+(evAvg!=='—'?'/5':''),2256,{ctr:true,sz:26,bold:true,col:'C8830A'}),C(evals.length+'',2256,{ctr:true,sz:26,bold:true,col:'0A5C3E'}),C(trainees.length?Math.round(evals.length/trainees.length*100)+'%':'—',2257,{ctr:true,sz:26,bold:true,col:'1255A0'}),C(new Date().toLocaleDateString(T2.locale||'ar-EG',{year:'numeric',month:'long',day:'numeric'}),2257,{ctr:true,sz:16,col:'374151'})]})
+      ]}));
+      children.push(SP());
+      children.push(new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[4000,1500,3526],rows:[
+        new TableRow({children:[C(T2.crit,4000,{fill:'0A5C3E',bold:true,col:'FFFFFF',b:hBrds}),C(T2.score,1500,{fill:'0A5C3E',bold:true,col:'FFFFFF',ctr:true,b:hBrds}),C(T2.rating,3526,{fill:'0A5C3E',bold:true,col:'FFFFFF',ctr:true,b:hBrds})]}),
+        ...EVAL_KEYS.map((k,i)=>{
+          const vals=evals.map(e=>e.scores?.[k]).filter(v=>v!==undefined);
+          const avg=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):null;
+          const stars=avg?'★'.repeat(Math.round(parseFloat(avg)))+'☆'.repeat(5-Math.round(parseFloat(avg))):'—';
+          return new TableRow({children:[C((T2&&T2.ec?T2.ec[i]:['وضوح الشرح','التنظيم','التفاعل','الإلمام','الرضا'][i])||'—',4000,{fill:i%2===0?'FFFFFF':'F2FBF7',bold:true}),C(avg?avg+'/5':'—',1500,{fill:i%2===0?'FFFFFF':'F2FBF7',ctr:true,bold:true,col:'C8830A',sz:20}),C(stars,3526,{fill:i%2===0?'FFFFFF':'F2FBF7',ctr:true,sz:18,col:'C8830A'})]});
+        })
+      ]}));
+      const withCmt=evals.filter(e=>e.comment&&e.comment.length>2);
+      if(withCmt.length){
+        children.push(SP());children.push(P(T2.cmts+':',{bold:true,sz:20}));
+        withCmt.forEach(e=>{children.push(new Paragraph({spacing:{before:80,after:80},border:{right:{style:BorderStyle.SINGLE,size:8,color:'C8830A',space:6}},indent:{right:240},children:[new TextRun({text:e.name+': ',font:'Arial',size:18,bold:true,color:'0A5C3E',rtl:true}),new TextRun({text:'"'+(e.comment||'')+'"',font:'Arial',size:18,color:'374151',rtl:true})]}));});
+      }
+      children.push(SP());
+    }
+
+    // Photos
+    if(_photos && _photos.length) {
+      children.push(new Paragraph({children:[new PageBreak()]}));
+      children.push(H(T2.photos+' ('+_photos.length+' صورة)'));
+      for(let i=0; i<_photos.length; i+=2) {
+        const row=[_photos[i],_photos[i+1]].filter(Boolean);
+        const cells=[];
+        for(const p of row) {
+          try {
+            const b64=p.data.replace(/^data:image\/[a-z]+;base64,/,'');
+            const arr=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)).buffer;
+            const ext=p.data.includes('image/png')?'png':'jpg';
+            cells.push(new TableCell({width:{size:4513,type:WidthType.DXA},borders:brds,margins:{top:80,bottom:80,left:80,right:80},children:[
+              new Paragraph({alignment:AlignmentType.CENTER,children:[new ImageRun({data:arr,transformation:{width:270,height:200},type:ext})]}),
+              new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:40,after:40},children:[new TextRun({text:p.name||'صورة',font:'Arial',size:14,color:'6B7280',rtl:true})]})
+            ]}));
+          } catch(e) { cells.push(new TableCell({width:{size:4513,type:WidthType.DXA},borders:brds,children:[P('صورة')]})); }
+        }
+        if(cells.length===1)cells.push(new TableCell({width:{size:4513,type:WidthType.DXA},borders:brds,children:[new Paragraph({children:[new TextRun('')]})] }));
+        children.push(new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[4513,4513],rows:[new TableRow({children:cells})]}));
+        children.push(SP());
+      }
+    }
+
+    // Footer
+    children.push(SP());
+    children.push(new Paragraph({alignment:AlignmentType.CENTER,border:{top:{style:BorderStyle.SINGLE,size:8,color:'0A5C3E',space:4}},spacing:{before:200,after:80},children:[new TextRun({text:'نظام ACES لإدارة ورش تدريب سحب العينات الغذائية',font:'Arial',size:18,bold:true,color:'0A5C3E',rtl:true})]}));
+    children.push(P(`${WS.trainerName||'—'} · ${WS.name||'—'} · إصدار: ${new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'})}`,{ctr:true,sz:16,col:'4A7060'}));
+
+    // Logo header for all pages
+    const headerLogoChildren = [];
+    if(mophLogo) headerLogoChildren.push(new ImageRun({data:mophLogo,transformation:{width:70,height:28},type:'png'}));
+    headerLogoChildren.push(new TextRun({text:'    نظام ACES — التقرير النهائي    ',font:'Arial',size:16,bold:true,color:'0A5C3E',rtl:true}));
+    if(acesLogo) headerLogoChildren.push(new ImageRun({data:acesLogo,transformation:{width:70,height:28},type:'png'}));
+
+    const doc = new Document({
+      styles:{default:{document:{run:{font:'Arial',size:20}}}},
+      sections:[{
+        properties:{page:{size:{width:11906,height:16838},margin:{top:1134,right:1134,bottom:1134,left:1134}}},
+        headers:{default:new Header({children:[new Paragraph({alignment:AlignmentType.CENTER,border:{bottom:{style:BorderStyle.SINGLE,size:4,color:'0A5C3E',space:4}},spacing:{before:0,after:100},children:headerLogoChildren})]})},
+        children
+      }]
+    });
+
+    // Use toBlob for browser (toBuffer needs Node.js)
+    let blob;
+    if(typeof Packer.toBlob === 'function'){
+      blob = await Packer.toBlob(doc);
+    } else {
+      // Fallback: toBuffer then convert to Blob
+      const buf = await Packer.toBuffer(doc);
+      blob = new Blob([buf], {type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = lang==='en'?`Report_${WS.name||'Workshop'}_${new Date().toISOString().slice(0,10)}.docx`:`تقرير_${WS.name||'ورشة'}_${new Date().toISOString().slice(0,10)}.docx`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast(lang==='en'?'✅ English report downloaded':'✅ تم تحميل التقرير بصيغة Word');
+  } catch(e) {
+    console.error('Report error:', e);
+    toast('❌ خطأ في إنشاء التقرير: '+e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = lang==='ar'?'📄 تقرير عربي (Word)':'📄 English Report (Word)'; const btn2x = document.getElementById(lang==='ar'?'word-btn-en':'word-btn-ar'); if(btn2x) btn2x.disabled=false;
+  }
+}
+</script>
+</body>
+</html>
