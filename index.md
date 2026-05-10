@@ -70,7 +70,7 @@ tr:hover td{background:var(--g4)}
 .chart-card{background:var(--card);border-radius:14px;border:1.5px solid var(--border);padding:17px;margin-bottom:14px;box-shadow:0 2px 10px rgba(10,92,62,.06)}
 .chart-card h3{font-size:.87rem;font-weight:800;color:var(--g1);margin-bottom:12px}
 .bar-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:.75rem}
-.bar-lbl{width:110px;font-weight:700;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.73rem}
+.bar-lbl{width:110px;font-weight:700;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white.bar-lbl{width:160px;min-width:160px;font-weight:700;text-align:right;flex-shrink:0;font-size:.73rem}-space:nowrap;font-size:.73rem}
 .bar-bg{flex:1;background:var(--border);border-radius:5px;height:11px;overflow:hidden}
 .bar-fill{height:100%;border-radius:5px;transition:width 1s .15s}
 .bar-num{width:38px;text-align:left;font-weight:800;font-size:.73rem}
@@ -1256,7 +1256,7 @@ function renderPerformance(){
     <div class="kpi b"><div class="v">${comp}</div><div class="l">أكمل 5 أيام</div></div>`;
   const ranked=[..._trainees].map(t=>({...t,avg:getAvg(t.id)})).filter(t=>t.avg!==null).sort((a,b)=>b.avg-a.avg);
   const maxA=Math.max(...ranked.map(t=>t.avg),1);
-  document.getElementById('rank-chart').innerHTML=ranked.map((t,i)=>{const col=t.avg>=80?'var(--g1)':t.avg>=60?'var(--gold)':'var(--red)';const m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';return`<div class="bar-row"><div class="bar-lbl">${m}${t.name.split(' ')[0]}</div><div class="bar-bg"><div class="bar-fill" style="width:${t.avg/maxA*100}%;background:${col}"></div></div><div class="bar-num" style="color:${col}">${t.avg}%</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
+  document.getElementById('rank-chart').innerHTML=ranked.map((t,i)=>{const col=t.avg>=80?'var(--g1)':t.avg>=60?'var(--gold)':'var(--red)';const m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';return`<div class="bareturn`<div class="bar-row"><div class="bar-lbl">${m}${t.name}</div>r-row"><div class="bar-lbl">${m}${t.name.split(' ')[0]}</div><div class="bar-bg"><div class="bar-fill" style="width:${t.avg/maxA*100}%;background:${col}"></div></div><div class="bar-num" style="color:${col}">${t.avg}%</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
   const dayAvgs=DAYS.map(d=>{const s=_trainees.map(t=>_results[t.id]?.[d]?.quizScore).filter(s=>s!==undefined);return{d,avg:s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null};});
   const maxD=Math.max(...dayAvgs.map(d=>d.avg||0),1);
   document.getElementById('day-chart').innerHTML=dayAvgs.map(({d,avg})=>`<div class="bar-row"><div class="bar-lbl">يوم ${d}</div><div class="bar-bg"><div class="bar-fill" style="width:${avg?avg/maxD*100:0}%;background:${avg>=80?'var(--g2)':avg>=60?'var(--gold)':'var(--red)'}"></div></div><div class="bar-num" style="color:var(--g1)">${avg!==null?avg+'%':'—'}</div></div>`).join('');
