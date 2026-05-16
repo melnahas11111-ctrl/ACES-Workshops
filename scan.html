@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACES — تسجيل الحضور</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap">
+<style>
+:root{
+  --g1:#0a5c3e;--g2:#0e7a54;--g3:#12a06e;--g4:#eaf6f1;--g5:#c8e8d8;
+  --gold:#c8830a;--red:#b83030;--red2:#fde8e8;--blue:#1255a0;--blue2:#e6f0fb;
+  --bg:#f5f9f7;--card:#fff;--text:#0e1f18;--muted:#4a7060;--border:#b8d8cc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+
+nav{background:#fff;border-bottom:2px solid var(--border);padding:0 18px;height:60px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 12px rgba(10,92,62,.09);position:sticky;top:0;z-index:10}
+nav img{height:38px;width:auto}
+nav h1{font-size:.88rem;font-weight:900;color:var(--g1)}
+
+.wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 16px 40px}
+.card{background:var(--card);border-radius:20px;border:1.5px solid var(--border);box-shadow:0 4px 24px rgba(10,92,62,.10);padding:28px;width:100%;max-width:440px;animation:fadeUp .4s ease}
+
+.trainee-banner{background:linear-gradient(135deg,var(--g4),#d0f0e8);border:1.5px solid var(--g5);border-radius:14px;padding:14px 16px;margin-bottom:22px;display:flex;align-items:center;gap:14px}
+.t-avatar{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;font-weight:900;flex-shrink:0}
+.t-info h3{font-size:.95rem;font-weight:900;color:var(--g1)}
+.t-info p{font-size:.78rem;color:var(--muted);margin-top:1px}
+.t-day{background:var(--g1);color:#fff;font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:20px;margin-top:5px;display:inline-block}
+
+.sec-title{font-size:.88rem;font-weight:800;color:var(--g1);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.sec-title::before{content:'';display:inline-block;width:4px;height:18px;background:var(--g3);border-radius:4px}
+
+.form-g{margin-bottom:14px}
+.inp-label{display:block;font-size:.75rem;font-weight:700;color:var(--muted);margin-bottom:5px}
+.inp-label .req{color:var(--red);margin-right:2px}
+.inp-wrap{position:relative;display:flex;align-items:center}
+.inp-icon{position:absolute;right:12px;font-size:1rem;color:var(--muted);pointer-events:none}
+.inp{width:100%;padding:11px 38px 11px 12px;border:2px solid var(--border);border-radius:12px;font-family:'Tajawal',sans-serif;font-size:.9rem;color:var(--text);background:#fff;outline:none;transition:.18s;direction:ltr;text-align:right}
+.inp:focus{border-color:var(--g3);box-shadow:0 0 0 3px rgba(18,160,110,.08)}
+.inp.err{border-color:var(--red)}
+.err-msg{font-size:.73rem;color:var(--red);margin-top:4px;display:none}
+.err-msg.show{display:block}
+.hint{font-size:.72rem;color:var(--muted);margin-top:4px}
+
+.btn-submit{width:100%;padding:14px;background:linear-gradient(135deg,var(--g2),var(--g3));color:#fff;border:none;border-radius:13px;font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;transition:.18s;box-shadow:0 4px 16px rgba(10,92,62,.28);margin-top:6px}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 7px 20px rgba(10,92,62,.32)}
+.btn-submit:active{transform:translateY(0)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+.privacy{text-align:center;font-size:.72rem;color:var(--muted);margin-top:12px;line-height:1.5}
+
+/* States */
+#state-loading,#state-notfound,#state-already,#state-success{display:none;text-align:center;padding:10px 0}
+#state-loading{display:block}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--g1);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
+.state-icon{font-size:4rem;margin-bottom:12px;display:block;animation:popIn .5s cubic-bezier(.22,.68,0,1.3)}
+.state-title{font-size:1.1rem;font-weight:800;margin-bottom:8px}
+.state-sub{font-size:.85rem;color:var(--muted);line-height:1.6}
+.pending-pill{display:inline-flex;align-items:center;gap:7px;background:#fff8e1;border:1.5px solid #f5c842;color:#b8860b;border-radius:30px;padding:8px 18px;font-size:.82rem;font-weight:700;margin:16px 0 6px}
+.pending-dot{width:8px;height:8px;background:#f5c842;border-radius:50%;animation:blink 1.2s infinite;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<nav>
+  <img src="https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/aces_logo.png" alt="ACES" onerror="this.style.display='none'">
+  <h1>ACES — نظام إدارة الورش التدريبية</h1>
+</nav>
+
+<div class="wrap">
+<div class="card">
+
+  <!-- Loading -->
+  <div id="state-loading">
+    <div class="spinner"></div>
+    <p style="color:var(--muted);font-size:.88rem">جاري جلب البيانات...</p>
+  </div>
+
+  <!-- Not found -->
+  <div id="state-notfound">
+    <span class="state-icon">❌</span>
+    <div class="state-title" style="color:var(--red)">رمز QR غير صالح</div>
+    <div class="state-sub">لم يتم العثور على بيانات مرتبطة بهذا الرمز.<br>تواصل مع المدرب للمساعدة.</div>
+  </div>
+
+  <!-- Already submitted -->
+  <div id="state-already">
+    <span class="state-icon">✅</span>
+    <div class="state-title" style="color:var(--g1)">تم الإرسال مسبقاً</div>
+    <div class="state-sub" id="already-msg">لقد أرسلت طلب حضورك اليوم بالفعل.</div>
+  </div>
+
+  <!-- Form -->
+  <div id="state-form" style="display:none">
+    <!-- Trainee banner -->
+    <div class="trainee-banner">
+      <div class="t-avatar" id="t-avatar">👤</div>
+      <div class="t-info">
+        <h3 id="t-name">—</h3>
+        <p id="t-dept">—</p>
+        <span class="t-day" id="t-day">اليوم 1</span>
+      </div>
+    </div>
+
+    <div class="sec-title">أدخل بيانات التواصل</div>
+
+    <div class="form-g">
+      <label class="inp-label">📱 رقم الهاتف <span class="req">*</span></label>
+      <div class="inp-wrap">
+        <span class="inp-icon">📱</span>
+        <input class="inp" id="inp-phone" type="tel" placeholder="05XXXXXXXX" maxlength="15" autocomplete="tel">
+      </div>
+      <div class="hint">سيُستخدم للتواصل الرسمي والإشعارات</div>
+      <div class="err-msg" id="err-phone">يرجى إدخال رقم هاتف صحيح</div>
+    </div>
+
+    <div class="form-g">
+      <label class="inp-label">📧 البريد الإلكتروني <span class="req">*</span></label>
+      <div class="inp-wrap">
+        <span class="inp-icon">✉️</span>
+        <input class="inp" id="inp-email" type="email" placeholder="example@domain.com" autocomplete="email">
+      </div>
+      <div class="hint">ستصلك المواد التعليمية والشهادة على هذا البريد</div>
+      <div class="err-msg" id="err-email">يرجى إدخال بريد إلكتروني صحيح</div>
+    </div>
+
+    <button class="btn-submit" id="btn-submit" onclick="submitAttendance()">✅ تسجيل الحضور</button>
+    <p class="privacy">🔒 بياناتك محمية وتُستخدم فقط لأغراض الورشة التدريبية</p>
+  </div>
+
+  <!-- Success -->
+  <div id="state-success">
+    <span class="state-icon">🎉</span>
+    <div class="state-title" style="color:var(--g1)">تم إرسال طلبك!</div>
+    <div class="state-sub">سيقوم المدرب بمراجعة طلبك وقبول حضورك قريباً.</div>
+    <div class="pending-pill"><div class="pending-dot"></div>في انتظار موافقة المدرب</div>
+    <p id="success-details" style="font-size:.78rem;color:var(--muted);margin-top:6px"></p>
+  </div>
+
+</div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const cfg = {
+  apiKey:"AIzaSyDgRH8Slr3uk0RRZOFZ5LDu1WDBWtgtTRY",
+  databaseURL:"https://aces-workshops-default-rtdb.firebaseio.com",
+  projectId:"aces-workshops"
+};
+const app = initializeApp(cfg);
+const db  = getDatabase(app);
+
+// ── Parse URL params ──────────────────────────
+const p   = new URLSearchParams(location.search);
+const wsId = p.get('wsid');
+const tid  = p.get('tid');
+const day  = parseInt(p.get('day')||'1', 10);
+
+// ── Show state helpers ────────────────────────
+function show(id){
+  ['state-loading','state-notfound','state-already','state-form','state-success']
+    .forEach(s=>{ document.getElementById(s).style.display='none'; });
+  document.getElementById(id).style.display='block';
+}
+
+// ── Validate ──────────────────────────────────
+function validPhone(v){ return /^[0-9+\-\s]{7,15}$/.test(v.trim()); }
+function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
+
+// ── Init ──────────────────────────────────────
+async function init(){
+  if(!wsId || !tid){ show('state-notfound'); return; }
+
+  try{
+    const snap = await get(ref(db, `workshops/${wsId}`));
+    if(!snap.exists()){ show('state-notfound'); return; }
+    const ws = snap.val();
+
+    const trainee = ws.trainees?.[tid];
+    if(!trainee){ show('state-notfound'); return; }
+
+    // Check if already submitted today
+    const existing = ws.scan_requests?.[tid];
+    if(existing && existing.status === 'pending'){
+      document.getElementById('already-msg').textContent =
+        `لقد أرسلت طلب حضورك لليوم ${day} بالفعل. انتظر موافقة المدرب.`;
+      show('state-already'); return;
+    }
+    if(existing && existing.status === 'approved'){
+      document.getElementById('already-msg').textContent =
+        `تم قبول حضورك لليوم ${day} ✅`;
+      show('state-already'); return;
+    }
+
+    // Pre-fill saved contact data
+    if(trainee.phone) document.getElementById('inp-phone').value = trainee.phone;
+    if(trainee.email) document.getElementById('inp-email').value = trainee.email;
+
+    // Fill banner
+    const initials = (trainee.name||'م').split(' ').map(n=>n[0]||'').join('').slice(0,2).toUpperCase();
+    document.getElementById('t-avatar').textContent  = initials || '👤';
+    document.getElementById('t-name').textContent    = trainee.name || '—';
+    document.getElementById('t-dept').textContent    = trainee.dept || '';
+    document.getElementById('t-day').textContent     = `اليوم ${day} — ${ws.name||''}`;
+    document.title = `ACES — ${ws.name||'الورشة'}`;
+
+    show('state-form');
+  } catch(e){
+    console.error(e);
+    show('state-notfound');
+  }
+}
+
+// ── Submit ────────────────────────────────────
+window.submitAttendance = async function(){
+  const phone = document.getElementById('inp-phone').value.trim();
+  const email = document.getElementById('inp-email').value.trim();
+  let ok = true;
+
+  if(!validPhone(phone)){
+    document.getElementById('inp-phone').classList.add('err');
+    document.getElementById('err-phone').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('inp-phone').classList.remove('err');
+    document.getElementById('err-phone').classList.remove('show');
+  }
+  if(!validEmail(email)){
+    document.getElementById('inp-email').classList.add('err');
+    document.getElementById('err-email').classList.add('show');
+    ok = false;
+  } else {
+    document.getElementById('inp-email').classList.remove('err');
+    document.getElementById('err-email').classList.remove('show');
+  }
+  if(!ok) return;
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = '⏳ جاري الإرسال...';
+
+  try{
+    // Get trainee name/dept for the scan request
+    const snap = await get(ref(db, `workshops/${wsId}/trainees/${tid}`));
+    const trainee = snap.exists() ? snap.val() : {};
+
+    // Write scan request with phone & email
+    await set(ref(db, `workshops/${wsId}/scan_requests/${tid}`), {
+      tid,
+      name     : trainee.name || '—',
+      dept     : trainee.dept || '—',
+      sid      : trainee.sid  || '—',
+      phone,
+      email,
+      dayId    : day,
+      status   : 'pending',
+      scannedAt: new Date().toISOString()
+    });
+
+    // Also save phone & email to trainee record directly
+    await update(ref(db, `workshops/${wsId}/trainees/${tid}`), { phone, email });
+
+    document.getElementById('success-details').textContent = `📱 ${phone}   📧 ${email}`;
+    show('state-success');
+  } catch(e){
+    console.error(e);
+    btn.disabled = false;
+    btn.textContent = '✅ تسجيل الحضور';
+    alert('حدث خطأ أثناء الإرسال. حاول مرة أخرى.');
+  }
+};
+
+// ── Input listeners ───────────────────────────
+document.getElementById('inp-phone').addEventListener('input', function(){
+  if(validPhone(this.value)){
+    this.classList.remove('err');
+    document.getElementById('err-phone').classList.remove('show');
+  }
+});
+document.getElementById('inp-email').addEventListener('input', function(){
+  if(validEmail(this.value)){
+    this.classList.remove('err');
+    document.getElementById('err-email').classList.remove('show');
+  }
+});
+['inp-phone','inp-email'].forEach(id=>{
+  document.getElementById(id).addEventListener('keypress',e=>{
+    if(e.key==='Enter') window.submitAttendance();
+  });
+});
+
+// ── Run ───────────────────────────────────────
+init();
+</script>
+</body>
+</html>
