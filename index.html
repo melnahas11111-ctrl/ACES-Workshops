@@ -136,8 +136,10 @@ tr:hover td{background:var(--g4)}
 @media print{
   nav,.no-print{display:none!important}
   .screen{padding:0!important}
-  body{background:#fff}
+  body{background:#fff;margin:0;padding:0}
   .report-page{page-break-after:always}
+  @page{size:A4 portrait;margin:10mm 12mm}
+  #rpt-root{max-width:100%!important;padding:0 4mm!important}
 }
 
 .report-photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
@@ -1676,7 +1678,7 @@ function _printReport(){
   var sheets=Array.from(document.styleSheets).map(function(s){try{return Array.from(s.cssRules).map(function(r){return r.cssText;}).join('\n');}catch(e){return '';}}).join('\n');
   var wsName=_ws&&_ws.name?_ws.name:'ACES';
   var win=window.open('','_blank','width=1000,height=800');
-  var html='<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>'+wsName+'<\/title><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}'+sheets+'body{font-family:Tajawal,sans-serif;background:#fff;color:#1a1a1a}#rpt-root{max-width:900px;margin:0 auto;padding:20px}@page{size:A4 portrait;margin:10mm 12mm}@media print{body,html{background:#fff!important}button,.no-print,input[type=file],label[title^=sig-upload]{display:none!important}.sig-print-img{display:block!important;max-height:52px!important;object-fit:contain!important}#rpt-root>div{break-inside:avoid;page-break-inside:avoid}body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}canvas{display:none!important}img[id$=-img]{display:block!important}[style*="background:#6b1c24"],[style*="background: #6b1c24"]{background-color:#6b1c24!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.rpt-footer-logos img{filter:brightness(0) invert(1)!important}}<\/style><\/head><body>'+el.outerHTML+'<script>window.onload=function(){setTimeout(function(){window.print();},600);};<\/script><\/body><\/html>';
+  var html='<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>'+wsName+'<\/title><link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0}'+sheets+'body{font-family:Tajawal,sans-serif;background:#fff;color:#1a1a1a}#rpt-root{max-width:900px;margin:0 auto;padding:20px}@page{size:A4 portrait;margin:10mm 12mm}@media print{body,html{background:#fff!important;margin:0;padding:0}button,.no-print,input[type=file],label[title^=sig-upload]{display:none!important}.sig-print-img{display:block!important;max-height:52px!important;object-fit:contain!important}#rpt-root{max-width:100%!important;width:100%!important;padding:0 4mm!important;margin:0 auto!important}#rpt-root>div{break-inside:avoid;page-break-inside:avoid}body{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}canvas{display:none!important}img[id$=-img]{display:block!important}[style*="background:#6b1c24"],[style*="background: #6b1c24"]{background-color:#6b1c24!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.rpt-footer-logos img{filter:brightness(0) invert(1)!important;max-height:36px!important;object-fit:contain!important}img[alt="ACES"],img[alt="MoPH"]{max-height:40px!important;object-fit:contain!important;display:block!important}}<\/style><\/head><body>'+el.outerHTML+'<script>window.onload=function(){setTimeout(function(){window.print();},600);};<\/script><\/body><\/html>';
   win.document.write(html);
   win.document.close();
 }
@@ -1726,14 +1728,14 @@ rpt.innerHTML=`
   <div style="height:8px;background:linear-gradient(90deg,#6b1c24 33%,#f5c000 33% 66%,#0a5c3e 66%)"></div>
 
   <div style="padding:48px 48px 40px">
-    <!-- Logos row -->
+   <!-- Logos row -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:40px">
-      <img src="${_ACES_D}" style="height:52px;object-fit:contain" alt="ACES">
+      <img src="${_ACES_D}" style="height:52px;object-fit:contain;display:block;max-width:130px;background:transparent" alt="ACES" onerror="this.style.visibility='hidden'">
       <div style="text-align:center">
         <div style="font-size:.82rem;font-weight:900;letter-spacing:.2em;color:#6b1c24;text-transform:uppercase;margin-bottom:6px">Training Final Report</div>
         <div style="width:48px;height:2px;background:#f5c000;margin:0 auto"></div>
       </div>
-      <img src="${_MOPH_D}" style="height:52px;object-fit:contain" alt="MoPH">
+      <img src="${_MOPH_D}" style="height:52px;object-fit:contain;display:block;max-width:130px;background:transparent" alt="MoPH" onerror="this.style.visibility='hidden'">
     </div>
 
     <!-- Title block -->
@@ -2192,10 +2194,10 @@ ${_photos&&_photos.length?`
 </div>
 <!-- ════ FOOTER ════ -->
 <div style="background:#6b1c24;border-radius:16px;padding:24px 32px;color:#fff;text-align:center">
-  <div class="rpt-footer-logos" style="display:flex;justify-content:center;align-items:center;gap:16px;margin-bottom:12px">
-    <img src="${_ACES_D}" style="height:40px;object-fit:contain;filter:brightness(0) invert(1)">
+<div class="rpt-footer-logos" style="display:flex;justify-content:center;align-items:center;gap:16px;margin-bottom:12px">
+    <img src="${_ACES_D}" style="height:36px;max-width:100px;object-fit:contain;filter:brightness(0) invert(1);display:block" onerror="this.style.display='none'">
     <div style="width:1px;height:32px;background:rgba(255,255,255,.3)"></div>
-    <img src="${_MOPH_D}" style="height:40px;object-fit:contain;filter:brightness(0) invert(1)">
+    <img src="${_MOPH_D}" style="height:36px;max-width:100px;object-fit:contain;filter:brightness(0) invert(1);display:block" onerror="this.style.display='none'">
   </div>
   <div style="font-weight:900;font-size:.88rem;margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:.05em">ACES Academy — نظام إدارة ورش التدريب</div>
   <div style="font-size:.78rem;color:rgba(255,255,255,.8);margin-bottom:4px">Arab Center for Engineering Studies · Doha, Qatar</div>
