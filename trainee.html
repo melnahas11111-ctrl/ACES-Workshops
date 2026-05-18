@@ -27,7 +27,7 @@ body{font-family:'Tajawal',system-ui,sans-serif;background:var(--bg);color:var(-
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--g1),var(--g2));border-radius:10px;transition:width .4s}
 nav{background:var(--card);border-bottom:2px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 nav img{height:36px;object-fit:contain}
-
+ 
 /* ── Bottom tabs (last day only) ── */
 #bottom-tabs{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:#fff;
   border-top:2px solid var(--border);grid-template-columns:1fr 1fr;box-shadow:0 -4px 18px rgba(0,0,0,.1)}
@@ -40,7 +40,7 @@ nav img{height:36px;object-fit:contain}
 </style>
 </head>
 <body>
-
+ 
 <nav>
   <img src="https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/aces_logo.png" alt="ACES">
   <div>
@@ -48,7 +48,7 @@ nav img{height:36px;object-fit:contain}
     <div style="font-size:.68rem;color:var(--muted)" id="nav-sub">جاري التحميل...</div>
   </div>
 </nav>
-
+ 
 <!-- ════ SCREENS ════ -->
 <div id="s-loading" class="screen active">
   <div style="text-align:center;padding:60px 20px">
@@ -56,7 +56,7 @@ nav img{height:36px;object-fit:contain}
     <p style="margin-top:16px;color:var(--muted);font-size:.9rem">جاري التحقق...</p>
   </div>
 </div>
-
+ 
 <div id="s-notfound" class="screen">
   <div class="card" style="text-align:center;padding:40px">
     <div style="font-size:3rem;margin-bottom:12px">📱</div>
@@ -65,7 +65,7 @@ nav img{height:36px;object-fit:contain}
     <div id="notfound-day" style="margin-top:14px;background:var(--g4);border-radius:10px;padding:10px;font-weight:700;color:var(--g1);font-size:.85rem"></div>
   </div>
 </div>
-
+ 
 <div id="s-rejected" class="screen">
   <div class="card" style="text-align:center;padding:40px">
     <div style="font-size:2.5rem;margin-bottom:12px">🚫</div>
@@ -73,7 +73,7 @@ nav img{height:36px;object-fit:contain}
     <p style="color:var(--muted);font-size:.88rem">تواصل مع المدرب</p>
   </div>
 </div>
-
+ 
 <div id="s-waiting" class="screen">
   <div class="card" style="text-align:center;padding:40px">
     <div style="font-size:3rem;margin-bottom:12px;animation:pulse 2s infinite">⏳</div>
@@ -82,7 +82,7 @@ nav img{height:36px;object-fit:contain}
     <div id="wait-name" style="font-weight:900;font-size:1rem;color:var(--text);margin-top:14px"></div>
   </div>
 </div>
-
+ 
 <div id="s-waitexam" class="screen">
   <div class="card" style="text-align:center;padding:24px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff">
     <div style="font-size:2rem;margin-bottom:8px">✅</div>
@@ -103,7 +103,7 @@ nav img{height:36px;object-fit:contain}
     </div>
   </div>
 </div>
-
+ 
 <div id="s-quiz" class="screen">
   <div class="card" style="padding:14px 18px;margin-bottom:12px">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
@@ -127,7 +127,7 @@ nav img{height:36px;object-fit:contain}
   </div>
   <button class="btn btn-p" id="btn-submit" onclick="confirmSubmit()" style="width:100%;margin-top:10px;display:none">✅ تسليم الاختبار</button>
 </div>
-
+ 
 <div id="s-done" class="screen">
   <div class="card" style="text-align:center;padding:40px">
     <div style="font-size:3rem;margin-bottom:12px">🎉</div>
@@ -135,19 +135,17 @@ nav img{height:36px;object-fit:contain}
     <div id="done-details"></div>
   </div>
 </div>
-
-<!-- ════ LAST DAY TABS — hidden until exam done on day 5 ════ -->
+ 
+<!-- ════ LAST DAY TABS ════ -->
 <div id="bottom-tabs" style="display:none">
   <button class="tab-btn active" id="btn-tab-eval" onclick="showTab('eval')">
     <span style="font-size:1.3rem">⭐</span>تقييم المدرب
   </button>
-  <!-- Material button: display:none until eval submitted -->
   <button class="tab-btn" id="btn-tab-material" style="display:none" onclick="showTab('material')">
     <span style="font-size:1.3rem">📚</span>المادة العلمية
   </button>
 </div>
-
-<!-- Eval tab panel — hidden until exam done -->
+ 
 <div class="tab-panel" id="tab-eval" style="display:none">
   <div class="card">
     <div style="font-weight:900;font-size:.95rem;color:var(--g1);margin-bottom:4px">⭐ تقييم المدرب</div>
@@ -172,8 +170,7 @@ nav img{height:36px;object-fit:contain}
     </div>
   </div>
 </div>
-
-<!-- Material tab panel: ONLY shown after eval -->
+ 
 <div class="tab-panel" id="tab-material" style="display:none">
   <div class="card" style="padding:0;overflow:hidden">
     <div style="background:linear-gradient(135deg,var(--g1),var(--g2));padding:14px 18px;display:flex;justify-content:space-between;align-items:center">
@@ -198,7 +195,7 @@ nav img{height:36px;object-fit:contain}
     </div>
   </div>
 </div>
-
+ 
 <!-- Submit confirm modal -->
 <div id="submit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center">
   <div style="background:#fff;border-radius:18px;padding:28px;max-width:340px;width:90%;text-align:center">
@@ -211,19 +208,18 @@ nav img{height:36px;object-fit:contain}
     </div>
   </div>
 </div>
-
+ 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
+ 
 const cfg = {apiKey:"AIzaSyDgRH8Slr3uk0RRZOFZ5LDu1WDBWtgtTRY",databaseURL:"https://aces-workshops-default-rtdb.firebaseio.com",projectId:"aces-workshops"};
 const db  = getDatabase(initializeApp(cfg));
-
+ 
 window.QUIZ_DATA = {
   1: {
     title: 'اختبار اليوم الأول — ISO 2859-1 وأساسيات سحب العينات',
     questions: [
-      // صح / خطأ (13 سؤال)
       {type:'tf',q:'وفقاً لمعيار ISO 2859-1، عند استخدام مستوى الفحص العادي (Level II) ورمز الحجم N مع AQL = 1.0، يكون عدد العينة 80 وحدة وحد القبول Ac = 2.',opts:['صح','خطأ'],ans:0,exp:'صح. وفقاً لجداول ISO 2859-1، هذه الأرقام صحيحة للفحص العادي.'},
       {type:'tf',q:'في نظام ISO 2859-1، تنتقل الدفعة من الفحص العادي إلى الفحص المشدد (Tightened) عند رفض دفعتين أو أكثر من أصل 5 دفعات متتالية.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو الشرط المحدد في ISO 2859-1 للانتقال للفحص المشدد.'},
       {type:'tf',q:'حد الجودة الحدية (LTPD أو RQL) هو مستوى الجودة الذي يُحدد الحد الأدنى المقبول من وجهة نظر المنتج.',opts:['صح','خطأ'],ans:1,exp:'خطأ. LTPD/RQL هو من وجهة نظر المستهلك وليس المنتج.'},
@@ -237,7 +233,6 @@ window.QUIZ_DATA = {
       {type:'tf',q:'الفرق بين عدم القبول (Rejection) وعدم الامتثال (Non-conformance) أن الأول قرار إداري والثاني وصف تقني.',opts:['صح','خطأ'],ans:0,exp:'صح. الرفض إداري والعيب وصف تقني.'},
       {type:'tf',q:'في نموذج العينات المخبرية، تمثّل وحدة العينة الجزء الذي يُرسَل للمختبر وقد تختلف عن وحدة الدفعة.',opts:['صح','خطأ'],ans:0,exp:'صح. وحدة العينة قد تختلف عن وحدة الدفعة.'},
       {type:'tf',q:'نظام الأمان الإحصائي يتطلب مراجعة خطط أخذ العينات سنوياً فقط.',opts:['صح','خطأ'],ans:1,exp:'خطأ. المراجعة تُجرى عند أي تغيير جوهري كتغيير المورد.'},
-      // اختيار متعدد (13 سؤال)
       {type:'mc',q:'دفعة 3500 وحدة، Level II، AQL=0.65%. وُجد 3 وحدات معيبة. ما القرار؟',opts:['قبول — 3 = Ac وفق الجدول','رفض — تجاوز Ac','سحب عينة ثانية','إعادة الفحص'],ans:0,exp:'وفق ISO 2859-1، رمز L مع AQL 0.65% يعطي Ac=3، فعدد العيوب = Ac ← قبول.'},
       {type:'mc',q:'خطة مزدوجة: n1=80، d1=3، Ac1=1، Re1=4. ما الإجراء التالي؟',opts:['رفض فوري','قبول فوري','سحب عينة ثانية n2=80','إعادة فحص بخطة مفردة'],ans:2,exp:'d1=3 بين Ac1 وRe1 ← منطقة رمادية ← سحب عينة ثانية.'},
       {type:'mc',q:'عينات متعددة: أعداد تراكمية 1،2،4،5. Re التراكمية=5، Ac=3. القرار؟',opts:['قبول','رفض — العدد = Re','سحب خامسة','إيقاف الفحص'],ans:1,exp:'العدد التراكمي = Re ← رفض فوري.'},
@@ -255,117 +250,113 @@ window.QUIZ_DATA = {
   2: {
     title: 'اختبار اليوم الثاني — التفتيش الغذائي وأنواع العينات',
     questions: [
-      {type:'tf',q:'التفتيش الغذائي هو الجزء الواقعي للسلسلة الغذائية الذي يهدف إلى مراقبة المنشآت والإجراءات والمواصفات الفنية.',opts:['صح','خطأ'],ans:0,exp:'صح. التفتيش هو التطبيق الميداني لمعايير الجودة.'},
-      {type:'tf',q:'الركيزة الثالثة من الأركان الخمس للتفتيش هي "الحياد والموضوعية" فقط دون اشتراط توثيق أو متابعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. الأركان تشمل التوثيق والمتابعة ضمن متطلباتها.'},
-      {type:'tf',q:'النظام المبني على المخاطر يُخصص موارد الفحص بناءً على مستوى الخطورة المحتملة.',opts:['صح','خطأ'],ans:0,exp:'صح. يركّز الموارد على النقاط الأعلى خطورة.'},
-      {type:'tf',q:'العينة الاحتزازية تُعدّ عينة احتمالية لأن المفتش يختارها بحكمه الشخصي.',opts:['صح','خطأ'],ans:1,exp:'خطأ. الاحتزازية غير احتمالية — العشوائية هي الاحتمالية.'},
-      {type:'tf',q:'في نموذج العينات المخبرية، تمثّل وحدة العينة الجزء الذي يُرسَل للمختبر وهي أصغر مستويات التسلسل.',opts:['صح','خطأ'],ans:0,exp:'صح. وحدة العينة هي أصغر مستوى في التسلسل.'},
-      {type:'tf',q:'مستوى الجودة المقبول (AQL) هو الحد الأدنى من العيوب الذي يجب أن تحتويه الدفعة كي تُقبل.',opts:['صح','خطأ'],ans:1,exp:'خطأ. AQL هو أسوأ متوسط مقبول وليس حداً أدنى للعيوب.'},
-      {type:'tf',q:'الفحص المشدد يُطبَّق عندما تتحسن الجودة لمكافأة المورد.',opts:['صح','خطأ'],ans:1,exp:'خطأ. المشدد يُطبَّق عند تدهور الجودة وليس تحسنها.'},
-      {type:'tf',q:'العينة الموسّعة تُجمع من نقاط سحب متعددة وتُمزج لتمثيل التباين الكلي.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو التعريف الصحيح للعينة الموسّعة.'},
-      // MCQ
-      {type:'mc',q:'ما الهدف الأساسي من التفتيش في المحور الأول لقائمة التفتيش الميداني؟',opts:['التحقق من الأسعار','مراقبة البيئة والمنشأة ومصادر التلوث','إجراء اختبارات مخبرية فورية','إعداد تقارير إدارية'],ans:1,exp:'المحور الأول يركز على البيئة الحيوية والمنشأة العامة.'},
-      {type:'mc',q:'أي من التالي يُصنَّف مخالفة Critical تستوجب إجراءً فورياً؟',opts:['خلل بسيط في لافتة التسعير','ارتفاع طفيف في حرارة التخزين 1°C','تلوث ميكروبيولوجي بمسببات خطيرة','عدم تطابق لون التغليف'],ans:2,exp:'التلوث بمسببات أمراض خطيرة = مخالفة Critical.'},
-      {type:'mc',q:'الفرق بين النظام التقليدي والمبني على المخاطر؟',opts:['التقليدي رقمي والمخاطر يدوي','التقليدي يوزع بالتساوي، المخاطر يركّز على الخطورة العالية','لا فرق في النتائج','التقليدي أسرع دائماً'],ans:1,exp:'المخاطر يركّز على النقاط الأعلى خطورة بدلاً من التوزيع المتساوي.'},
-      {type:'mc',q:'أيٌّ من التالي عينة احتمالية؟',opts:['الاحتزازية','عينة الملاءمة','العشوائية البسيطة','عدسة المحقق'],ans:2,exp:'العشوائية البسيطة تُعطي كل وحدة فرصة متساوية ومعروفة.'},
-      {type:'mc',q:'ما العناصر الثلاثة الأساسية لمنظومة تقييم المخاطر المتكاملة؟',opts:['السعر والكمية والتاريخ','المادة الغذائية والعادة والقدرة الإدارية','نوع المنشأة وعدد العمال والموقع','الموقع والتاريخ والمصنّع'],ans:1,exp:'المنظومة تُبنى على: المادة الغذائية + العادة الغذائية + القدرة الإدارية.'},
-      {type:'mc',q:'الفرق بين Variables Sampling وAttributes Sampling؟',opts:['Variables تحتاج عينة أكبر','Variables تقيس كمياً، Attributes تحكم بقبول/رفض','Attributes أدق في كل الحالات','لا فرق إلا في الاسم'],ans:1,exp:'Variables تقيس الوزن والرطوبة وغيرها، Attributes تُصنّف القبول أو الرفض.'},
-      {type:'mc',q:'ما الذي يميّز مطاعم الكاترينج من حيث متطلبات الفحص؟',opts:['لا توجد فروق','تتطلب فحص وجبات تجريبية وعينات حية','المطاعم العادية أشد رقابة','الكاترينج معفى من الفحص المفاجئ'],ans:1,exp:'الكاترينج يخدم أعداداً كبيرة دفعة واحدة فيتطلب فحصاً إضافياً.'}
+      {type:'tf',q:'التفتيش الغذائي هو الجزء الواقعي للسلسلة الغذائية الذي يهدف إلى مراقبة المنشآت والإجراءات والمواصفات الفنية.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'الركيزة الثالثة من الأركان الخمس للتفتيش هي "الحياد والموضوعية" فقط دون اشتراط توثيق أو متابعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ.'},
+      {type:'tf',q:'النظام المبني على المخاطر يُخصص موارد الفحص بناءً على مستوى الخطورة المحتملة.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'العينة الاحتزازية تُعدّ عينة احتمالية لأن المفتش يختارها بحكمه الشخصي.',opts:['صح','خطأ'],ans:1,exp:'خطأ.'},
+      {type:'tf',q:'في نموذج العينات المخبرية، تمثّل وحدة العينة الجزء الذي يُرسَل للمختبر وهي أصغر مستويات التسلسل.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'مستوى الجودة المقبول (AQL) هو الحد الأدنى من العيوب الذي يجب أن تحتويه الدفعة كي تُقبل.',opts:['صح','خطأ'],ans:1,exp:'خطأ.'},
+      {type:'tf',q:'الفحص المشدد يُطبَّق عندما تتحسن الجودة لمكافأة المورد.',opts:['صح','خطأ'],ans:1,exp:'خطأ.'},
+      {type:'tf',q:'العينة الموسّعة تُجمع من نقاط سحب متعددة وتُمزج لتمثيل التباين الكلي.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'mc',q:'ما الهدف الأساسي من التفتيش في المحور الأول لقائمة التفتيش الميداني؟',opts:['التحقق من الأسعار','مراقبة البيئة والمنشأة ومصادر التلوث','إجراء اختبارات مخبرية فورية','إعداد تقارير إدارية'],ans:1,exp:'المحور الأول يركز على البيئة الحيوية.'},
+      {type:'mc',q:'أي من التالي يُصنَّف مخالفة Critical تستوجب إجراءً فورياً؟',opts:['خلل بسيط في لافتة التسعير','ارتفاع طفيف في حرارة التخزين 1°C','تلوث ميكروبيولوجي بمسببات خطيرة','عدم تطابق لون التغليف'],ans:2,exp:'التلوث بمسببات أمراض خطيرة = Critical.'},
+      {type:'mc',q:'الفرق بين النظام التقليدي والمبني على المخاطر؟',opts:['التقليدي رقمي والمخاطر يدوي','التقليدي يوزع بالتساوي، المخاطر يركّز على الخطورة العالية','لا فرق في النتائج','التقليدي أسرع دائماً'],ans:1,exp:'المخاطر يركّز على النقاط الأعلى خطورة.'},
+      {type:'mc',q:'أيٌّ من التالي عينة احتمالية؟',opts:['الاحتزازية','عينة الملاءمة','العشوائية البسيطة','عدسة المحقق'],ans:2,exp:'العشوائية البسيطة.'},
+      {type:'mc',q:'ما العناصر الثلاثة الأساسية لمنظومة تقييم المخاطر المتكاملة؟',opts:['السعر والكمية والتاريخ','المادة الغذائية والعادة والقدرة الإدارية','نوع المنشأة وعدد العمال والموقع','الموقع والتاريخ والمصنّع'],ans:1,exp:'المادة + العادة + القدرة الإدارية.'},
+      {type:'mc',q:'الفرق بين Variables Sampling وAttributes Sampling؟',opts:['Variables تحتاج عينة أكبر','Variables تقيس كمياً، Attributes تحكم بقبول/رفض','Attributes أدق في كل الحالات','لا فرق إلا في الاسم'],ans:1,exp:'Variables كمي، Attributes قبول/رفض.'},
+      {type:'mc',q:'ما الذي يميّز مطاعم الكاترينج من حيث متطلبات الفحص؟',opts:['لا توجد فروق','تتطلب فحص وجبات تجريبية وعينات حية','المطاعم العادية أشد رقابة','الكاترينج معفى من الفحص المفاجئ'],ans:1,exp:'الكاترينج يخدم أعداداً كبيرة دفعة واحدة.'}
     ]
   },
   3: {
     title: 'اختبار اليوم الثالث — المخاطر الإحصائية وGSO 1016',
     questions: [
-      {type:'tf',q:'خطأ النوع الأول (Type I Error) هو خطأ المنتج: احتمال رفض دفعة جيدة.',opts:['صح','خطأ'],ans:0,exp:'صح. خطأ النوع الأول = α = خطأ المنتج.'},
-      {type:'tf',q:'خطأ النوع الثاني يُعرَّف بأنه خطأ المنتج أيضاً ويُرمز له بـ α.',opts:['صح','خطأ'],ans:1,exp:'خطأ. النوع الثاني = β = خطأ المستهلك، وليس α.'},
-      {type:'tf',q:'وفق GSO 1016، يُشترط للحوم الحمراء الطازجة غياب Salmonella تماماً.',opts:['صح','خطأ'],ans:0,exp:'صح. غياب تام لـ Salmonella في اللحوم الطازجة.'},
-      {type:'tf',q:'في خطة الفحص الأحادي، إذا كان عدد العيوب يساوي Re تُقبَل الدفعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. إذا كان العدد = Re تُرفض الدفعة.'},
-      {type:'tf',q:'Acceptance Sampling يحمي الجودة بتكلفة محسوبة بدلاً من الفحص الشامل 100%.',opts:['صح','خطأ'],ans:0,exp:'صح. سحب العينات يحقق توازناً اقتصادياً.'},
-      {type:'tf',q:'المرونة في تطبيق المواصفة تعني أن المفتش يستطيع تجاهل أي اشتراط.',opts:['صح','خطأ'],ans:1,exp:'خطأ. المرونة ضمن الحدود المسموح بها فقط.'},
-      {type:'tf',q:'"العيب" (Defect) و"عدم المطابقة" (Nonconformity) مترادفان تماماً.',opts:['صح','خطأ'],ans:1,exp:'خطأ. Defect لا يُلبّي الاستخدام، Nonconformity لا تستوفي متطلباً محدداً.'},
-      {type:'tf',q:'في الفحص الأحادي، إذا كان Ac < d < Re يُقبَل مباشرة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. في الأحادي Re = Ac+1 دائماً فلا توجد منطقة رمادية.'},
-      // MCQ
-      {type:'mc',q:'الفرق الجوهري بين خطأ النوع الأول والثاني؟',opts:['كلاهما يضر المستهلك','النوع الأول يضر المنتج، الثاني يضر المستهلك','النوع الأول يضر المستهلك، الثاني يضر المنتج','كلاهما يضر المنتج'],ans:1,exp:'α = خطر المنتج (رفض جيد)، β = خطر المستهلك (قبول رديء).'},
-      {type:'mc',q:'في معمارية N→n→c→M، ماذا يمثّل "c"؟',opts:['حجم الدفعة','حجم العينة','عدد العيوب المقبول Ac','المستوى الميكروبيولوجي'],ans:2,exp:'c = Acceptance Number = Ac.'},
-      {type:'mc',q:'الحد المسموح به لـ Salmonella في الدواجن المجمدة وفق GSO 1016؟',opts:['100 وحدة/غرام','غياب تام','10 وحدات/غرام','5×10²'],ans:1,exp:'GSO 1016 تشترط غياباً تاماً لـ Salmonella.'},
-      {type:'mc',q:'الفرق بين Class A وClass B في خطط الفحص؟',opts:['A يجمع الأصناف في عينة واحدة، B يفحص كل صنف مستقلاً','لا فرق','A للجافة، B للمبردة','B حجم عينة أكبر دائماً'],ans:0,exp:'Class A مشترك، Class B مستقل لكل صنف.'},
-      {type:'mc',q:'السهم ↑ في جدول ISO 2859 يعني؟',opts:['ارفع حجم الدفعة','انتقل للصف الأعلى للحصول على Ac/Re صريحة','انتقل لمستوى أشد','رفض تلقائي'],ans:1,exp:'السهم ↑ = الانتقال للصف الأعلى لأول خطة تحتوي قيم واضحة.'},
-      {type:'mc',q:'بعد تحديد Code Letter، ما الخطوة الثالثة؟',opts:['إرسال العينة مباشرة','الرجوع للجدول الرئيسي لاستخراج n وAc وRe','تحديد N','تسجيل المخالفات'],ans:1,exp:'الخطوة الثالثة: الرجوع للجدول الرئيسي لاستخراج n وAc وRe.'},
-      {type:'mc',q:'ميزة العينة المزدوجة على المفردة؟',opts:['أسرع وأبسط دائماً','تُقلل متوسط حجم العينة الكلي','تُلغي الحاجة لـAQL','لا ميزة'],ans:1,exp:'المزدوجة تُقلل متوسط العينة لأن الحالات الحدية فقط تحتاج عينة ثانية.'}
+      {type:'tf',q:'خطأ النوع الأول (Type I Error) هو خطأ المنتج: احتمال رفض دفعة جيدة.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'خطأ النوع الثاني يُعرَّف بأنه خطأ المنتج أيضاً ويُرمز له بـ α.',opts:['صح','خطأ'],ans:1,exp:'خطأ. النوع الثاني = β = خطأ المستهلك.'},
+      {type:'tf',q:'وفق GSO 1016، يُشترط للحوم الحمراء الطازجة غياب Salmonella تماماً.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'في خطة الفحص الأحادي، إذا كان عدد العيوب يساوي Re تُقبَل الدفعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. إذا = Re تُرفض.'},
+      {type:'tf',q:'Acceptance Sampling يحمي الجودة بتكلفة محسوبة بدلاً من الفحص الشامل 100%.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'المرونة في تطبيق المواصفة تعني أن المفتش يستطيع تجاهل أي اشتراط.',opts:['صح','خطأ'],ans:1,exp:'خطأ.'},
+      {type:'tf',q:'"العيب" (Defect) و"عدم المطابقة" (Nonconformity) مترادفان تماماً.',opts:['صح','خطأ'],ans:1,exp:'خطأ.'},
+      {type:'tf',q:'في الفحص الأحادي، إذا كان Ac < d < Re يُقبَل مباشرة.',opts:['صح','خطأ'],ans:1,exp:'خطأ.'},
+      {type:'mc',q:'الفرق الجوهري بين خطأ النوع الأول والثاني؟',opts:['كلاهما يضر المستهلك','النوع الأول يضر المنتج، الثاني يضر المستهلك','النوع الأول يضر المستهلك، الثاني يضر المنتج','كلاهما يضر المنتج'],ans:1,exp:'α = خطر المنتج، β = خطر المستهلك.'},
+      {type:'mc',q:'في معمارية N→n→c→M، ماذا يمثّل "c"؟',opts:['حجم الدفعة','حجم العينة','عدد العيوب المقبول Ac','المستوى الميكروبيولوجي'],ans:2,exp:'c = Ac.'},
+      {type:'mc',q:'الحد المسموح به لـ Salmonella في الدواجن المجمدة وفق GSO 1016؟',opts:['100 وحدة/غرام','غياب تام','10 وحدات/غرام','5×10²'],ans:1,exp:'غياب تام.'},
+      {type:'mc',q:'الفرق بين Class A وClass B في خطط الفحص؟',opts:['A يجمع الأصناف في عينة واحدة، B يفحص كل صنف مستقلاً','لا فرق','A للجافة، B للمبردة','B حجم عينة أكبر دائماً'],ans:0,exp:'Class A مشترك، Class B مستقل.'},
+      {type:'mc',q:'السهم ↑ في جدول ISO 2859 يعني؟',opts:['ارفع حجم الدفعة','انتقل للصف الأعلى للحصول على Ac/Re صريحة','انتقل لمستوى أشد','رفض تلقائي'],ans:1,exp:'الانتقال للصف الأعلى.'},
+      {type:'mc',q:'بعد تحديد Code Letter، ما الخطوة الثالثة؟',opts:['إرسال العينة مباشرة','الرجوع للجدول الرئيسي لاستخراج n وAc وRe','تحديد N','تسجيل المخالفات'],ans:1,exp:'الرجوع للجدول لاستخراج n وAc وRe.'},
+      {type:'mc',q:'ميزة العينة المزدوجة على المفردة؟',opts:['أسرع وأبسط دائماً','تُقلل متوسط حجم العينة الكلي','تُلغي الحاجة لـAQL','لا ميزة'],ans:1,exp:'تُقلل متوسط العينة.'}
     ]
   },
   4: {
     title: 'اختبار اليوم الرابع — ISO 2859-1 وقواعد الانتقال',
     questions: [
-      {type:'tf',q:'يبدأ الانتقال للفحص المشدد عند رفض دفعتين أو أكثر من أصل 5 متتالية في الفحص العادي.',opts:['صح','خطأ'],ans:0,exp:'صح. هذه هي قاعدة الانتقال للفحص المشدد.'},
-      {type:'tf',q:'الانتقال للفحص المخفف يحدث تلقائياً بعد قبول 10 دفعات متتالية فقط.',opts:['صح','خطأ'],ans:1,exp:'خطأ. يحتاج أيضاً محرك التبديل ≥30 وموافقة الجهة المختصة.'},
-      {type:'tf',q:'محرك التبديل يبدأ من 0 ويزيد بمقدار 3 عند كل قبول نظيف.',opts:['صح','خطأ'],ans:0,exp:'صح. عند بلوغ 30 يصبح أحد شروط الانتقال للمخفف.'},
-      {type:'tf',q:'إيقاف الفحص (Discontinuation) يحدث عند رفض 10 دفعات في الفحص المشدد.',opts:['صح','خطأ'],ans:1,exp:'خطأ. الإيقاف عند رفض 5 دفعات وليس 10.'},
-      {type:'tf',q:'AQL = 0 يمثّل أعلى معايير الجودة في ISO 2859-1.',opts:['صح','خطأ'],ans:1,exp:'خطأ. AQL=0 غير قياسي وغير قابل للتطبيق.'},
-      {type:'tf',q:'العينة العشوائية البسيطة تُعطي كل وحدة فرصة متساوية للاختيار.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو جوهر العشوائية البسيطة.'},
-      {type:'tf',q:'Composite Sampling تُقلل التكلفة بتجميع عينات من نقاط مختلفة وتحليلها كعينة واحدة.',opts:['صح','خطأ'],ans:0,exp:'صح. دمج العينات يُقلل تكاليف التحليل المخبري.'},
-      {type:'tf',q:'إذا كان عدد العيوب = Re في شجرة قرار الخطة المفردة تُقبَل الدفعة مشروطاً.',opts:['صح','خطأ'],ans:1,exp:'خطأ. إذا d = Re تُرفض فوراً بدون أي شرط.'},
-      // MCQ
-      {type:'mc',q:'متى يُطبَّق الفحص المشدد وفق ISO 2859-1؟',opts:['عند تحسن الجودة','رفض 2+ من 5 دفعات متتالية في العادي','قبول 10 دفعات + محرك≥30','انخفاض حجم الدفعة'],ans:1,exp:'الفحص المشدد يُطبَّق عند رفض 2 أو أكثر من 5 دفعات متتالية.'},
-      {type:'mc',q:'شرط العودة من المشدد للعادي؟',opts:['قبول دفعة واحدة','قبول 5 دفعات متتالية في المشدد','موافقة المورد','انقضاء 30 يوماً'],ans:1,exp:'العودة تتطلب قبول 5 دفعات متتالية أثناء الفحص المشدد.'},
-      {type:'mc',q:'ماذا تعني قيم AQL غير القياسية (Non-Standard AQL)؟',opts:['محظورة تماماً','تستلزم خطتين مجاورتين لتحديد n وAc/Re','خاصة بالأغذية الطازجة','للفحص المخفف حصراً'],ans:1,exp:'تستلزم استخدام خطتين مجاورتين وتحليلاً إضافياً.'},
-      {type:'mc',q:'دفعة 750 وحدة، Level II، AQL=0.65%. ما رمز العينة والخطوة التالية؟',opts:['رمز J ← سحب 50 مباشرة','رمز J ← الرجوع لجدول II-A','رمز K ← سحب 125','رمز H ← الفحص المشدد'],ans:1,exp:'دفعة 750 مع Level II = رمز J، ثم الرجوع للجدول لاستخراج n وAc وRe.'},
-      {type:'mc',q:'ماذا يحدث عند ظهور سهم ↑ أو ↓ في الجدول؟',opts:['رفض تلقائي','اتبع السهم لأول خطة بقيم Ac/Re صريحة','أضف 10% للعينة','انتقل للمشدد'],ans:1,exp:'السهم يعني الانتقال لأقرب خطة تحتوي قيم Ac/Re واضحة.'},
-      {type:'mc',q:'ميزة الطريقة الطبقية عند وجود تباين كبير في الدفعة؟',opts:['تُقلل العينة بلا قيود','تضمن تمثيل كل طبقة بنسبة متناسبة','لا فرق مع العشوائية البسيطة','أسرع تطبيقاً دائماً'],ans:1,exp:'الطبقية تضمن التمثيل المتناسب لكل طبقة في الدفعة.'},
-      {type:'mc',q:'الفرق بين عينة عدسة المحقق وباقي العينات غير الاحتمالية؟',opts:['لا فرق','عدسة المحقق تستهدف مناطق الشك والخطر تحديداً','عدسة المحقق احتمالية مُصغّرة','غير الاحتمالية أدق إحصائياً'],ans:1,exp:'عدسة المحقق متخصصة في استهداف مناطق الشك، باقي غير الاحتمالية للملاءمة العامة.'}
+      {type:'tf',q:'يبدأ الانتقال للفحص المشدد عند رفض دفعتين أو أكثر من أصل 5 متتالية في الفحص العادي.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'الانتقال للفحص المخفف يحدث تلقائياً بعد قبول 10 دفعات متتالية فقط.',opts:['صح','خطأ'],ans:1,exp:'خطأ.'},
+      {type:'tf',q:'محرك التبديل يبدأ من 0 ويزيد بمقدار 3 عند كل قبول نظيف.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'إيقاف الفحص (Discontinuation) يحدث عند رفض 10 دفعات في الفحص المشدد.',opts:['صح','خطأ'],ans:1,exp:'خطأ. 5 دفعات وليس 10.'},
+      {type:'tf',q:'AQL = 0 يمثّل أعلى معايير الجودة في ISO 2859-1.',opts:['صح','خطأ'],ans:1,exp:'خطأ. AQL=0 غير قياسي.'},
+      {type:'tf',q:'العينة العشوائية البسيطة تُعطي كل وحدة فرصة متساوية للاختيار.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'Composite Sampling تُقلل التكلفة بتجميع عينات من نقاط مختلفة وتحليلها كعينة واحدة.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'إذا كان عدد العيوب = Re في شجرة قرار الخطة المفردة تُقبَل الدفعة مشروطاً.',opts:['صح','خطأ'],ans:1,exp:'خطأ. تُرفض فوراً.'},
+      {type:'mc',q:'متى يُطبَّق الفحص المشدد وفق ISO 2859-1؟',opts:['عند تحسن الجودة','رفض 2+ من 5 دفعات متتالية في العادي','قبول 10 دفعات + محرك≥30','انخفاض حجم الدفعة'],ans:1,exp:'عند رفض 2 أو أكثر من 5 دفعات.'},
+      {type:'mc',q:'شرط العودة من المشدد للعادي؟',opts:['قبول دفعة واحدة','قبول 5 دفعات متتالية في المشدد','موافقة المورد','انقضاء 30 يوماً'],ans:1,exp:'قبول 5 دفعات متتالية.'},
+      {type:'mc',q:'ماذا تعني قيم AQL غير القياسية؟',opts:['محظورة تماماً','تستلزم خطتين مجاورتين لتحديد n وAc/Re','خاصة بالأغذية الطازجة','للفحص المخفف حصراً'],ans:1,exp:'تستلزم خطتين مجاورتين.'},
+      {type:'mc',q:'دفعة 750 وحدة، Level II، AQL=0.65%. ما رمز العينة والخطوة التالية؟',opts:['رمز J ← سحب 50 مباشرة','رمز J ← الرجوع لجدول II-A','رمز K ← سحب 125','رمز H ← الفحص المشدد'],ans:1,exp:'رمز J ثم الرجوع للجدول.'},
+      {type:'mc',q:'ماذا يحدث عند ظهور سهم ↑ أو ↓ في الجدول؟',opts:['رفض تلقائي','اتبع السهم لأول خطة بقيم Ac/Re صريحة','أضف 10% للعينة','انتقل للمشدد'],ans:1,exp:'الانتقال لأقرب خطة.'},
+      {type:'mc',q:'ميزة الطريقة الطبقية عند وجود تباين كبير في الدفعة؟',opts:['تُقلل العينة بلا قيود','تضمن تمثيل كل طبقة بنسبة متناسبة','لا فرق مع العشوائية البسيطة','أسرع تطبيقاً دائماً'],ans:1,exp:'تضمن التمثيل المتناسب.'},
+      {type:'mc',q:'الفرق بين عينة عدسة المحقق وباقي العينات غير الاحتمالية؟',opts:['لا فرق','عدسة المحقق تستهدف مناطق الشك والخطر تحديداً','عدسة المحقق احتمالية مُصغّرة','غير الاحتمالية أدق إحصائياً'],ans:1,exp:'عدسة المحقق متخصصة في الشك.'}
     ]
   },
   5: {
     title: 'اختبار اليوم الخامس — التقييم الشامل',
     questions: [
-      {type:'tf',q:'خطط المتغيرات تحتاج حجم عينة أصغر من خطط الصفات لنفس مستوى الحماية.',opts:['صح','خطأ'],ans:0,exp:'صح. المتغيرات تستغل البيانات الكمية بكفاءة أعلى.'},
-      {type:'tf',q:'إذا كان عدد العيوب = Ac بالضبط في العينة المفردة تُرفض الدفعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. إذا d = Ac تُقبَل الدفعة — الرفض عند d ≥ Re.'},
-      {type:'tf',q:'النظام المبني على المخاطر يركّز على النقاط ذات الخطورة العالية.',opts:['صح','خطأ'],ans:0,exp:'صح. يُحسّن كفاءة الموارد بتوجيهها نحو المناطق الأعلى خطورة.'},
-      {type:'tf',q:'AQL يمثّل أسوأ متوسط جودة مقبول للعملية الإنتاجية.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو التعريف الدقيق لـ AQL.'},
-      {type:'tf',q:'الانتقال للمخفف يحدث تلقائياً بعد قبول 5 دفعات متتالية.',opts:['صح','خطأ'],ans:1,exp:'خطأ. يحتاج 10 دفعات + محرك ≥30 + موافقة الجهة المختصة.'},
-      {type:'tf',q:'الفحص المشدد يعني رفع حجم العينة أو تشديد حد القبول أو كليهما.',opts:['صح','خطأ'],ans:0,exp:'صح. الفحص المشدد يشمل رفع العينة وتشديد Ac.'},
-      {type:'tf',q:'العينة العشوائية البسيطة تضمن تمثيل جميع طبقات الدفعة تلقائياً.',opts:['صح','خطأ'],ans:1,exp:'خطأ. للتمثيل الطبقي يجب استخدام Stratified Sampling.'},
-      {type:'tf',q:'في العينة المزدوجة، تُسحب العينة الثانية فقط عند الوقوع في المنطقة الرمادية.',opts:['صح','خطأ'],ans:0,exp:'صح. المنطقة الرمادية هي الحالة الوحيدة التي تستدعي عينة ثانية.'},
-      {type:'tf',q:'خطأ النوع الأول α هو احتمال رفض دفعة جيدة.',opts:['صح','خطأ'],ans:0,exp:'صح. α = خطر المنتج = رفض الجيد.'},
-      {type:'tf',q:'رموز حجم العينة في ISO 2859-1 تعتمد فقط على حجم الدفعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. تعتمد على حجم الدفعة ومستوى الفحص معاً.'},
-      {type:'tf',q:'Lab Funnel يُصور تدرج الوحدات من الإرسالية لوحدة التحليل المخبري.',opts:['صح','خطأ'],ans:0,exp:'صح. نموذج القمع يُصور الانتقال التدريجي من الإرسالية لوحدة التحليل.'},
-      {type:'tf',q:'المخالفات البسيطة تستوجب نفس إجراءات المعالجة الفورية للمخالفات الخطيرة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. إجراءات مختلفة — الخطيرة أشد بكثير.'},
-      {type:'tf',q:'منحنى OC Curve يوضح العلاقة بين جودة الدفعة الواردة واحتمال قبولها.',opts:['صح','خطأ'],ans:0,exp:'صح. هذا هو التعريف الدقيق لـ OC Curve.'},
-      // MCQ
-      {type:'mc',q:'دفعة 700 وحدة، Level II. ما رمز حجم العينة؟',opts:['رمز J','رمز K','رمز L','رمز H'],ans:1,exp:'دفعة 501-1200 مع Level II = رمز J.'},
-      {type:'mc',q:'رمز J مع AQL=1.0%. ما n وAc الصحيحان؟',opts:['n=80, Ac=2','n=50, Ac=1','n=125, Ac=3','n=80, Ac=1'],ans:0,exp:'رمز J مع AQL 1.0% يعطي n=80 وAc=2.'},
-      {type:'mc',q:'شرط الانتقال للفحص المخفف وفق ISO 2859-1؟',opts:['قبول 10 دفعات فقط','10 دفعات + محرك≥30 + موافقة الجهة','5 دفعات فقط','رفض أقل من 1% خلال شهر'],ans:1,exp:'ثلاثة شروط مجتمعة: 10 دفعات + محرك ≥30 + موافقة.'},
-      {type:'mc',q:'ماذا يحدث لمحرك التبديل عند رفض دفعة أثناء الفحص العادي؟',opts:['يُخصم منه 3 نقاط','يُعاد لصفر','يبقى كما هو','ينتقل للمشدد مباشرة'],ans:1,exp:'عند الرفض يُعاد المحرك لصفر.'},
-      {type:'mc',q:'الأداة الأنسب لسحب عينات الأغذية الجافة من أكياس مغلقة؟',opts:['Vacuum Sampler','المسبار (Probe/Trier)','Sampling Auger','Trier للجبن'],ans:1,exp:'المسبار هو الأداة المعيارية للأغذية الجافة في الأكياس.'},
-      {type:'mc',q:'متطلب التعقيم الحراري للمعلبات غير الحمضية؟',opts:['100°C/30 دقيقة','121°C/≥25 دقيقة','90°C/20 دقيقة','121°C/10 دقائق'],ans:1,exp:'التعقيم الصحيح للمعلبات: 121°C لمدة لا تقل عن 25 دقيقة.'},
-      {type:'mc',q:'الفرق بين المرآة الإحصائية وعدسة المحقق؟',opts:['المرآة تمثّل الدفعة كاملة، العدسة تستهدف الخطر','لا فرق','المرآة أسرع','العدسة للمختبرات فقط'],ans:0,exp:'المرآة عشوائية كاملة، العدسة موجّهة نحو مناطق الشك.'},
-      {type:'mc',q:'الحد الأدنى لنقاط سحب شاحنة 90 طن حبوب؟',opts:['4 نقاط','7 نقاط','11 نقطة','15 نقطة'],ans:2,exp:'لشاحنة 90 طن: الحد الأدنى 11 نقطة سحب.'},
-      {type:'mc',q:'تعريف Flushing عند سحب عينات السوائل؟',opts:['تسريع ضخ السائل','تصريف الكميات الأولى لتجنب تلوث جدران الأنبوب','تبريد السائل','تصفية العينة'],ans:1,exp:'Flushing = تصريف الكميات الأولى لإزالة التلوث المتراكم في الجدران.'},
-      {type:'mc',q:'ما الخطوة الأولى عند اكتشاف مخالفة Critical؟',opts:['رفع تقرير خلال 48 ساعة','التوثيق الفوري والإجراء الفوري مع إخطار سلسلة القيادة','أخذ عينات إضافية أولاً','انتظار موافقة المختبر'],ans:1,exp:'التوثيق + الإجراء الفوري + إخطار سلسلة القيادة — فوراً.'},
-      {type:'mc',q:'العامل الأكثر تأثيراً في الحفاظ على سلامة العينة أثناء النقل؟',opts:['نوع الوعاء فقط','التحكم في الحرارة والزمن ومنع التلوث المتبادل','حجم العينة','اسم المفتش'],ans:1,exp:'ثلاثة عوامل: درجة الحرارة + أقصر وقت + منع التلوث المتبادل.'}
+      {type:'tf',q:'خطط المتغيرات تحتاج حجم عينة أصغر من خطط الصفات لنفس مستوى الحماية.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'إذا كان عدد العيوب = Ac بالضبط في العينة المفردة تُرفض الدفعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. تُقبَل.'},
+      {type:'tf',q:'النظام المبني على المخاطر يركّز على النقاط ذات الخطورة العالية.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'AQL يمثّل أسوأ متوسط جودة مقبول للعملية الإنتاجية.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'الانتقال للمخفف يحدث تلقائياً بعد قبول 5 دفعات متتالية.',opts:['صح','خطأ'],ans:1,exp:'خطأ. يحتاج 10 + محرك ≥30 + موافقة.'},
+      {type:'tf',q:'الفحص المشدد يعني رفع حجم العينة أو تشديد حد القبول أو كليهما.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'العينة العشوائية البسيطة تضمن تمثيل جميع طبقات الدفعة تلقائياً.',opts:['صح','خطأ'],ans:1,exp:'خطأ.'},
+      {type:'tf',q:'في العينة المزدوجة، تُسحب العينة الثانية فقط عند الوقوع في المنطقة الرمادية.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'خطأ النوع الأول α هو احتمال رفض دفعة جيدة.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'رموز حجم العينة في ISO 2859-1 تعتمد فقط على حجم الدفعة.',opts:['صح','خطأ'],ans:1,exp:'خطأ. تعتمد على حجم الدفعة ومستوى الفحص.'},
+      {type:'tf',q:'Lab Funnel يُصور تدرج الوحدات من الإرسالية لوحدة التحليل المخبري.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'tf',q:'المخالفات البسيطة تستوجب نفس إجراءات المعالجة الفورية للمخالفات الخطيرة.',opts:['صح','خطأ'],ans:1,exp:'خطأ.'},
+      {type:'tf',q:'منحنى OC Curve يوضح العلاقة بين جودة الدفعة الواردة واحتمال قبولها.',opts:['صح','خطأ'],ans:0,exp:'صح.'},
+      {type:'mc',q:'دفعة 700 وحدة، Level II. ما رمز حجم العينة؟',opts:['رمز J','رمز K','رمز L','رمز H'],ans:1,exp:'رمز J.'},
+      {type:'mc',q:'رمز J مع AQL=1.0%. ما n وAc الصحيحان؟',opts:['n=80, Ac=2','n=50, Ac=1','n=125, Ac=3','n=80, Ac=1'],ans:0,exp:'n=80 وAc=2.'},
+      {type:'mc',q:'شرط الانتقال للفحص المخفف وفق ISO 2859-1؟',opts:['قبول 10 دفعات فقط','10 دفعات + محرك≥30 + موافقة الجهة','5 دفعات فقط','رفض أقل من 1% خلال شهر'],ans:1,exp:'3 شروط مجتمعة.'},
+      {type:'mc',q:'ماذا يحدث لمحرك التبديل عند رفض دفعة؟',opts:['يُخصم منه 3 نقاط','يُعاد لصفر','يبقى كما هو','ينتقل للمشدد مباشرة'],ans:1,exp:'يُعاد لصفر.'},
+      {type:'mc',q:'الأداة الأنسب لسحب عينات الأغذية الجافة من أكياس مغلقة؟',opts:['Vacuum Sampler','المسبار (Probe/Trier)','Sampling Auger','Trier للجبن'],ans:1,exp:'المسبار.'},
+      {type:'mc',q:'متطلب التعقيم الحراري للمعلبات غير الحمضية؟',opts:['100°C/30 دقيقة','121°C/≥25 دقيقة','90°C/20 دقيقة','121°C/10 دقائق'],ans:1,exp:'121°C لمدة ≥25 دقيقة.'},
+      {type:'mc',q:'الفرق بين المرآة الإحصائية وعدسة المحقق؟',opts:['المرآة تمثّل الدفعة كاملة، العدسة تستهدف الخطر','لا فرق','المرآة أسرع','العدسة للمختبرات فقط'],ans:0,exp:'المرآة عشوائية كاملة، العدسة موجّهة.'},
+      {type:'mc',q:'الحد الأدنى لنقاط سحب شاحنة 90 طن حبوب؟',opts:['4 نقاط','7 نقاط','11 نقطة','15 نقطة'],ans:2,exp:'11 نقطة.'},
+      {type:'mc',q:'تعريف Flushing عند سحب عينات السوائل؟',opts:['تسريع ضخ السائل','تصريف الكميات الأولى لتجنب تلوث جدران الأنبوب','تبريد السائل','تصفية العينة'],ans:1,exp:'تصريف الكميات الأولى.'},
+      {type:'mc',q:'ما الخطوة الأولى عند اكتشاف مخالفة Critical؟',opts:['رفع تقرير خلال 48 ساعة','التوثيق الفوري والإجراء الفوري مع إخطار سلسلة القيادة','أخذ عينات إضافية أولاً','انتظار موافقة المختبر'],ans:1,exp:'التوثيق + الإجراء الفوري + إخطار القيادة.'},
+      {type:'mc',q:'العامل الأكثر تأثيراً في الحفاظ على سلامة العينة أثناء النقل؟',opts:['نوع الوعاء فقط','التحكم في الحرارة والزمن ومنع التلوث المتبادل','حجم العينة','اسم المفتش'],ans:1,exp:'الحرارة + الزمن + منع التلوث.'}
     ]
   }
-};;
-
+};
+ 
 // ── URL params ──
 const p    = new URLSearchParams(location.search);
 const wsId = p.get('w') || p.get('wsid');
 const tid  = p.get('t') || p.get('tid');
 let   day  = parseInt(p.get('d') || p.get('day') || '1', 10);
 const LAST_DAY = 5;
-
+ 
 // ── State ──
 let _trainee=null, _questions=[], _answers=[], _curQ=0, _submitted=false;
 let _timerInterval=null, _examEndTime=null, _evalRatings=[0,0,0,0,0];
 let _unsubReq=null, _unsubExam=null;
-
+ 
 // ── UI ──
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById('s-'+id);
   if(el) el.classList.add('active');
 }
-
+ 
 function showTab(name){
   ['eval','material'].forEach(n=>{
     const panel = document.getElementById('tab-'+n);
@@ -378,38 +369,45 @@ function showTab(name){
     }
   });
 }
-
+ 
 // ════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════
 async function init(){
   if(!wsId||!tid){ show('notfound'); return; }
   try{
+    // ═══════════════════════════════════════════════════════════════
+    // الإصلاح: قراءة طلب الحضور من المسار الجديد {tid}_day{N}
+    // أولاً نحدد اليوم من URL، ثم نقرأ الطلب من المسار الصحيح
+    // ═══════════════════════════════════════════════════════════════
+    const reqKey = `${tid}_day${day}`;
+ 
     const [wsSnap, reqSnap, approvalsSnap] = await Promise.all([
       get(ref(db,`workshops/${wsId}`)),
-      get(ref(db,`workshops/${wsId}/scan_requests/${tid}`)),
+      get(ref(db,`workshops/${wsId}/scan_requests/${reqKey}`)),   // ← الإصلاح
       get(ref(db,`workshops/${wsId}/exam_approvals`))
     ]);
+ 
     if(!wsSnap.exists()){ show('notfound'); return; }
     const ws = wsSnap.val();
     _trainee = ws.trainees?.[tid];
     if(!_trainee){ show('notfound'); return; }
-
-    // day = scan_request.dayId (authoritative)
+ 
+    // day from scan_request.dayId (authoritative)
     const req    = reqSnap.exists() ? reqSnap.val() : null;
     const reqDay = req?.dayId ? parseInt(req.dayId,10) : null;
     if(reqDay) day = reqDay;
-
+ 
     // Update nav
     document.getElementById('nav-sub').textContent = _trainee.name+' — اليوم '+day;
     document.getElementById('wait-name').textContent = _trainee.name;
     document.getElementById('waitexam-name').textContent = _trainee.name;
-
+ 
     // Load questions
     const qd = (window.QUIZ_DATA||{})[day];
     _questions = qd?.questions||[];
     if(_questions.length) _answers = new Array(_questions.length).fill(null);
-
+ 
     // Already done this day?
     const res = ws.results?.[tid]?.[day];
     if(res && !res.absent){
@@ -417,38 +415,42 @@ async function init(){
       if(day>=LAST_DAY) initLastDayUI();
       return;
     }
-
+ 
     // Restore progress
     const prog = ws.quiz_progress?.[tid]?.[day];
     if(prog?.answers) _answers = prog.answers;
-
+ 
     // No request for today
     if(!req || parseInt(req.dayId,10)!==day){
       const nd = document.getElementById('notfound-day');
-      if(nd) nd.textContent = '📅 اليوم '+day;
+      if(nd) nd.textContent = '📅 اليوم '+day+' — امسح رمز QR للتسجيل';
       show('notfound'); return;
     }
     if(req.status==='rejected'){ show('rejected'); return; }
+ 
     if(req.status==='pending'){
       show('waiting');
-      _unsubReq = onValue(ref(db,`workshops/${wsId}/scan_requests/${tid}/status`), snap=>{
+      // ═══ الإصلاح: الاستماع على المسار الجديد ═══
+      _unsubReq = onValue(ref(db,`workshops/${wsId}/scan_requests/${reqKey}/status`), snap=>{
         const st = snap.val();
         if(st==='approved'){ if(_unsubReq){_unsubReq();_unsubReq=null;} checkExam(); }
         if(st==='rejected'){ if(_unsubReq){_unsubReq();_unsubReq=null;} show('rejected'); }
       });
       return;
     }
-    // Approved
+ 
+    // Approved → check exam
     checkExam();
+ 
   }catch(e){ console.error(e); show('notfound'); }
 }
-
+ 
 async function checkExam(){
   const examSnap  = await get(ref(db,`workshops/${wsId}/exam_approvals/${day}`));
   const timerSnap = await get(ref(db,`workshops/${wsId}/exam_timer/${day}`));
   const isOpen = examSnap.val()==='open';
   if(timerSnap.exists()&&timerSnap.val()?.endTime) _examEndTime=timerSnap.val().endTime;
-
+ 
   if(isOpen){
     show('waitexam');
     document.getElementById('exam-ready-box').style.display='block';
@@ -466,7 +468,7 @@ async function checkExam(){
     });
   }
 }
-
+ 
 // ════════════════════════════════════════════
 // QUIZ
 // ════════════════════════════════════════════
@@ -478,7 +480,7 @@ window.startQuiz = function(){
   show('quiz');
   renderNavDots(); renderQuestion(0); startTimer(); saveProgress();
 };
-
+ 
 function renderNavDots(){
   const nav=document.getElementById('q-nav');
   nav.innerHTML=_questions.map((q,i)=>{
@@ -490,7 +492,7 @@ function renderNavDots(){
       cursor:pointer;border:${isActive?'2.5px solid #f59e0b':'2px solid transparent'};transition:all .2s">${i+1}</div>`;
   }).join('');
 }
-
+ 
 function renderQuestion(idx){
   _curQ=idx;
   const q=_questions[idx]; if(!q)return;
@@ -516,7 +518,7 @@ function renderQuestion(idx){
   document.getElementById('btn-submit').style.display=(answered===total||idx===total-1)?'block':'none';
   renderNavDots();
 }
-
+ 
 window.selectAnswer=function(oi){
   if(_submitted)return;
   _answers[_curQ]=oi;
@@ -525,7 +527,7 @@ window.selectAnswer=function(oi){
 };
 window.navigate=function(dir){ const n=_curQ+dir; if(n>=0&&n<_questions.length)renderQuestion(n); };
 window.jumpTo=function(i){ renderQuestion(i); };
-
+ 
 async function saveProgress(){
   if(!wsId||!tid||_submitted)return;
   try{
@@ -533,8 +535,7 @@ async function saveProgress(){
       {answers:_answers,lastUpdated:Date.now(),name:_trainee?.name||'',dept:_trainee?.dept||''});
   }catch(e){ console.warn(e.message); }
 }
-
-// ── Timer ──
+ 
 function startTimer(){
   if(!_examEndTime){ document.getElementById('timer-display').textContent=''; return; }
   updateTimer();
@@ -548,15 +549,14 @@ function updateTimer(){
   if(el){ el.textContent=m+':'+String(s).padStart(2,'0'); el.style.color=m<5?'#dc2626':'var(--g1)'; }
   return rem;
 }
-
-// ── Submit ──
+ 
 window.confirmSubmit=function(){
   const un=_answers.filter(a=>a===null).length;
   document.getElementById('modal-msg').textContent=un>0
     ?`لديك ${un} سؤال لم تجب عليه. هل تريد التسليم؟`:'أجبت على الكل. هل تريد التسليم؟';
   document.getElementById('submit-modal').style.display='flex';
 };
-
+ 
 window.submitQuiz=async function(){
   if(_submitted)return;
   _submitted=true;
@@ -574,7 +574,7 @@ window.submitQuiz=async function(){
   showDone(score,correct,total);
   if(day>=LAST_DAY) setTimeout(initLastDayUI, 800);
 };
-
+ 
 function showDone(score,correct,total){
   show('done');
   const el=document.getElementById('done-score');
@@ -588,28 +588,24 @@ function showDone(score,correct,total){
     <div style="margin-top:4px;font-size:.8rem;color:var(--muted)">تم تسجيل نتيجتك ✅</div>
     ${isLast?'<div style="margin-top:12px;font-size:.88rem;color:var(--g1);font-weight:700">⭐ قيّم المدرب لفتح المادة العلمية</div>':'<div style="margin-top:10px;font-size:.82rem;color:var(--muted)">امسح QR اليوم التالي 📱</div>'}`;
 }
-
+ 
 // ════════════════════════════════════════════
 // LAST DAY — EVAL → MATERIAL
 // ════════════════════════════════════════════
 function initLastDayUI(){
   if(day<LAST_DAY) return;
-  // Show bottom tab bar
   const bar = document.getElementById('bottom-tabs');
   if(bar) bar.style.display = 'grid';
-  // Material button stays hidden until eval done
   const matBtn = document.getElementById('btn-tab-material');
   if(matBtn) matBtn.style.display = 'none';
-  // Show eval tab panel explicitly
   const evalPanel = document.getElementById('tab-eval');
   const matPanel  = document.getElementById('tab-material');
   if(evalPanel) evalPanel.style.display = 'block';
   if(matPanel)  matPanel.style.display  = 'none';
-  // Build form + check status
   buildEvalForm();
   checkEvalStatus();
 }
-
+ 
 function buildEvalForm(){
   const criteria=['وضوح الشرح والأسلوب','التنظيم والتحضير','التفاعل مع المتدربين','الإلمام بالمادة العلمية','الرضا العام'];
   document.getElementById('eval-criteria').innerHTML=criteria.map((lbl,i)=>`
@@ -622,7 +618,7 @@ function buildEvalForm(){
       </div>
     </div>`).join('');
 }
-
+ 
 window.setRating=function(idx,stars){
   _evalRatings[idx]=stars;
   [1,2,3,4,5].forEach(s=>{
@@ -630,20 +626,20 @@ window.setRating=function(idx,stars){
     if(b){ b.style.background=s<=stars?'#fef3c7':'var(--card)'; b.style.borderColor=s<=stars?'#f59e0b':'var(--border)'; }
   });
 };
-
+ 
 async function checkEvalStatus(){
   try{
     const snap=await get(ref(db,'workshops/'+wsId+'/evaluations/'+tid));
     if(snap.exists()) unlockMaterial();
   }catch(e){}
 }
-
+ 
 window.submitEval=async function(){
   if(_evalRatings.some(r=>r===0)){ alert('يرجى تقييم جميع المحاور'); return; }
   const keys=['clarity','organization','interaction','knowledge','overall'];
   const data={};
   keys.forEach((k,i)=>data[k]=_evalRatings[i]);
-  data.comment   = document.getElementById('eval-comment')?.value.trim()||'';
+  data.comment    = document.getElementById('eval-comment')?.value.trim()||'';
   data.tid        = tid;
   data.name       = _trainee?.name||'';
   data.submittedAt= new Date().toISOString();
@@ -652,31 +648,27 @@ window.submitEval=async function(){
     unlockMaterial();
   }catch(e){ alert('حدث خطأ. حاول مرة أخرى.'); }
 };
-
+ 
 function unlockMaterial(){
-  // Show eval done message
   const form=document.getElementById('eval-form');
   const done=document.getElementById('eval-done-msg');
   if(form) form.style.display='none';
   if(done) done.style.display='block';
-  // Show material tab button
   const matBtn=document.getElementById('btn-tab-material');
   if(matBtn){ matBtn.style.display='flex'; }
-  // Switch to material tab + load
   setTimeout(()=>{
     const evalPanel = document.getElementById('tab-eval');
     const matPanel  = document.getElementById('tab-material');
     if(evalPanel) evalPanel.style.display = 'none';
     if(matPanel)  matPanel.style.display  = 'block';
-    // Update btn styles
-    const evalBtn = document.getElementById('btn-tab-eval');
-    const matBtnEl= document.getElementById('btn-tab-material');
+    const evalBtn  = document.getElementById('btn-tab-eval');
+    const matBtnEl = document.getElementById('btn-tab-material');
     if(evalBtn){ evalBtn.style.borderTopColor='transparent'; evalBtn.style.color='var(--muted)'; }
     if(matBtnEl){ matBtnEl.style.borderTopColor='var(--g1)'; matBtnEl.style.color='var(--g1)'; }
     loadMaterial();
   }, 1000);
 }
-
+ 
 async function loadMaterial(){
   try{
     const snap=await get(ref(db,'workshops/'+wsId+'/materials'));
@@ -703,7 +695,7 @@ async function loadMaterial(){
     if(noneEl) noneEl.style.display='block';
   }
 }
-
+ 
 // ════════════════════════════════════════════
 init().catch(e=>{ console.error(e); show('notfound'); });
 </script>
