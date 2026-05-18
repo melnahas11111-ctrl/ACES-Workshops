@@ -130,10 +130,10 @@ nav h1{font-size:.88rem;font-weight:900;color:var(--g1)}
 </div>
 <div id="box-approved" class="info-box green" style="display:none">
 <h3 style="color:var(--g1)">✅ تم قبول حضورك!</h3>
-<p style="color:var(--muted);margin-bottom:10px">في انتظار فتح الاختبار — استغل الوقت لمراجعة المادة العلمية 👇</p>
+<p style="color:var(--muted);margin-bottom:10px" id="approved-msg">في انتظار فتح الاختبار من المدرب</p>
 <div id="mat-viewer-wrap" style="display:none;margin:12px 0;border-radius:12px;overflow:hidden;border:2px solid var(--g5)">
 <div style="background:var(--g1);color:#fff;padding:8px 14px;font-size:.82rem;font-weight:700;display:flex;justify-content:space-between;align-items:center">
-<span>📚 المادة التعليمية — راجع قبل الاختبار</span>
+<span>📚 المادة التعليمية للورشة</span>
 <a id="mat-open-link" href="#" target="_blank" style="color:rgba(255,255,255,.85);font-size:.74rem;text-decoration:none">↗ فتح في نافذة جديدة</a>
 </div>
 <iframe id="mat-iframe-scan" style="width:100%;height:420px;border:none;background:#fff" allowfullscreen></iframe>
@@ -194,11 +194,39 @@ async function loadFirebase(){
   function examURL(){return 'https://melnahas11111-ctrl.github.io/ACES-Workshops/trainee.html?wsid='+wsId+'&tid='+tid+'&day='+day;}
 
   async function loadMaterial(){
+    // ═══════════════════════════════════════════════════════════════
+    // الإصلاح: المادة العلمية تظهر فقط في اليوم الخامس (الأخير)
+    // وبعد أن يُكمل المتدرب تقييم المدرب
+    // في الأيام 1-4: لا تظهر المادة — ينتقل مباشرة للاختبار
+    // ═══════════════════════════════════════════════════════════════
+    const wrap  = document.getElementById('mat-viewer-wrap');
+    const noMat = document.getElementById('mat-no-material');
+    const msgEl = document.getElementById('approved-msg');
+
+    if(day < 5){
+      // أيام 1-4: أخفِ قسم المادة كلياً — انتظار الاختبار فقط
+      if(wrap)  wrap.style.display  = 'none';
+      if(noMat) noMat.style.display = 'none';
+      if(msgEl) msgEl.textContent   = 'في انتظار فتح الاختبار من المدرب';
+      return;
+    }
+
+    // اليوم الخامس: تحقق أن المتدرب أكمل تقييم المدرب أولاً
     try{
+      const evalSnap = await get(ref(db,'workshops/'+wsId+'/evaluations/'+tid));
+      if(!evalSnap.exists()){
+        // لم يُكمل التقييم بعد — أخفِ المادة وأظهر رسالة
+        if(wrap)  wrap.style.display  = 'none';
+        if(noMat) noMat.style.display = 'none';
+        if(msgEl) msgEl.innerHTML     = 'في انتظار فتح الاختبار من المدرب<br><span style="font-size:.74rem;color:var(--muted)">📌 المادة العلمية ستظهر بعد إكمال تقييم المدرب</span>';
+        return;
+      }
+
+      // أكمل التقييم — أظهر المادة
       const matSnap = await get(ref(db,'workshops/'+wsId+'/materials'));
       if(!matSnap.exists()){ showNoMat(); return; }
       const mats = matSnap.val();
-      const url = mats.singleUrl || mats[day]?.url || mats[1]?.url || '';
+      const url = mats.singleUrl || mats[5]?.url || mats[1]?.url || '';
       if(!url){ showNoMat(); return; }
       const fileId = (url.match(/\/d\/([a-zA-Z0-9_-]+)/) || [])[1];
       if(!fileId){ showNoMat(); return; }
@@ -206,12 +234,11 @@ async function loadFirebase(){
       const viewUrl   = 'https://drive.google.com/file/d/'+fileId+'/view';
       const iframe = document.getElementById('mat-iframe-scan');
       const link   = document.getElementById('mat-open-link');
-      const wrap   = document.getElementById('mat-viewer-wrap');
       if(iframe) iframe.src = previewUrl;
       if(link)   link.href  = viewUrl;
       if(wrap)   wrap.style.display = 'block';
-      const noMat = document.getElementById('mat-no-material');
-      if(noMat) noMat.style.display = 'none';
+      if(noMat)  noMat.style.display = 'none';
+      if(msgEl)  msgEl.textContent = '📚 المادة العلمية متاحة — في انتظار فتح الاختبار';
     }catch(e){ showNoMat(); }
   }
 
