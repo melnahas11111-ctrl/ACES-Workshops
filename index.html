@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ACES — نظام إدارة الورش التدريبية</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{
   --g1:#0a5c3e;--g2:#0e7a54;--g3:#12a06e;--g4:#eaf6f1;--g5:#c8e8d8;
@@ -14,47 +13,24 @@
   --blue:#1255a0;--blue2:#e6f0fb;
   --purple:#5a20c0;--purple2:#ede0ff;
   --bg:#f5f9f7;--card:#ffffff;--text:#0e1f18;--muted:#4a7060;--border:#b8d8cc;
-  --shadow:0 2px 16px rgba(10,92,62,.10);
-  --transition:all .22s cubic-bezier(.4,0,.2,1);
-}
-[data-theme="dark"]{
-  --g1:#22d3a0;--g2:#16b882;--g3:#0e9e6e;--g4:#0d2b22;--g5:#143d2e;
-  --gold:#fbbf24;--gold2:#2d2000;
-  --red:#f87171;--red2:#2d0a0a;
-  --blue:#60a5fa;--blue2:#0a1a2d;
-  --purple:#c084fc;--purple2:#1c0a2d;
-  --bg:#0a0f0d;--card:#111815;--text:#e2f0ec;--muted:#6b9e8a;--border:#1e3d30;
-  --shadow:0 2px 16px rgba(0,0,0,.4);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;transition:background .3s,color .3s}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-@keyframes ringFill{from{stroke-dashoffset:251}to{stroke-dashoffset:var(--target-offset)}}
 
-nav{background:var(--card);border-bottom:2px solid var(--border);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;z-index:300;box-shadow:var(--shadow);transition:background .3s,border-color .3s}
+nav{background:#fff;border-bottom:2px solid var(--border);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;z-index:300;box-shadow:0 2px 16px rgba(10,92,62,.10)}
 .logo-box{background:var(--g4);border:1.5px solid var(--border);border-radius:10px;padding:6px 14px;font-size:1.1rem;font-weight:900;color:var(--g1)}
 .live-dot{width:7px;height:7px;border-radius:50%;background:#12a06e;animation:blink 2s infinite;display:inline-block}
 .live-pill{background:var(--g4);border:1.5px solid var(--border);color:var(--g1);font-size:.68rem;font-weight:700;padding:4px 11px;border-radius:20px;display:flex;align-items:center;gap:5px}
-/* Dark mode toggle */
-.dark-toggle{background:var(--g4);border:1.5px solid var(--border);border-radius:20px;padding:5px 10px;cursor:pointer;font-size:.78rem;font-weight:700;color:var(--g1);display:flex;align-items:center;gap:5px;transition:var(--transition)}
-.dark-toggle:hover{background:var(--g5)}
-/* Notification bell */
-.notif-btn{position:relative;background:var(--g4);border:1.5px solid var(--border);border-radius:50%;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:var(--transition)}
-.notif-btn:hover{background:var(--g5)}
-.notif-count{position:absolute;top:-4px;left:-4px;background:#ef4444;color:#fff;border-radius:50%;width:18px;height:18px;font-size:.6rem;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid var(--card);display:none}
-.notif-count.has-notif{display:flex;animation:pulse 1.5s infinite}
 
 .screen{display:none;padding:22px 16px;max-width:1100px;margin:0 auto;animation:fadeUp .32s ease}
 .screen.active{display:block}
 
-.card{background:var(--card);border-radius:16px;border:1.5px solid var(--border);box-shadow:var(--shadow);padding:20px;transition:background .3s,border-color .3s}
-.btn{border:none;border-radius:11px;padding:10px 18px;font-family:'Tajawal',sans-serif;font-weight:800;cursor:pointer;transition:var(--transition);font-size:.88rem;display:inline-flex;align-items:center;gap:6px}
-.btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.15)}
+.card{background:var(--card);border-radius:16px;border:1.5px solid var(--border);box-shadow:0 2px 16px rgba(10,92,62,.07);padding:20px}
+.btn{border:none;border-radius:11px;padding:10px 18px;font-family:'Tajawal',sans-serif;font-weight:800;cursor:pointer;transition:.18s;font-size:.88rem;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-2px)}
 .btn-p{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;box-shadow:0 4px 14px rgba(10,92,62,.27)}
 .btn-s{background:var(--g4);color:var(--g1);border:1.5px solid var(--border)}
 .btn-r{background:var(--red2);color:var(--red);border:1.5px solid #fca5a5}
@@ -68,41 +44,31 @@ nav{background:var(--card);border-bottom:2px solid var(--border);height:64px;dis
 .form-g{margin-bottom:11px}
 @media(max-width:500px){.form-row{grid-template-columns:1fr}}
 
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
-.kpi{background:var(--card);border-radius:13px;border:1.5px solid var(--border);padding:14px 14px 12px;text-align:center;box-shadow:var(--shadow);transition:var(--transition);position:relative;overflow:hidden}
-.kpi:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(10,92,62,.15)}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:13px 13px 0 0}
-.kpi.g::before{background:linear-gradient(90deg,var(--g1),var(--g3))}
-.kpi.go::before{background:linear-gradient(90deg,#d97706,#fbbf24)}
-.kpi.r::before{background:linear-gradient(90deg,#b91c1c,#f87171)}
-.kpi.b::before{background:linear-gradient(90deg,#1e40af,#60a5fa)}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:var(--card);border-radius:13px;border:1.5px solid var(--border);padding:14px;text-align:center;box-shadow:0 2px 10px rgba(10,92,62,.06)}
 .kpi .v{font-size:1.85rem;font-weight:900;line-height:1;margin-bottom:3px}
 .kpi .l{font-size:.68rem;color:var(--muted);font-weight:600}
 .kpi.g .v{color:var(--g1)}.kpi.go .v{color:var(--gold)}.kpi.r .v{color:var(--red)}.kpi.b .v{color:var(--blue)}
-/* Skeleton loader */
-.skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--g4) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;display:inline-block}
 
-.tbl-scroll{overflow-x:auto;border-radius:10px;border:1.5px solid var(--border)}
+.tbl-scroll{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:.79rem}
-th{background:var(--g4);color:var(--g1);font-weight:800;padding:10px 12px;text-align:right;white-space:nowrap;font-size:.76rem;letter-spacing:.02em;position:sticky;top:0;z-index:2}
-td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;transition:background .15s}
+th{background:var(--g4);color:var(--g1);font-weight:800;padding:9px 11px;text-align:right;white-space:nowrap}
+td{padding:8px 11px;border-bottom:1px solid var(--border);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--g4)}
-tbody tr{animation:slideIn .2s ease both}
-tbody tr:nth-child(even) td{background:rgba(10,92,62,.025)}
 
 .badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.68rem;font-weight:800}
 .badge.g{background:#d1fae5;color:#065f46}.badge.r{background:var(--red2);color:#7f1d1d}
 .badge.go{background:var(--gold2);color:#78350f}.badge.b{background:var(--blue2);color:#1e40af}
 .badge.gr{background:#f3f4f6;color:#374151}.badge.p{background:var(--purple2);color:#3b0764}
 
-.subnav{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;background:var(--g4);border-radius:14px;padding:6px;border:1.5px solid var(--border)}
-.snbtn{background:transparent;border:none;border-radius:9px;padding:7px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.8rem;cursor:pointer;color:var(--muted);transition:var(--transition);white-space:nowrap}
-.snbtn:hover{color:var(--g1);background:rgba(255,255,255,.6)}
-.snbtn.active{background:var(--card);color:var(--g1);box-shadow:0 2px 8px rgba(10,92,62,.18);font-weight:900}
+.subnav{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.snbtn{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:7px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:.8rem;cursor:pointer;color:var(--muted);transition:.18s}
+.snbtn:hover{color:var(--g1);background:var(--g4)}
+.snbtn.active{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(10,92,62,.22)}
 
-.chart-card{background:var(--card);border-radius:14px;border:1.5px solid var(--border);padding:17px;margin-bottom:14px;box-shadow:var(--shadow);transition:background .3s,border-color .3s}
-.chart-card h3{font-size:.87rem;font-weight:800;color:var(--g1);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.chart-card{background:var(--card);border-radius:14px;border:1.5px solid var(--border);padding:17px;margin-bottom:14px;box-shadow:0 2px 10px rgba(10,92,62,.06)}
+.chart-card h3{font-size:.87rem;font-weight:800;color:var(--g1);margin-bottom:12px}
 .bar-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:.75rem}
 .bar-lbl{width:160px;font-weight:700;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.73rem}
 .bar-bg{flex:1;background:var(--border);border-radius:5px;height:11px;overflow:hidden}
@@ -117,25 +83,17 @@ tbody tr:nth-child(even) td{background:rgba(10,92,62,.025)}
 .x-btn{background:var(--border);border:none;border-radius:50%;width:29px;height:29px;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;color:var(--muted)}
 .x-btn:hover{background:var(--red2);color:var(--red)}
 
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:10px 22px;border-radius:14px;font-size:.83rem;font-weight:700;z-index:999;transition:.28s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.3);display:flex;align-items:center;gap:8px;max-width:90vw}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:#fff;padding:9px 20px;border-radius:12px;font-size:.83rem;font-weight:700;z-index:999;transition:.28s;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0)}
-.toast.success{background:linear-gradient(135deg,#065f46,#059669)}
-.toast.error{background:linear-gradient(135deg,#7f1d1d,#b91c1c)}
-.toast.warn{background:linear-gradient(135deg,#78350f,#d97706)}
 
 .ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px;margin-bottom:20px}
-.ws-card{background:var(--card);border-radius:16px;border:1.5px solid var(--border);padding:0;overflow:hidden;box-shadow:var(--shadow);transition:var(--transition)}
-.ws-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(10,92,62,.18);border-color:var(--g3)}
-.ws-card-header{background:linear-gradient(135deg,var(--g1),var(--g2));padding:16px;color:#fff;position:relative;overflow:hidden}
-.ws-card-header::after{content:'🏢';position:absolute;bottom:-10px;left:-5px;font-size:3.5rem;opacity:.08;transform:rotate(-15deg)}
+.ws-card{background:var(--card);border-radius:16px;border:1.5px solid var(--border);padding:0;overflow:hidden;box-shadow:0 2px 14px rgba(10,92,62,.07);transition:.2s}
+.ws-card:hover{transform:translateY(-3px);box-shadow:0 6px 24px rgba(10,92,62,.14)}
+.ws-card-header{background:linear-gradient(135deg,var(--g1),var(--g2));padding:16px;color:#fff}
 .ws-card-body{padding:16px}
-.ws-stat{display:flex;justify-content:space-between;align-items:center;font-size:.78rem;margin-bottom:7px;padding:5px 0;border-bottom:1px dashed var(--border)}
-.ws-stat:last-child{border-bottom:none}
+.ws-stat{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:6px}
 .ws-stat span:first-child{color:var(--muted);font-weight:600}
 .ws-stat span:last-child{font-weight:800;color:var(--text)}
-/* Progress bar in workshop cards */
-.ws-progress{height:6px;background:var(--border);border-radius:20px;overflow:hidden;margin:10px 0}
-.ws-progress-fill{height:100%;border-radius:20px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
 
 .att-cell{border-radius:8px;border:1.5px solid var(--border);padding:8px 4px;text-align:center;cursor:pointer;transition:.18s;font-size:.7rem;font-weight:700}
 .att-cell.present{background:#d1fae5;border-color:#059669;color:#065f46}
@@ -164,15 +122,14 @@ tbody tr:nth-child(even) td{background:rgba(10,92,62,.025)}
 .dl-req-card.rejected{border-color:var(--red);background:var(--red2)}
 
 /* Login */
-.login-wrap{max-width:430px;margin:50px auto;padding:0 16px}
-.login-card{background:var(--card);border-radius:24px;border:1.5px solid var(--border);box-shadow:0 12px 48px rgba(10,92,62,.15);padding:38px;text-align:center}
+.login-wrap{max-width:420px;margin:60px auto;padding:0 16px}
+.login-card{background:var(--card);border-radius:22px;border:1.5px solid var(--border);box-shadow:0 6px 32px rgba(10,92,62,.12);padding:36px;text-align:center}
 .login-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
-.login-type-btn{border:2px solid var(--border);border-radius:16px;padding:22px 12px;cursor:pointer;transition:var(--transition);background:var(--bg);font-family:'Tajawal',sans-serif;text-align:center;position:relative;overflow:hidden}
-.login-type-btn:hover{border-color:var(--g3);background:var(--g4);transform:translateY(-2px);box-shadow:0 6px 18px rgba(10,92,62,.15)}
-.login-type-btn.sel{border-color:var(--g1);background:var(--g4);box-shadow:0 4px 16px rgba(10,92,62,.2)}
-.login-type-btn .ico{font-size:2.2rem;display:block;margin-bottom:8px}
+.login-type-btn{border:2px solid var(--border);border-radius:14px;padding:20px 12px;cursor:pointer;transition:.18s;background:var(--bg);font-family:'Tajawal',sans-serif;text-align:center}
+.login-type-btn:hover,.login-type-btn.sel{border-color:var(--g1);background:var(--g4)}
+.login-type-btn .ico{font-size:2rem;display:block;margin-bottom:8px}
 .login-type-btn .lbl{font-size:.88rem;font-weight:800;color:var(--g1)}
-.login-type-btn .sub{font-size:.72rem;color:var(--muted);margin-top:3px}
+.login-type-btn .sub{font-size:.72rem;color:var(--muted);margin-top:2px}
 
 /* Report print */
 @media print{
@@ -181,47 +138,6 @@ tbody tr:nth-child(even) td{background:rgba(10,92,62,.025)}
   body{background:#fff}
   .report-page{page-break-after:always}
 }
-/* Search highlight */
-.hl{background:#fef3c7;color:#92400e;border-radius:3px;padding:0 2px}
-/* Stat trend badge */
-.trend-up{color:#059669;font-size:.68rem;font-weight:800}
-.trend-down{color:#dc2626;font-size:.68rem;font-weight:800}
-/* Better modal */
-.modal{background:var(--card);border-radius:22px;max-width:600px;width:100%;max-height:92vh;overflow-y:auto;padding:26px;box-shadow:0 24px 64px rgba(0,0,0,.35);animation:fadeUp .28s cubic-bezier(.4,0,.2,1);border:1.5px solid var(--border)}
-/* Empty state */
-.empty-state{text-align:center;padding:50px 20px;color:var(--muted)}
-.empty-state .ico{font-size:3rem;margin-bottom:12px;display:block;opacity:.6}
-.empty-state p{font-size:.9rem;font-weight:600}
-/* Nav right controls */
-.nav-controls{display:flex;align-items:center;gap:8px}
-/* Mobile responsive improvements */
-@media(max-width:600px){
-  nav{padding:0 12px;height:58px}
-  .nav-controls{gap:5px}
-  .dark-toggle .toggle-lbl{display:none}
-  .screen{padding:14px 10px}
-  .kpi-grid{grid-template-columns:repeat(2,1fr)}
-  .ws-grid{grid-template-columns:1fr}
-  .subnav{gap:4px;padding:5px}
-  .snbtn{padding:6px 10px;font-size:.75rem}
-  h2{font-size:.95rem!important}
-}
-/* Inp improvements */
-.inp{background:var(--bg);color:var(--text);border-color:var(--border)}
-.inp:focus{border-color:var(--g3);box-shadow:0 0 0 3px rgba(18,160,110,.1);background:var(--card)}
-/* Section header */
-.section-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px}
-.section-title{font-weight:900;color:var(--g1);font-size:1.1rem}
-.section-sub{font-size:.75rem;color:var(--muted);margin-top:2px}
-/* Improved badge */
-.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:8px;font-size:.68rem;font-weight:800}
-/* Status dot */
-.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.status-dot.active{background:#10b981;box-shadow:0 0 6px rgba(16,185,129,.5)}
-.status-dot.done{background:#6b7280}
-/* Chart canvas wrapper */
-.chart-wrap{position:relative;height:220px}
-.chart-wrap-sm{position:relative;height:160px}
 
 .report-photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
 .report-photo-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
@@ -254,39 +170,26 @@ window._fb2Ready = true;
     <img src="https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/aces_logo.png" style="height:42px;width:auto;object-fit:contain" alt="ACES">
     <div>
       <div style="font-size:.78rem;font-weight:900;color:var(--g1)">نظام إدارة الورش التدريبية</div>
-      <div style="font-size:.64rem;color:var(--muted)" id="nav-clock">سحب العينات الغذائية — 5 أيام</div>
+      <div style="font-size:.64rem;color:var(--muted)">سحب العينات الغذائية — 5 أيام</div>
     </div>
   </div>
-  <div class="nav-controls">
-    <div id="nav-user" style="display:none;align-items:center;gap:8px">
-      <div class="notif-btn" onclick="openNotifPanel()" title="الإشعارات">
-        🔔
-        <span class="notif-count" id="notif-count">0</span>
-      </div>
-      <span id="nav-badge"></span>
-      <span id="nav-name" style="font-size:.82rem;font-weight:700;color:var(--g1)"></span>
-      <button class="btn btn-s" style="font-size:.76rem;padding:6px 12px" onclick="logout()">خروج</button>
-    </div>
-    <button class="dark-toggle" onclick="toggleDark()" id="dark-btn" title="تبديل الوضع">
-      <span id="dark-icon">🌙</span><span class="toggle-lbl" id="dark-lbl">داكن</span>
-    </button>
-    <div class="live-pill"><span class="live-dot"></span>مباشر</div>
+  <div id="nav-user" style="display:none;align-items:center;gap:10px">
+    <span id="nav-badge"></span>
+    <span id="nav-name" style="font-size:.82rem;font-weight:700;color:var(--g1)"></span>
+    <button class="btn btn-s" style="font-size:.76rem;padding:6px 12px" onclick="logout()">خروج</button>
   </div>
+  <div class="live-pill"><span class="live-dot"></span>مباشر</div>
 </nav>
 
 <!-- ══════ LOGIN ══════ -->
 <div id="s-login" class="screen active">
   <div class="login-wrap">
     <div class="login-card">
-      <div style="background:linear-gradient(135deg,var(--g4),var(--g5));border-radius:18px;padding:16px 22px;display:inline-flex;align-items:center;gap:12px;margin-bottom:18px;border:1.5px solid var(--border);box-shadow:0 4px 16px rgba(10,92,62,.1)">
-        <img src="https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/aces_logo.png" style="height:44px;width:auto" alt="ACES">
-        <div style="text-align:right">
-          <div style="font-weight:900;color:var(--g1);font-size:.9rem">نظام ACES</div>
-          <div style="font-size:.7rem;color:var(--muted);margin-top:1px">إدارة الورش التدريبية</div>
-        </div>
+      <div style="background:var(--g4);border-radius:14px;padding:8px 22px;display:inline-block;margin-bottom:16px;border:1.5px solid var(--border)">
+        <div style=""><img src="https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/aces_logo.png" style="height:40px;width:auto" alt="ACES"></div>
       </div>
-      <h2 style="font-weight:900;color:var(--g1);margin-bottom:4px;font-size:1.2rem">مرحباً بك 👋</h2>
-      <p style="color:var(--muted);font-size:.85rem;margin-bottom:24px">اختر نوع حسابك للمتابعة</p>
+      <h2 style="font-weight:900;color:var(--g1);margin-bottom:4px">تسجيل الدخول</h2>
+      <p style="color:var(--muted);font-size:.85rem;margin-bottom:22px">اختر نوع حسابك</p>
       <div class="login-type-grid">
         <div class="login-type-btn" id="lt-admin" onclick="selLogin('admin')">
           <span class="ico">👑</span><div class="lbl">مشرف عام</div><div class="sub">جميع الورش</div>
@@ -296,14 +199,11 @@ window._fb2Ready = true;
         </div>
       </div>
       <div id="login-form" style="display:none">
-        <div style="position:relative">
-          <input class="inp" id="login-pwd" type="password" placeholder="🔑 أدخل كلمة المرور"
-            onkeydown="if(event.key==='Enter')doLogin()" style="text-align:center;letter-spacing:3px;margin-bottom:10px;padding-top:12px;padding-bottom:12px;font-size:.95rem">
-        </div>
-        <button class="btn btn-p btn-wide" onclick="doLogin()" id="login-btn" style="padding:13px;font-size:.95rem">دخول ←</button>
-        <p id="login-err" style="display:none;color:var(--red);font-size:.82rem;margin-top:10px;text-align:center;background:var(--red2);border-radius:10px;padding:8px 12px;font-weight:700"></p>
+        <input class="inp" id="login-pwd" type="password" placeholder="كلمة المرور"
+          onkeydown="if(event.key==='Enter')doLogin()" style="text-align:center;letter-spacing:4px;margin-bottom:10px">
+        <button class="btn btn-p btn-wide" onclick="doLogin()">دخول ←</button>
+        <p id="login-err" style="display:none;color:var(--red);font-size:.8rem;margin-top:8px;text-align:center"></p>
       </div>
-      <div style="margin-top:18px;font-size:.68rem;color:var(--muted)">نظام ACES — سحب العينات الغذائية · 5 أيام تدريبية</div>
     </div>
   </div>
 </div>
@@ -723,86 +623,9 @@ function fbListen(p,cb){ const f=fb(); if(!f) return; f.onValue(f.ref(f.db,p),s=
 //  UI HELPERS
 // ══════════════════════════════════════════════
 function go(id){ document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='none';}); const el=document.getElementById('s-'+id); if(el){el.style.display='block';el.classList.add('active');} window.scrollTo(0,0); }
-function toast(m,d=3000,type=''){
-  const t=document.getElementById('toast');
-  t.textContent=m;
-  t.className='toast show'+(type?' '+type:'');
-  clearTimeout(t._tid);
-  t._tid=setTimeout(()=>t.className='toast',d);
-}
-function toastSuccess(m){toast(m,3000,'success')}
-function toastError(m){toast(m,3500,'error')}
-function toastWarn(m){toast(m,3000,'warn')}
+function toast(m,d=3000){ const t=document.getElementById('toast'); t.textContent=m; t.className='toast show'; setTimeout(()=>t.className='toast',d); }
 function openModal(t,h){ document.getElementById('modal-title').textContent=t; document.getElementById('modal-body').innerHTML=h; document.getElementById('modal').className='overlay open'; }
 function closeModal(){ document.getElementById('modal').className='overlay'; }
-
-// Dark mode
-function toggleDark(){
-  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
-  document.documentElement.setAttribute('data-theme',isDark?'light':'dark');
-  document.getElementById('dark-icon').textContent=isDark?'🌙':'☀️';
-  document.getElementById('dark-lbl').textContent=isDark?'داكن':'فاتح';
-  try{localStorage.setItem('aces-theme',isDark?'light':'dark');}catch(e){}
-}
-(function initTheme(){
-  try{
-    const t=localStorage.getItem('aces-theme');
-    if(t){
-      document.documentElement.setAttribute('data-theme',t);
-      const applyIcons=()=>{
-        const i=document.getElementById('dark-icon');const l=document.getElementById('dark-lbl');
-        if(t==='dark'){if(i)i.textContent='☀️';if(l)l.textContent='فاتح';}
-        else{if(i)i.textContent='🌙';if(l)l.textContent='داكن';}
-      };
-      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',applyIcons);
-      else applyIcons();
-    }
-  }catch(e){}
-})();
-
-// Live clock in nav
-(function startClock(){
-  const update=()=>{
-    const el=document.getElementById('nav-clock');
-    if(!el) return;
-    const now=new Date();
-    const t=now.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
-    const d=now.toLocaleDateString('ar-SA',{weekday:'short',day:'numeric',month:'short'});
-    el.textContent=`${d} — ${t}`;
-  };
-  update(); setInterval(update,1000);
-})();
-
-// Keyboard shortcuts
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape') closeModal();
-});
-
-// Notification panel
-function openNotifPanel(){
-  const pending=[];
-  if(_role==='admin'||_role==='trainer'){
-    const ws=_role==='admin'?Object.values(_allWs):(_ws?[_ws]:[]);
-    ws.forEach(w=>{
-      const dl=Object.values(w.downloadRequests||{}).filter(r=>r.status==='pending');
-      dl.forEach(r=>pending.push({type:'dl',msg:`طلب تحميل من ${r.traineeName||'—'} — ${w.name}`}));
-    });
-  }
-  if(!pending.length){toast('لا توجد إشعارات جديدة');return;}
-  openModal('🔔 الإشعارات',pending.map(n=>`
-    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
-      <span style="font-size:1.2rem">${n.type==='dl'?'📥':'🔔'}</span>
-      <span style="font-size:.85rem;font-weight:600">${n.msg}</span>
-    </div>`).join(''));
-}
-function updateNotifBadge(){
-  const count_el=document.getElementById('notif-count'); if(!count_el) return;
-  let n=0;
-  const ws=_role==='admin'?Object.values(_allWs):(_ws?[_ws]:[]);
-  ws.forEach(w=>n+=Object.values(w.downloadRequests||{}).filter(r=>r.status==='pending').length);
-  count_el.textContent=n;
-  count_el.className='notif-count'+(n>0?' has-notif':'');
-}
 
 // ══════════════════════════════════════════════
 //  AUTH
@@ -819,31 +642,27 @@ function selLogin(t){
 async function doLogin(){
   const pwd=document.getElementById('login-pwd').value.trim();
   const err=document.getElementById('login-err');
-  const loginBtn=document.getElementById('login-btn');
   err.style.display='none';
-  if(!_selType){ err.style.display='block'; err.textContent='⚠️ اختر نوع الحساب أولاً'; return; }
-  if(loginBtn){loginBtn.disabled=true;loginBtn.innerHTML='<span class="spinner"></span> جارٍ التحقق...';}
+  if(!_selType){ err.style.display='block'; err.textContent='اختر نوع الحساب'; return; }
   if(_selType==='admin'){
-    if(pwd!==ADMIN_PWD){ err.style.display='block'; err.textContent='❌ كلمة المرور خاطئة'; if(loginBtn){loginBtn.disabled=false;loginBtn.textContent='دخول ←';} return; }
+    if(pwd!==ADMIN_PWD){ err.style.display='block'; err.textContent='❌ كلمة المرور خاطئة'; return; }
     _role='admin';
     document.getElementById('nav-user').style.display='flex';
     document.getElementById('nav-name').textContent='👑 مشرف عام';
     document.getElementById('nav-badge').innerHTML='<span class="badge go">مشرف عام</span>';
-    if(loginBtn){loginBtn.disabled=false;loginBtn.textContent='دخول ←';}
     go('admin'); loadAdmin(); startSync();
   } else {
     const ws=await fbGet('workshops');
-    if(!ws){ err.style.display='block'; err.textContent='❌ لا توجد ورش بعد'; if(loginBtn){loginBtn.disabled=false;loginBtn.textContent='دخول ←';} return; }
+    if(!ws){ err.style.display='block'; err.textContent='❌ لا توجد ورش بعد'; return; }
     let found=null;
     for(const [id,w] of Object.entries(ws)){ if(w.trainerPassword===pwd){found={id,...w};break;} }
-    if(!found){ err.style.display='block'; err.textContent='❌ كلمة المرور خاطئة أو غير موجودة'; if(loginBtn){loginBtn.disabled=false;loginBtn.textContent='دخول ←';} return; }
+    if(!found){ err.style.display='block'; err.textContent='❌ كلمة المرور خاطئة'; return; }
     _role='trainer'; _wsId=found.id; _ws=found;
     document.getElementById('nav-user').style.display='flex';
     document.getElementById('nav-name').textContent=`👨‍🏫 ${found.trainerName}`;
     document.getElementById('nav-badge').innerHTML='<span class="badge g">مدرب</span>';
     document.getElementById('tr-title').textContent=`👨‍🏫 ${found.trainerName} — ${found.name}`;
     document.getElementById('tr-sub').textContent=`${found.startDate||''} ${found.endDate?'← '+found.endDate:''} · ${found.org||''}`;
-    if(loginBtn){loginBtn.disabled=false;loginBtn.textContent='دخول ←';}
     go('trainer'); loadTrainer(); startSync();
   }
 }
@@ -895,18 +714,16 @@ async function createWS(){
     trainees:{},results:{},attendance:{},evaluations:{},
     materials:{},photos:[],downloadRequests:{}
   });
-  toastSuccess('✅ تم إنشاء الورشة!'); closeModal(); loadAdmin();
+  toast('✅ تم إنشاء الورشة!'); closeModal(); loadAdmin();
 }
 
 // ══════════════════════════════════════════════
 //  ADMIN — LOAD
 // ══════════════════════════════════════════════
 async function loadAdmin(){
-  const grid=document.getElementById('ws-grid');
-  if(grid&&!Object.keys(_allWs).length) grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)"><div class="skeleton" style="height:200px;width:100%;display:block"></div></div>`;
   _allWs=await fbGet('workshops')||{};
   document.getElementById('admin-time').textContent='آخر تحديث: '+new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'});
-  renderAdminKPIs(); renderWSGrid(); renderTrainersTbl(); renderDLRequests(); updateNotifBadge();
+  renderAdminKPIs(); renderWSGrid(); renderTrainersTbl(); renderDLRequests();
 }
 
 function renderAdminKPIs(){
@@ -926,32 +743,20 @@ function renderAdminKPIs(){
   const attTotal=ws.reduce((s,w)=>s+Object.keys(w.trainees||{}).length*5,0);
   const avgAtt=attTotal?Math.round(attAll/attTotal*100):0;
 
-  const mkKpi=(cls,icon,val,lbl,sub)=>`<div class="kpi ${cls}">
-    <div style="font-size:1.4rem;margin-bottom:4px">${icon}</div>
-    <div class="v">${val}</div>
-    <div class="l">${lbl}</div>
-    ${sub?`<div style="font-size:.62rem;color:var(--muted);margin-top:3px;font-weight:700">${sub}</div>`:''}
-  </div>`;
-  document.getElementById('admin-kpis').innerHTML=
-    mkKpi('g','🏢',tot,'إجمالي الورش','')+
-    mkKpi('b','👥',trainees,'إجمالي المتدربين','')+
-    mkKpi('go','📊',avg?avg+'%':'—','متوسط الأداء',avg?`${scores.length} اختبار`:'')+
-    mkKpi('g','✅',passRate?passRate+'%':'—','نسبة النجاح',passRate>=80?'ممتاز':passRate>=60?'جيد':'')+
-    mkKpi('go','⭐',evalAvg!=='—'?evalAvg+'/5':'—','تقييم المدربين','')+
-    mkKpi('b','📅',avgAtt?avgAtt+'%':'—','متوسط الحضور','')+
-    mkKpi('g','🏆',completedTrainees,'أكملوا البرنامج','');
+  document.getElementById('admin-kpis').innerHTML=`
+    <div class="kpi g"><div class="v">${tot}</div><div class="l">🏢 الورش</div></div>
+    <div class="kpi b"><div class="v">${trainees}</div><div class="l">👥 المتدربون</div></div>
+    <div class="kpi go"><div class="v">${avg}%</div><div class="l">📊 متوسط الأداء</div></div>
+    <div class="kpi g"><div class="v">${passRate}%</div><div class="l">✅ نسبة النجاح</div></div>
+    <div class="kpi go"><div class="v">${evalAvg}${evalAvg!=='—'?'⭐':''}</div><div class="l">⭐ تقييم المدربين</div></div>
+    <div class="kpi b"><div class="v">${avgAtt}%</div><div class="l">📅 متوسط الحضور</div></div>
+    <div class="kpi g"><div class="v">${completedTrainees}</div><div class="l">🏆 أكملوا البرنامج</div></div>`;
 }
 
 function renderWSGrid(wsList=null){
   const grid=document.getElementById('ws-grid');
   const ws=wsList||Object.values(_allWs);
-  if(!ws.length){
-    grid.innerHTML=`<div class="card empty-state" style="grid-column:1/-1">
-      <span class="ico">🏢</span>
-      <p>لا توجد ورش بعد — أنشئ ورشتك الأولى</p>
-    </div>`;
-    return;
-  }
+  if(!ws.length){grid.innerHTML=`<div class="card" style="grid-column:1/-1;text-align:center;padding:40px"><div style="font-size:2.5rem;margin-bottom:10px">🏢</div><p style="color:var(--muted)">لا توجد ورش بعد — أنشئ ورشتك الأولى</p></div>`;return;}
   grid.innerHTML=ws.map(w=>{
     const trainees=Object.values(w.trainees||{});
     const scores=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);
@@ -962,34 +767,23 @@ function renderWSGrid(wsList=null){
     const photos=(w.photos||[]).length;
     const dlReqs=Object.values(w.downloadRequests||{}).filter(r=>r.status==='pending').length;
     const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';
-    const fillCol=avg>=80?'linear-gradient(90deg,#10b981,#34d399)':avg>=60?'linear-gradient(90deg,#d97706,#fbbf24)':'linear-gradient(90deg,#dc2626,#f87171)';
-    const completedTr=trainees.filter(t=>DAYS.every(d=>w.results?.[t.id]?.[d]?.quizScore!==undefined)).length;
-    const completePct=trainees.length?Math.round(completedTr/trainees.length*100):0;
-    const now=new Date(); const start=w.startDate?new Date(w.startDate):null; const end=w.endDate?new Date(w.endDate):null;
-    const isActive=start&&end?now>=start&&now<=end:false;
-    const isDone=end?now>end:false;
     return `<div class="ws-card">
       <div class="ws-card-header">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
-          <h3 style="font-size:1rem;font-weight:900;margin-bottom:4px;flex:1">${w.name}</h3>
-          ${isActive?`<span style="background:rgba(255,255,255,.2);border-radius:20px;padding:2px 8px;font-size:.65rem;font-weight:800;white-space:nowrap;display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 1.5s infinite;display:inline-block"></span>جارية</span>`:isDone?`<span style="background:rgba(255,255,255,.15);border-radius:20px;padding:2px 8px;font-size:.65rem;font-weight:800;white-space:nowrap">منتهية</span>`:''}
-        </div>
+        <h3 style="font-size:1rem;font-weight:900;margin-bottom:4px">🏢 ${w.name}</h3>
         <p style="font-size:.78rem;opacity:.9">👨‍🏫 ${w.trainerName} ${w.org?'· '+w.org:''}</p>
         ${w.startDate?`<p style="font-size:.73rem;opacity:.8;margin-top:3px">📅 ${w.startDate}${w.endDate?' ← '+w.endDate:''} ${w.location?'· '+w.location:''}</p>`:''}
       </div>
       <div class="ws-card-body">
-        <div class="ws-stat"><span>👥 المتدربون</span><span>${trainees.length} متدرب</span></div>
-        <div class="ws-stat"><span>📊 متوسط الأداء</span><span style="color:${col};font-weight:900">${avg!==null?avg+'%':'—'}</span></div>
-        ${avg!==null?`<div class="ws-progress"><div class="ws-progress-fill" style="width:${avg}%;background:${fillCol}"></div></div>`:''}
-        <div class="ws-stat"><span>⭐ تقييم المدرب</span><span style="color:#f59e0b;font-weight:900">${evAvg}${evAvg!=='—'?'/5':''}</span></div>
-        <div class="ws-stat"><span>🏆 أكملوا البرنامج</span><span style="color:var(--g1)">${completedTr}/${trainees.length}</span></div>
-        ${photos?`<div class="ws-stat"><span>🖼️ الصور</span><span>${photos} صورة</span></div>`:''}
-        ${dlReqs>0?`<div class="ws-stat"><span>📥 طلبات تحميل</span><span class="badge go">${dlReqs} معلقة</span></div>`:''}
+        <div class="ws-stat"><span>المتدربون</span><span>${trainees.length} متدرب</span></div>
+        <div class="ws-stat"><span>متوسط الأداء</span><span style="color:${col};font-weight:900">${avg!==null?avg+'%':'—'}</span></div>
+        <div class="ws-stat"><span>تقييم المدرب</span><span style="color:#f59e0b;font-weight:900">${evAvg}${evAvg!=='—'?'⭐':''}</span></div>
+        <div class="ws-stat"><span>الصور</span><span>${photos} صورة</span></div>
+        ${dlReqs>0?`<div class="ws-stat"><span>طلبات تحميل</span><span class="badge go">${dlReqs} معلقة</span></div>`:''}
         <div style="display:flex;gap:6px;margin-top:12px">
-          <button class="btn btn-p" style="flex:1;font-size:.76rem;padding:8px" onclick="viewWS('${w.id}')">📊 عرض</button>
-          <button class="btn" style="font-size:.76rem;padding:8px 10px;background:var(--purple2);color:var(--purple);border:1.5px solid var(--border)" onclick="openCertificatesModal('${w.id}')" title="الشهادات">🎓</button>
-          <button class="btn btn-g" style="font-size:.76rem;padding:8px 10px" onclick="changeTrainerPwd('${w.id}','${w.trainerName}')" title="تغيير كلمة المرور">🔑</button>
-          <button class="btn btn-r" style="font-size:.76rem;padding:8px 10px" onclick="deleteWS('${w.id}','${w.name}')" title="حذف">🗑️</button>
+          <button class="btn btn-p" style="flex:1;font-size:.76rem;padding:7px" onclick="viewWS('${w.id}')">📊 عرض</button>
+          <button class="btn" style="font-size:.76rem;padding:7px 10px;background:#ede9fe;color:#6d28d9;border:1.5px solid #c4b5fd" onclick="openCertificatesModal('${w.id}')">🎓</button>
+          <button class="btn btn-g" style="font-size:.76rem;padding:7px 10px" onclick="changeTrainerPwd('${w.id}','${w.trainerName}')">🔑</button>
+          <button class="btn btn-r" style="font-size:.76rem;padding:7px 10px" onclick="deleteWS('${w.id}','${w.name}')">🗑️</button>
         </div>
       </div>
     </div>`;
@@ -1042,11 +836,11 @@ function renderDLRequests(){
 
 async function approveDL(wsId,reqId){
   await fbSet(`workshops/${wsId}/downloadRequests/${reqId}/status`,'approved');
-  toastSuccess('✅ تمت الموافقة على التحميل'); loadAdmin();
+  toast('✅ تمت الموافقة على التحميل'); loadAdmin();
 }
 async function rejectDL(wsId,reqId){
   await fbSet(`workshops/${wsId}/downloadRequests/${reqId}/status`,'rejected');
-  toastError('❌ تم رفض طلب التحميل'); loadAdmin();
+  toast('❌ تم رفض طلب التحميل'); loadAdmin();
 }
 
 function viewWS(id){
@@ -1103,7 +897,7 @@ async function savePwd(wsId){
   if(_allWs[wsId]) _allWs[wsId].trainerPassword = p1;
   
   closeModal();
-  toastSuccess('✅ تم تغيير كلمة المرور بنجاح');
+  toast('✅ تم تغيير كلمة المرور بنجاح');
 }
 
 async function deleteWS(id,name){
@@ -1126,28 +920,10 @@ function renderTrainersTbl(){
 
 function renderComparison(){
   const ws=Object.values(_allWs);
-  const isDarkNow=document.documentElement.getAttribute('data-theme')==='dark';
-  const gridC=isDarkNow?'rgba(255,255,255,.08)':'rgba(0,0,0,.07)';
-  const txtC=isDarkNow?'#6b9e8a':'#4a7060';
-  const labels=ws.map(w=>w.name.slice(0,12)+'…');
-
-  const perfData=ws.map(w=>{const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):0;});
-  const evalData=ws.map(w=>{const ev=Object.values(w.evaluations||{}).flatMap(e=>Object.values(e.scores||{}));return ev.length?Math.round(ev.reduce((a,b)=>a+b,0)/ev.length*20):0;});
-  const attData=ws.map(w=>{const tr=Object.keys(w.trainees||{});const present=tr.reduce((s,tid)=>s+Object.values(w.attendance?.[tid]||{}).filter(v=>v==='present').length,0);const total=tr.length*5||1;return Math.round(present/total*100);});
-
-  const mkCmpChart=(elId,canvasId,data,lbl,color)=>{
-    const el=document.getElementById(elId);
-    if(!el) return;
-    el.innerHTML=`<div class="chart-wrap-sm"><canvas id="${canvasId}"></canvas></div>`;
-    setTimeout(()=>{
-      const ctx=document.getElementById(canvasId); if(!ctx||!window.Chart) return;
-      if(ctx._chart) ctx._chart.destroy();
-      ctx._chart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:lbl,data,backgroundColor:color,borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{min:0,max:100,grid:{color:gridC},ticks:{color:txtC,callback:v=>v+'%',font:{family:'Tajawal',size:10}}},y:{grid:{display:false},ticks:{color:txtC,font:{family:'Tajawal',size:10}}}}}});
-    },50);
-  };
-  mkCmpChart('cmp-perf','chart-cmp-perf',perfData,'الأداء','rgba(10,92,62,.75)');
-  mkCmpChart('cmp-eval','chart-cmp-eval',evalData,'التقييم','rgba(200,131,10,.75)');
-  mkCmpChart('cmp-att','chart-cmp-att',attData,'الحضور','rgba(18,85,160,.75)');
+  const maxA=Math.max(...ws.map(w=>{const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):0;}),1);
+  document.getElementById('cmp-perf').innerHTML=ws.map(w=>{const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);const avg=s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):0;const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';return`<div class="bar-row"><div class="bar-lbl">${w.name.slice(0,14)}</div><div class="bar-bg"><div class="bar-fill" style="width:${avg/maxA*100}%;background:${col}"></div></div><div class="bar-num" style="color:${col}">${avg}%</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
+  document.getElementById('cmp-eval').innerHTML=ws.map(w=>{const ev=Object.values(w.evaluations||{}).flatMap(e=>Object.values(e.scores||{}));const avg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):null;return`<div class="bar-row"><div class="bar-lbl">${w.name.slice(0,14)}</div><div class="bar-bg"><div class="bar-fill" style="width:${avg?parseFloat(avg)/5*100:0}%;background:#f59e0b"></div></div><div class="bar-num" style="color:#f59e0b">${avg?avg+'/5':'—'}</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
+  document.getElementById('cmp-att').innerHTML=ws.map(w=>{const tr=Object.keys(w.trainees||{});const present=tr.reduce((s,tid)=>s+Object.values(w.attendance?.[tid]||{}).filter(v=>v==='present').length,0);const total=tr.length*5||1;const pct=Math.round(present/total*100);return`<div class="bar-row"><div class="bar-lbl">${w.name.slice(0,14)}</div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:var(--blue)"></div></div><div class="bar-num" style="color:var(--blue)">${pct}%</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
 }
 
 // ══════════════════════════════════════════════
@@ -1160,7 +936,7 @@ async function loadTrainer(){
   _results=data.results||{}; _attendance=data.attendance||{};
   _evaluations=data.evaluations||{}; _materials=data.materials||{};
   _photos=data.photos||[];
-  renderTrKPIs(); renderTrTable(); buildMaterialsForm(); renderPhotos(); renderInlineQR(); updateExamBtns(); updateNotifBadge();
+  renderTrKPIs(); renderTrTable(); buildMaterialsForm(); renderPhotos(); renderInlineQR(); updateExamBtns();
 }
 
 function getAvg(tid){const s=DAYS.map(d=>_results[tid]?.[d]?.quizScore).filter(s=>s!==undefined);return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null;}
@@ -1173,11 +949,10 @@ function renderTrKPIs(){
   const ev=Object.values(_evaluations).flatMap(e=>Object.values(e.scores||{}));
   const evAvg=ev.length?(ev.reduce((a,b)=>a+b,0)/ev.length).toFixed(1):'—';
   document.getElementById('tr-kpis').innerHTML=`
-    <div class="kpi g"><div style="font-size:1.3rem;margin-bottom:3px">👥</div><div class="v">${_trainees.length}</div><div class="l">المتدربون</div></div>
-    <div class="kpi go"><div style="font-size:1.3rem;margin-bottom:3px">📊</div><div class="v">${overall}%</div><div class="l">متوسط الأداء</div></div>
-    <div class="kpi g"><div style="font-size:1.3rem;margin-bottom:3px">✅</div><div class="v">${passed}</div><div class="l">ناجح ≥60%</div></div>
-    <div class="kpi r"><div style="font-size:1.3rem;margin-bottom:3px">⚠️</div><div class="v">${_trainees.length-passed}</div><div class="l">يحتاج دعماً</div></div>
-    <div class="kpi go"><div style="font-size:1.3rem;margin-bottom:3px">⭐</div><div class="v">${evAvg}${evAvg!=='—'?'/5':''}</div><div class="l">تقييمي</div></div>`;
+    <div class="kpi g"><div class="v">${_trainees.length}</div><div class="l">المتدربون</div></div>
+    <div class="kpi go"><div class="v">${overall}%</div><div class="l">متوسط الأداء</div></div>
+    <div class="kpi g"><div class="v">${passed}</div><div class="l">ناجح ≥60%</div></div>
+    <div class="kpi go"><div class="v">${evAvg}${evAvg!=='—'?'⭐':''}</div><div class="l">تقييمي</div></div>`;
 }
 
 // ══════════════════════════════════════════════
@@ -1276,7 +1051,7 @@ async function addTrainee(){
   // Auto-update QR tab if open
   const qrTab = document.getElementById('tt-qr');
   if(qrTab && qrTab.style.display !== 'none') renderQR();
-  toastSuccess('✅ تم الإضافة');
+  toast('✅ تم الإضافة');
 }
 
 async function delTrainee(id){
@@ -1392,7 +1167,7 @@ async function acceptScan(tid){
   if(!_attendance[tid])_attendance[tid]={};
   _attendance[tid][dayId]='present';
   await fbSet(`workshops/${_wsId}/scan_requests/${tid}/status`,'approved');
-  toastSuccess('✅ تم القبول');
+  toast('✅ تم القبول');
 }
 async function rejectScan(tid){
   const req=await fbGet(`workshops/${_wsId}/scan_requests/${tid}`);
@@ -1400,7 +1175,7 @@ async function rejectScan(tid){
   await fbSet(`workshops/${_wsId}/attendance/${tid}/${dayId}`,'absent');
   await fbSet(`workshops/${_wsId}/results/${tid}/${dayId}`,{quizScore:0,exerciseScore:0,absent:true,time:new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})});
   await fbSet(`workshops/${_wsId}/scan_requests/${tid}/status`,'rejected');
-  toastError('❌ تم الرفض');
+  toast('❌ تم الرفض');
 }
 async function clearScans(){
   const reqs=await fbGet(`workshops/${_wsId}/scan_requests`); if(!reqs) return;
@@ -1485,39 +1260,12 @@ function renderPerformance(){
     <div class="kpi b"><div class="v">${comp}</div><div class="l">أكمل 5 أيام</div></div>`;
   const ranked=[..._trainees].map(t=>({...t,avg:getAvg(t.id)})).filter(t=>t.avg!==null).sort((a,b)=>b.avg-a.avg);
   const maxA=Math.max(...ranked.map(t=>t.avg),1);
-  const isDarkNow=document.documentElement.getAttribute('data-theme')==='dark';
-  const gridC=isDarkNow?'rgba(255,255,255,.08)':'rgba(0,0,0,.07)'; const txtC=isDarkNow?'#6b9e8a':'#4a7060';
-  // Rank chart — horizontal bar
-  const rankEl=document.getElementById('rank-chart');
-  rankEl.innerHTML=`<div class="chart-wrap"><canvas id="chart-rank"></canvas></div>`;
-  setTimeout(()=>{
-    const ctx=document.getElementById('chart-rank'); if(!ctx||!window.Chart) return;
-    if(ctx._chart) ctx._chart.destroy();
-    const names=ranked.map(t=>t.name.slice(0,12));
-    const data=ranked.map(t=>t.avg);
-    const colors=data.map(v=>v>=80?'rgba(10,92,62,.8)':v>=60?'rgba(200,131,10,.8)':'rgba(184,48,48,.8)');
-    ctx._chart=new Chart(ctx,{type:'bar',data:{labels:names,datasets:[{data,backgroundColor:colors,borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{min:0,max:100,grid:{color:gridC},ticks:{color:txtC,callback:v=>v+'%',font:{family:'Tajawal',size:10}}},y:{grid:{display:false},ticks:{color:txtC,font:{family:'Tajawal',size:10}}}}}});
-  },50);
-
+  document.getElementById('rank-chart').innerHTML=ranked.map((t,i)=>{const col=t.avg>=80?'var(--g1)':t.avg>=60?'var(--gold)':'var(--red)';const m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';return`<div class="bar-row"><div class="bar-lbl">${m}${t.name}</div><div class="bar-bg"><div class="bar-fill" style="width:${t.avg/maxA*100}%;background:${col}"></div></div><div class="bar-num" style="color:${col}">${t.avg}%</div></div>`;}).join('')||'<p style="color:var(--muted);font-size:.82rem">لا بيانات</p>';
   const dayAvgs=DAYS.map(d=>{const s=_trainees.map(t=>_results[t.id]?.[d]?.quizScore).filter(s=>s!==undefined);return{d,avg:s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):null};});
-  // Day chart — line chart
-  const dayEl=document.getElementById('day-chart');
-  dayEl.innerHTML=`<div class="chart-wrap-sm"><canvas id="chart-days"></canvas></div>`;
-  setTimeout(()=>{
-    const ctx=document.getElementById('chart-days'); if(!ctx||!window.Chart) return;
-    if(ctx._chart) ctx._chart.destroy();
-    ctx._chart=new Chart(ctx,{type:'line',data:{labels:dayAvgs.map(d=>'يوم '+d.d),datasets:[{data:dayAvgs.map(d=>d.avg),borderColor:'#0e7a54',backgroundColor:'rgba(14,122,84,.12)',fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#0e7a54',borderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:0,max:100,grid:{color:gridC},ticks:{color:txtC,callback:v=>v+'%',font:{family:'Tajawal',size:10}}},x:{grid:{display:false},ticks:{color:txtC,font:{family:'Tajawal',size:10}}}}}});
-  },50);
-
+  const maxD=Math.max(...dayAvgs.map(d=>d.avg||0),1);
+  document.getElementById('day-chart').innerHTML=dayAvgs.map(({d,avg})=>`<div class="bar-row"><div class="bar-lbl">يوم ${d}</div><div class="bar-bg"><div class="bar-fill" style="width:${avg?avg/maxD*100:0}%;background:${avg>=80?'var(--g2)':avg>=60?'var(--gold)':'var(--red)'}"></div></div><div class="bar-num" style="color:var(--g1)">${avg!==null?avg+'%':'—'}</div></div>`).join('');
   const ex=avgs.filter(a=>a>=85).length,g=avgs.filter(a=>a>=70&&a<85).length,p=avgs.filter(a=>a>=60&&a<70).length,f=avgs.filter(a=>a<60).length;
-  // Level chart — doughnut
-  const lvlEl=document.getElementById('lvl-chart');
-  lvlEl.innerHTML=`<div class="chart-wrap-sm"><canvas id="chart-lvl"></canvas></div>`;
-  setTimeout(()=>{
-    const ctx=document.getElementById('chart-lvl'); if(!ctx||!window.Chart) return;
-    if(ctx._chart) ctx._chart.destroy();
-    ctx._chart=new Chart(ctx,{type:'doughnut',data:{labels:['ممتاز','جيد','مقبول','ضعيف'],datasets:[{data:[ex,g,p,f],backgroundColor:['#059669','#1d4ed8','#d97706','#dc2626'],borderWidth:2,borderColor:isDarkNow?'#111815':'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Tajawal',size:11},color:txtC,padding:8}}}}});
-  },50);
+  document.getElementById('lvl-chart').innerHTML=[['ممتاز ≥85%',ex,'var(--g1)'],['جيد 70-84%',g,'var(--blue)'],['مقبول 60-69%',p,'var(--gold)'],['ضعيف <60%',f,'var(--red)']].map(([l,n,c])=>`<div class="bar-row"><div class="bar-lbl">${l}</div><div class="bar-bg"><div class="bar-fill" style="width:${_trainees.length?n/_trainees.length*100:0}%;background:${c}"></div></div><div class="bar-num" style="color:${c}">${n}</div></div>`).join('');
   document.getElementById('perf-tbl').innerHTML=_trainees.map((t,i)=>{
     const avg=getAvg(t.id);
     const level=avg===null?'—':avg>=85?'ممتاز':avg>=70?'جيد جداً':avg>=60?'مقبول':'ضعيف';
@@ -2138,7 +1886,7 @@ async function updateGitHub() {
 
     if (btn) { btn.disabled=false; btn.innerHTML='✅ تم الرفع'; }
     setTimeout(()=>{ if(btn) btn.innerHTML='🔄 تحديث GitHub'; btn.disabled=false; }, 3000);
-    toastSuccess('✅ تم رفع التحديث على GitHub بنجاح!');
+    toast('✅ تم رفع التحديث على GitHub بنجاح!');
   } catch(e) {
     console.error('GitHub update error:', e);
     // If auth error, clear token so user can re-enter
@@ -2286,33 +2034,47 @@ function renderAnalytics(){
     <div class="l">${l}</div>
   </div>`).join('');
 
-  // Timeline - Chart.js bar chart for workshop averages
-  const tlEl = document.getElementById('analytics-timeline');
-  tlEl.innerHTML = `<div class="chart-wrap"><canvas id="chart-timeline"></canvas></div>`;
-  const tlLabels = ws.map(w=>w.name.slice(0,14)+'…');
-  const tlData = ws.map(w=>{
+  // Timeline - performance per workshop
+  const maxAvg = Math.max(...ws.map(w=>{
     const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);
     return s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):0;
-  });
-  const tlColors = tlData.map(v=>v>=80?'rgba(10,92,62,.8)':v>=60?'rgba(200,131,10,.8)':'rgba(184,48,48,.8)');
-  const isDarkNow=document.documentElement.getAttribute('data-theme')==='dark';
-  const gridC=isDarkNow?'rgba(255,255,255,.08)':'rgba(0,0,0,.07)';
-  const txtC=isDarkNow?'#6b9e8a':'#4a7060';
-  setTimeout(()=>{
-    const ctx=document.getElementById('chart-timeline'); if(!ctx||!window.Chart) return;
-    if(ctx._chart) ctx._chart.destroy();
-    ctx._chart=new Chart(ctx,{type:'bar',data:{labels:tlLabels,datasets:[{label:'متوسط الأداء %',data:tlData,backgroundColor:tlColors,borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.parsed.y}%`}}},scales:{y:{min:0,max:100,grid:{color:gridC},ticks:{color:txtC,callback:v=>v+'%',font:{family:'Tajawal'}}},x:{grid:{display:false},ticks:{color:txtC,font:{family:'Tajawal',size:10}}}}}});
-  },50);
+  }),1);
 
-  // Level distribution - Doughnut chart
+  document.getElementById('analytics-timeline').innerHTML = ws.map((w,i)=>{
+    const s=Object.values(w.results||{}).flatMap(t=>Object.values(t)).map(r=>r.quizScore).filter(s=>s!==undefined);
+    const avg=s.length?Math.round(s.reduce((a,b)=>a+b,0)/s.length):0;
+    const col=avg>=80?'var(--g1)':avg>=60?'var(--gold)':'var(--red)';
+    const medals=['🥇','🥈','🥉'];
+    return`<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:.76rem;font-weight:700;margin-bottom:4px">
+        <span>${medals[i]||'📌'} ${w.name.slice(0,20)}</span>
+        <span style="color:${col}">${avg?avg+'%':'لا بيانات'}</span>
+      </div>
+      <div style="background:var(--border);border-radius:20px;height:12px;overflow:hidden">
+        <div style="width:${avg?Math.round(avg/maxAvg*100):0}%;height:100%;background:${col};border-radius:20px;transition:width 1.2s ease"></div>
+      </div>
+      <div style="font-size:.68rem;color:var(--muted);margin-top:2px">${Object.keys(w.trainees||{}).length} متدرب · ${w.startDate||'—'}</div>
+    </div>`;
+  }).join('') || '<p style="color:var(--muted);text-align:center;padding:20px">لا بيانات بعد</p>';
+
+  // Level distribution across all workshops
   const ex=allScores.filter(s=>s>=85).length, gd=allScores.filter(s=>s>=70&&s<85).length, ac=allScores.filter(s=>s>=60&&s<70).length, wk=allScores.filter(s=>s<60).length;
-  const lvlEl=document.getElementById('analytics-levels');
-  lvlEl.innerHTML=`<div class="chart-wrap"><canvas id="chart-levels"></canvas></div>`;
-  setTimeout(()=>{
-    const ctx=document.getElementById('chart-levels'); if(!ctx||!window.Chart) return;
-    if(ctx._chart) ctx._chart.destroy();
-    ctx._chart=new Chart(ctx,{type:'doughnut',data:{labels:['ممتاز ≥85%','جيد 70-84%','مقبول 60-69%','ضعيف <60%'],datasets:[{data:[ex,gd,ac,wk],backgroundColor:['#059669','#1d4ed8','#d97706','#dc2626'],borderWidth:2,borderColor:isDarkNow?'#111815':'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Tajawal',size:11},color:txtC,padding:10}}}}});
-  },50);
+  const tot2=allScores.length||1;
+  document.getElementById('analytics-levels').innerHTML=[
+    ['🏆 ممتاز ≥85%',ex,'var(--g1)'],
+    ['🎯 جيد 70-84%',gd,'var(--blue)'],
+    ['✅ مقبول 60-69%',ac,'var(--gold)'],
+    ['⚠️ ضعيف <60%',wk,'var(--red)']
+  ].map(([l,n,c])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0"></div>
+      <div style="flex:1;font-size:.78rem;font-weight:700">${l}</div>
+      <div style="flex:2;background:var(--border);border-radius:20px;height:12px;overflow:hidden">
+        <div style="width:${Math.round(n/tot2*100)}%;height:100%;background:${c};border-radius:20px"></div>
+      </div>
+      <div style="font-size:.78rem;font-weight:900;color:${c};min-width:30px;text-align:left">${n}</div>
+      <div style="font-size:.68rem;color:var(--muted);min-width:35px">${Math.round(n/tot2*100)}%</div>
+    </div>`).join('');
 
   // Top 10 trainees across all workshops
   const allRanked = ws.flatMap(w=>
@@ -2498,7 +2260,7 @@ async function exportBackup(){
   a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(backup,null,2));
   a.download='ACES_Backup_'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
-  toastSuccess('✅ تم تصدير النسخة الاحتياطية');
+  toast('✅ تم تصدير النسخة الاحتياطية');
   if(btn){btn.disabled=false;btn.innerHTML='💾 نسخة احتياطية';}
 }
 
@@ -2514,7 +2276,7 @@ async function importBackup(event){
     const ex=await fbGet('workshops/'+id);
     if(!ex) await fbSet('workshops/'+id,ws);
   }
-  toastSuccess('✅ تم استعادة النسخة الاحتياطية');
+  toast('✅ تم استعادة النسخة الاحتياطية');
   loadAdmin();
 }
 
