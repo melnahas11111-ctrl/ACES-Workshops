@@ -657,6 +657,9 @@ function unlockMaterial(){
   const matBtn=document.getElementById('btn-tab-material');
   if(matBtn){ matBtn.style.display='flex'; }
   setTimeout(()=>{
+    // إخفاء شاشة النتيجة حتى تظهر المادة في المقدمة
+    const doneScreen = document.getElementById('s-done');
+    if(doneScreen) doneScreen.classList.remove('active');
     const evalPanel = document.getElementById('tab-eval');
     const matPanel  = document.getElementById('tab-material');
     if(evalPanel) evalPanel.style.display = 'none';
@@ -665,6 +668,7 @@ function unlockMaterial(){
     const matBtnEl = document.getElementById('btn-tab-material');
     if(evalBtn){ evalBtn.style.borderTopColor='transparent'; evalBtn.style.color='var(--muted)'; }
     if(matBtnEl){ matBtnEl.style.borderTopColor='var(--g1)'; matBtnEl.style.color='var(--g1)'; }
+    window.scrollTo({top:0, behavior:'smooth'});
     loadMaterial();
   }, 1000);
 }
