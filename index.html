@@ -1570,15 +1570,18 @@ async function delDayResult(tid, dayId){
   await fbDel(`workshops/${_wsId}/results/${tid}/${dayId}`);
   // Delete attendance for that day
   await fbDel(`workshops/${_wsId}/attendance/${tid}/${dayId}`);
+  // ✅ حذف بيانات التقدم حتى يبدأ الاختبار من جديد
+  await fbDel(`workshops/${_wsId}/quiz_progress/${tid}/${dayId}`);
+  // ✅ حذف طلب الدخول القديم حتى يُعيد المسح
+  await fbDel(`workshops/${_wsId}/scan_requests/${tid}_day${dayId}`);
   // Update local state
   if(_results[tid]) delete _results[tid][dayId];
   if(_attendance[tid]) delete _attendance[tid][dayId];
   // Re-render
   renderTrKPIs();
   renderPerformance();
-  toast(`🗑️ تم حذف نتيجة اليوم ${dayId} لـ ${t?.name||tid}`);
+  toast(`🗑️ تم حذف نتيجة اليوم ${dayId} لـ ${t?.name||tid} — يمكن إعادة الاختبار`);
 }
-
 function renderPerformance(){
   const avgs=_trainees.map(t=>getAvg(t.id)).filter(a=>a!==null);
   const overall=avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):0;
@@ -1738,7 +1741,7 @@ function renderEvaluations(){
   const wc=evals.filter(e=>e.comment&&e.comment.length>2);
   document.getElementById('eval-cmts').innerHTML=wc.length?wc.map(e=>`<div style="background:#fff;border:1.5px solid var(--border);border-radius:11px;padding:11px 13px;margin-bottom:8px;font-size:.82rem;line-height:1.7"><div style="font-weight:800;color:var(--g1);font-size:.76rem;margin-bottom:3px">👤 ${e.name}</div>"${e.comment}"</div>`).join(''):'<p style="color:var(--muted);font-size:.82rem;text-align:center;padding:16px">لا تعليقات بعد</p>';
 }
-
+  
 async function deleteEval(evalId){
   const e=_evaluations[evalId];
   const name=e?.name||evalId;
@@ -1746,10 +1749,15 @@ async function deleteEval(evalId){
   const fb=window.FB2;
   if(!fb){toast('❌ Firebase غير متصل');return;}
   try{
-    // Delete evaluation from Firebase
+    // 1. حذف التقييم
     await fb.remove(fb.ref(fb.db,`workshops/${_wsId}/evaluations/${evalId}`));
-    // Reset trainee evaluated flag so they can re-evaluate
-    await fb.update(fb.ref(fb.db,`workshops/${_wsId}/trainees/${evalId}`),{evaluated:false,trainerRated:false});
+    // 2. إيجاد الورشة الصحيحة
+    const wsId = _wsId || Object.keys(_allWs).find(wid => _allWs[wid]?.evaluations?.[evalId]);
+    if(wsId){
+      await fb.update(fb.ref(fb.db,`workshops/${wsId}/trainees/${evalId}`),{evaluated:false,trainerRated:false});
+      await fb.remove(fb.ref(fb.db,`workshops/${wsId}/scan_requests/${evalId}_day5`));
+    }
+    // 3. تحديث محلي
     delete _evaluations[evalId];
     renderEvaluations();
     renderTrKPIs();
