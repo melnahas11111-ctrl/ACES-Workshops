@@ -327,11 +327,34 @@ async function loadFirebase(){
       const DAYS   = [1,2,3,4,5];
       const nextDay = DAYS.find(d => !results[d] || results[d].absent) || null;
 
-      if(!nextDay){
+if(!nextDay){
+        // ✅ تحقق إذا المتدرب قيّم المدرب أم لا
+        const evalSnap = await get(ref(db,'workshops/'+wsId+'/evaluations/'+tid));
+        
+        if(!evalSnap.exists()){
+          // أكمل الأيام لكن لم يقيّم بعد → أظهر صفحة التقييم
+          day = 5;
+          show('state-already');
+          document.getElementById('already-icon').textContent  = '⭐';
+          document.getElementById('already-title').textContent = 'أكملت الاختبارات!';
+          document.getElementById('already-msg').textContent   = 'خطوة أخيرة — قيّم المدرب لإكمال الورشة.';
+          document.getElementById('already-extra').innerHTML   = `
+            <div class="info-box yellow" style="margin-top:14px">
+              <h3 style="color:#92400e">⭐ تقييم المدرب</h3>
+              <p style="color:#78350f;margin-bottom:14px">رأيك يساعدنا على تحسين البرنامج</p>
+              <button class="btn-exam" style="background:linear-gradient(135deg,#c8830a,#d97706)"
+                onclick="location.href='https://melnahas11111-ctrl.github.io/ACES-Workshops/trainee.html?wsid=${wsId}&tid=${tid}&day=5&eval=1'">
+                ⭐ تقييم المدرب الآن
+              </button>
+            </div>`;
+          return;
+        }
+
+        // أكمل الأيام وقيّم → رسالة الإكمال النهائية
         show('state-already');
         document.getElementById('already-icon').textContent  = '🎓';
         document.getElementById('already-title').textContent = 'أتممت جميع أيام الورشة!';
-        document.getElementById('already-msg').textContent   = 'تهانينا — لقد أكملت اختبارات الأيام الخمسة بنجاح.';
+        document.getElementById('already-msg').textContent   = 'تهانينا — لقد أكملت اختبارات الأيام الخمسة وقيّمت المدرب بنجاح.';
         document.getElementById('already-extra').innerHTML   = '';
         return;
       }
