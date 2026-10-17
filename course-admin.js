@@ -93,7 +93,7 @@
       const ws=await read('workshops/'+wsId);if(!ws)throw new Error('الدورة غير موجودة');
       if(!C.managed(ws)){toast('هذه دورة بالنظام السابق. استخدم إنشاء دورة بمحتوى مخصص؛ لم يتم تغيير المحتوى القديم.',6000);return;}
       const content=ws.courseContent||{};
-      state={wsId,ws,content,baseRevision:content.revision||0,draft:C.clone(content.draft||C.emptyDraft(ws.courseLanguage||'en')),day:1,dirty:false,pending:null};
+      state={wsId,ws,content,baseRevision:content.revision||0,draft:C.normalizeDraft(content.draft,ws.courseLanguage||'en'),day:1,dirty:false,pending:null};
       ensureOverlay();render();overlay.classList.add('open');overlay.querySelector('button').focus();
     }catch(e){fail(e);}
   }
@@ -188,7 +188,7 @@
     const f=window.FB2;
     const result=await f.runTransaction(f.ref(f.db,'workshops/'+wsId+'/courseContent'),content=>{
       if(content===null)content=C.clone(ws.courseContent||{});
-      if(!content?.published?.[day]?.questions?.length)return;
+      if(!C.getDay({contentMode:'custom-v1',courseContent:content||{}},day).questions.length)return;
       const next=C.clone(content);next.locked=next.locked||{};next.locked[day]=true;next.revision=(next.revision||0)+1;return next;
     },{applyLocally:false});
     if(!result.committed)throw new Error('انشر اختبار هذا اليوم من المشرف أولاً');return true;

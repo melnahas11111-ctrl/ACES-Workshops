@@ -18,28 +18,52 @@
   function emptyDraft(language = 'en') {
     return {schemaVersion: 1, language: language === 'ar' ? 'ar' : 'en', days: Object.fromEntries(DAYS.map(d => [d, {title: language === 'ar' ? 'اليوم '+d : 'Day '+d, materialUrl: '', questions: []}]))};
   }
+  // Realtime Database drops empty arrays/objects and null fields, and may return
+  // numeric-keyed collections as objects. Normalize only at the read boundary.
+  function listFromFirebase(value,limit){
+    if(value===null||value===undefined)return [];
+    if(Array.isArray(value)){if(value.length>limit)throw new Error('قائمة أكبر من الحد المسموح');return Array.from(value);}
+    if(typeof value!=='object')throw new Error('قائمة بيانات غير صالحة');
+    const keys=Object.keys(value);if(!keys.length)return [];
+    if(keys.some(k=>!/^(0|[1-9][0-9]*)$/.test(k)))throw new Error('ترقيم عناصر القائمة غير صالح');
+    const length=Math.max(...keys.map(Number))+1;
+    if(length>limit)throw new Error('قائمة أكبر من الحد المسموح');
+    return Array.from({length},(_,i)=>value[i]??null);
+  }
+  function normalizeDay(value,fallbackTitle=''){
+    const day=value&&typeof value==='object'?value:{};
+    return {...day,title:day.title??fallbackTitle,materialUrl:day.materialUrl??'',questions:listFromFirebase(day.questions,MAX_QUESTIONS).map(item=>{
+      const q=item&&typeof item==='object'?item:{};
+      return {...q,id:q.id??'',q:typeof q.q==='string'?q.q:'',type:q.type??'mc',opts:listFromFirebase(q.opts,4).map(o=>typeof o==='string'?o:''),ans:q.ans??null,exp:q.exp??'',marks:q.marks??1};
+    })};
+  }
+  function normalizeDraft(value,language='en'){
+    const input=value&&typeof value==='object'?value:{};
+    const base=emptyDraft(input.language||language);
+    return {...base,...input,language:base.language,days:Object.fromEntries(DAYS.map(d=>[d,normalizeDay(input.days?.[d],base.days[d].title)]))};
+  }
   function managed(ws) { return ws?.contentMode === 'custom-v1'; }
   function getDay(ws, day, legacy = {}, attempt = null) {
     if (!managed(ws)) return legacy[day] || {title: '', questions: []};
     const content = ws.courseContent || {};
     const version = attempt?.contentVersion;
     // Never grade a saved attempt against a different release, or Arabic defaults.
-    if (version) return content.releases?.[day]?.[version] || {title: '', questions: [], missingVersion: true};
-    return content.published?.[day] || {title: '', questions: [], unpublished: true};
+    if (version) return content.releases?.[day]?.[version] ? normalizeDay(content.releases[day][version]) : {title: '', questions: [], missingVersion: true};
+    return content.published?.[day] ? normalizeDay(content.published[day]) : {title: '', questions: [], unpublished: true};
   }
   function getMaterial(ws,day){return safeUrl(ws?.courseContent?.materials?.[day]?.url ?? getDay(ws,day).materialUrl);}
   function questionErrors(q, index, published = false) {
     const errors = [], prefix = 'سؤال '+(index+1)+': ';
     if (!q || typeof q !== 'object') return [prefix+'سجل غير صالح'];
-    if (!String(q.q || '').trim()) errors.push(prefix+'نص السؤال مطلوب');
+    if (typeof q.q!=='string'||!q.q.trim()) errors.push(prefix+'نص السؤال مطلوب ويجب أن يكون نصاً');
     if (String(q.q || '').length > 6000) errors.push(prefix+'النص أطول من الحد المسموح');
     if (!['tf', 'mc'].includes(q.type)) errors.push(prefix+'النوع يجب أن يكون TF أو MC');
     const opts = q.opts;
     if (!Array.isArray(opts) || opts.length < 2 || opts.length > 4 || (q.type === 'tf' && opts.length !== 2)) errors.push(prefix+'عدد الاختيارات غير صالح');
     else {
       if (opts.some(v => typeof v !== 'string' || !v.trim() || v.length > 3000)) errors.push(prefix+'الاختيارات يجب أن تكون نصوصاً غير فارغة');
-      if (new Set(opts.map(v=>v.trim())).size !== opts.length) errors.push(prefix+'اختيارات مكررة');
-      if(q.type==='tf' && (!/^(true|t|صح|صحيح)$/i.test(opts[0].trim()) || !/^(false|f|خطأ|خاطئ)$/i.test(opts[1].trim()))) errors.push(prefix+'في TF يجب أن يكون A=True أو صح، وB=False أو خطأ');
+      if (new Set(opts.map(v=>String(v??'').trim())).size !== opts.length) errors.push(prefix+'اختيارات مكررة');
+      if(q.type==='tf' && (!/^(true|t|صح|صحيح)$/i.test(String(opts[0]??'').trim()) || !/^(false|f|خطأ|خاطئ)$/i.test(String(opts[1]??'').trim()))) errors.push(prefix+'في TF يجب أن يكون A=True أو صح، وB=False أو خطأ');
     }
     if (q.ans !== null && q.ans !== undefined && (!Number.isInteger(q.ans) || q.ans < 0 || q.ans >= (opts?.length || 0))) errors.push(prefix+'الإجابة الصحيحة غير صالحة');
     if (published && (q.ans === null || q.ans === undefined)) errors.push(prefix+'حدد الإجابة الصحيحة قبل النشر');
@@ -163,5 +187,5 @@
     if(!headers.some(h=>h.trim().toLowerCase()==='question'))throw new Error('عمود Question مطلوب');
     return rows.map(r=>Object.fromEntries(headers.map((h,i)=>[h,r[i]||''])));
   }
-  return {DAYS,HEADERS,MAX_QUESTIONS,clone,escape,safeUrl,emptyDraft,managed,getDay,getMaterial,validateDay,validateDraft,fromRows,mergeImport,dayStarted,release,normalizeAnswers,grade,parseCSV};
+  return {DAYS,HEADERS,MAX_QUESTIONS,clone,escape,safeUrl,emptyDraft,normalizeDraft,normalizeDay,managed,getDay,getMaterial,validateDay,validateDraft,fromRows,mergeImport,dayStarted,release,normalizeAnswers,grade,parseCSV};
 });
