@@ -38,6 +38,8 @@ nav img{height:36px;object-fit:contain}
 .tab-panel{display:none;padding:16px;max-width:680px;margin:0 auto;padding-bottom:90px}
 .tab-panel.active{display:block}
 </style>
+<script src="course-core.js"></script>
+<script src="course-i18n.js"></script>
 </head>
 <body>
 
@@ -211,7 +213,7 @@ nav img{height:36px;object-fit:contain}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, get, set, onValue, update, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const cfg = {apiKey:"AIzaSyDgRH8Slr3uk0RRZOFZ5LDu1WDBWtgtTRY",databaseURL:"https://qr-training-2026-default-rtdb.firebaseio.com",projectId:"qr-training-2026"};
 const db  = getDatabase(initializeApp(cfg));
@@ -349,6 +351,10 @@ const LAST_DAY = 5;
 let _trainee=null, _questions=[], _answers=[], _curQ=0, _submitted=false;
 let _timerInterval=null, _examEndTime=null, _evalRatings=[0,0,0,0,0];
 let _unsubReq=null, _unsubExam=null;
+let _course=null, _quizRelease=null, _submitting=false, _starting=false, _attemptStartedAt=null;
+const t=(ar,en)=>CourseUI.t(ar,en), esc=ACESCourse.escape;
+function quizData(attempt=null){return ACESCourse.getDay(_course,day,window.QUIZ_DATA||{},attempt);}
+function contentError(message){show('notfound');document.querySelector('#s-notfound h2').textContent=t('الاختبار غير متاح','Assessment unavailable');document.querySelector('#s-notfound p').textContent=message;}
 
 // ── UI ──
 function show(id){
@@ -386,6 +392,8 @@ async function init(){
 
     if(!wsSnap.exists()){ show('notfound'); return; }
     const ws = wsSnap.val();
+    _course=ws;
+    CourseUI.init(ACESCourse.managed(ws)?ws.courseLanguage:'ar');
     _trainee = ws.trainees?.[tid];
     if(!_trainee){ show('notfound'); return; }
 
@@ -393,27 +401,33 @@ async function init(){
     const reqDay = req?.dayId ? parseInt(req.dayId,10) : null;
     if(reqDay) day = reqDay;
 
-    document.getElementById('nav-sub').textContent = _trainee.name+' — اليوم '+day;
+    document.getElementById('nav-sub').textContent = _trainee.name+t(' — اليوم ',' — Day ')+day;
     document.getElementById('wait-name').textContent = _trainee.name;
     document.getElementById('waitexam-name').textContent = _trainee.name;
 
-    const qd = (window.QUIZ_DATA||{})[day];
+    const res = ws.results?.[tid]?.[day];
+    const prog = ws.quiz_progress?.[tid]?.[day];
+    const qd = quizData(res && !res.absent ? res : prog);
+    _quizRelease=qd;
     _questions = qd?.questions||[];
     if(_questions.length) _answers = new Array(_questions.length).fill(null);
 
-    const res = ws.results?.[tid]?.[day];
     if(res && !res.absent){
-      showDone(res.quizScore, res.correct||0, _questions.length);
+      _submitted=true;
+      showDone(res.quizScore, res.correct||0, res.total||_questions.length);
       if(day>=LAST_DAY) initLastDayUI();
       return;
     }
 
-    const prog = ws.quiz_progress?.[tid]?.[day];
-    if(prog?.answers) _answers = prog.answers;
+    if(ACESCourse.managed(ws)&&(!_questions.length||qd.missingVersion)){
+      contentError(t('لم ينشر المشرف اختبار هذا اليوم بعد، أو تعذر العثور على الإصدار. تواصل مع المدرب.','This day has not been published, or the saved version is unavailable. Please contact your trainer.'));return;
+    }
+    if(prog?.answers) _answers = ACESCourse.normalizeAnswers(prog.answers,_questions.length);
+    _attemptStartedAt=prog?.startedAt||null;
 
     if(!req || parseInt(req.dayId,10)!==day){
       const nd = document.getElementById('notfound-day');
-      if(nd) nd.textContent = '📅 اليوم '+day+' — امسح رمز QR للتسجيل';
+      if(nd) nd.textContent = t('📅 اليوم ','📅 Day ')+day+t(' — امسح رمز QR للتسجيل',' — scan the QR code to register');
       show('notfound'); return;
     }
     if(req.status==='rejected'){ show('rejected'); return; }
@@ -428,7 +442,7 @@ async function init(){
       return;
     }
 
-    checkExam();
+    await checkExam();
 
   }catch(e){ console.error(e); show('notfound'); }
 }
@@ -460,10 +474,32 @@ async function checkExam(){
 // ════════════════════════════════════════════
 // QUIZ
 // ════════════════════════════════════════════
-window.startQuiz = function(){
-  if(_submitted) return;
-  const qd = (window.QUIZ_DATA||{})[day];
-  document.getElementById('quiz-day-title').textContent = qd?.title||'اختبار اليوم '+day;
+window.startQuiz = async function(){
+  if(_submitted||_submitting||_starting) return;
+  if(!_questions.length){contentError(t('الاختبار غير منشور','Assessment not published'));return;}
+  _starting=true;
+  try{
+    const status=await get(ref(db,`workshops/${wsId}/exam_approvals/${day}`));
+    const attendance=await get(ref(db,`workshops/${wsId}/scan_requests/${tid}_day${day}/status`));
+    if(status.val()!=='open'||attendance.val()!=='approved')throw new Error(t('الاختبار مغلق أو لم تتم الموافقة على الحضور','Assessment closed or attendance not approved'));
+    const timer=await get(ref(db,`workshops/${wsId}/exam_timer/${day}`));
+    if(timer.val()?.endTime)_examEndTime=timer.val().endTime;
+    if(ACESCourse.managed(_course)){
+      const content=await get(ref(db,`workshops/${wsId}/courseContent`));
+      _course.courseContent=content.val()||{};
+      const active=quizData();
+      if(!active.questions.length)throw new Error(t('لم يُنشر الاختبار','Assessment not published'));
+      const path=ref(db,`workshops/${wsId}/quiz_progress/${tid}/${day}`);
+      const attempt=await runTransaction(path,current=>current||{answers:new Array(active.questions.length).fill(null),contentVersion:active.contentVersion,startedAt:new Date().toISOString(),name:_trainee.name,dept:_trainee.dept||''},{applyLocally:false});
+      const saved=attempt.snapshot.val();
+      const selected=quizData(saved);
+      if(selected.missingVersion||!selected.questions.length)throw new Error(t('أعد تحميل الصفحة لاستئناف الإصدار الصحيح','Reload this page to resume the saved assessment version'));
+      _quizRelease=selected;_questions=selected.questions;_attemptStartedAt=saved.startedAt||null;
+      _answers=ACESCourse.normalizeAnswers(saved?.answers,_questions.length);
+    }
+  }catch(e){alert(e.message);return;}finally{_starting=false;}
+  const qd = _quizRelease;
+  document.getElementById('quiz-day-title').textContent = qd?.title||t('اختبار اليوم ','Day ')+day;
   document.getElementById('quiz-trainee').textContent   = _trainee.name+' — '+(_trainee.dept||'');
   show('quiz');
   renderNavDots(); renderQuestion(0); startTimer(); saveProgress();
@@ -474,7 +510,7 @@ function renderNavDots(){
   nav.innerHTML=_questions.map((q,i)=>{
     const ans=_answers[i]; const answered=ans!==null&&ans!==undefined;
     const isActive=i===_curQ;
-    return`<div onclick="jumpTo(${i})" title="س${i+1}" style="width:26px;height:26px;border-radius:6px;
+    return`<div onclick="jumpTo(${i})" title="${t('س','Q')}${i+1}" style="width:26px;height:26px;border-radius:6px;
       background:${answered?'var(--g1)':'#e5e7eb'};color:${answered?'#fff':'#9ca3af'};
       font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;
       cursor:pointer;border:${isActive?'2.5px solid #f59e0b':'2px solid transparent'};transition:all .2s">${i+1}</div>`;
@@ -487,19 +523,19 @@ function renderQuestion(idx){
   const total=_questions.length;
   const answered=_answers.filter(a=>a!==null).length;
   document.getElementById('quiz-prog').style.width=Math.round((idx+1)/total*100)+'%';
-  document.getElementById('quiz-prog-text').textContent=`السؤال ${idx+1} من ${total}`;
-  document.getElementById('quiz-answered-text').textContent=`أجبت: ${answered}`;
+  document.getElementById('quiz-prog-text').textContent=t(`السؤال ${idx+1} من ${total}`,`Question ${idx+1} of ${total}`);
+  document.getElementById('quiz-answered-text').textContent=t(`أجبت: ${answered}`,`Answered: ${answered}`);
   const userAns=_answers[idx];
   const opts=q.opts||['صح','خطأ'];
-  const letters=['أ','ب','ج','د'];
+  const letters=CourseUI.isEnglish()?['A','B','C','D']:['أ','ب','ج','د'];
   document.getElementById('q-area').innerHTML=`
     <div class="card">
       <div style="font-size:.72rem;color:var(--muted);font-weight:700;margin-bottom:6px">
-        السؤال ${idx+1}/${total} ${q.type==='tf'?'· صح/خطأ':'· اختيار متعدد'}</div>
-      <div style="font-size:.95rem;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:16px">${q.q}</div>
+        ${t('السؤال','Question')} ${idx+1}/${total} ${q.type==='tf'?t('· صح/خطأ','· True/False'):t('· اختيار متعدد','· Multiple Choice')}</div>
+      <div style="font-size:.95rem;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:16px">${esc(q.q)}</div>
       ${opts.map((opt,oi)=>`<button class="opt-btn" onclick="selectAnswer(${oi})"
         style="${userAns===oi?'border-color:var(--g1);background:var(--g1);color:#fff':''}">
-        <span style="font-weight:900;margin-left:8px">${letters[oi]||oi+1}.</span>${opt}</button>`).join('')}
+        <span style="font-weight:900;margin-inline-end:8px">${letters[oi]||oi+1}.</span>${esc(opt)}</button>`).join('')}
     </div>`;
   document.getElementById('btn-prev').disabled=idx===0;
   document.getElementById('btn-next').disabled=idx===total-1;
@@ -520,13 +556,13 @@ async function saveProgress(){
   if(!wsId||!tid||_submitted)return;
   try{
     await set(ref(db,`workshops/${wsId}/quiz_progress/${tid}/${day}`),
-      {answers:_answers,lastUpdated:Date.now(),name:_trainee?.name||'',dept:_trainee?.dept||''});
+      {answers:_answers,lastUpdated:Date.now(),name:_trainee?.name||'',dept:_trainee?.dept||'',...(ACESCourse.managed(_course)?{contentVersion:_quizRelease.contentVersion,startedAt:_attemptStartedAt}:{})});
   }catch(e){ console.warn(e.message); }
 }
 
 function startTimer(){
   if(!_examEndTime){ document.getElementById('timer-display').textContent=''; return; }
-  updateTimer();
+  if(updateTimer()<=0){submitQuiz();return;}
   _timerInterval=setInterval(()=>{ if(updateTimer()<=0){clearInterval(_timerInterval);submitQuiz();} },1000);
 }
 function updateTimer(){
@@ -541,24 +577,27 @@ function updateTimer(){
 window.confirmSubmit=function(){
   const un=_answers.filter(a=>a===null).length;
   document.getElementById('modal-msg').textContent=un>0
-    ?`لديك ${un} سؤال لم تجب عليه. هل تريد التسليم؟`:'أجبت على الكل. هل تريد التسليم؟';
+    ?t(`لديك ${un} سؤال لم تجب عليه. هل تريد التسليم؟`,`You have ${un} unanswered questions. Submit now?`):t('أجبت على الكل. هل تريد التسليم؟','All questions answered. Submit now?');
   document.getElementById('submit-modal').style.display='flex';
 };
 
 window.submitQuiz=async function(){
-  if(_submitted)return;
-  _submitted=true;
+  if(_submitted||_submitting)return;
+  _submitting=true;
   document.getElementById('submit-modal').style.display='none';
   clearInterval(_timerInterval);
   const total=_questions.length;
   const correct=_questions.filter((q,i)=>_answers[i]===q.ans).length;
-  const score=total?Math.round(correct/total*100):0;
+  const graded=ACESCourse.managed(_course)?ACESCourse.grade(_questions,_answers):{quizScore:total?Math.round(correct/total*100):0};
+  const score=graded.quizScore;
   try{
-    await set(ref(db,`workshops/${wsId}/results/${tid}/${day}`),
-      {quizScore:score,exerciseScore:0,correct,total,answers:_answers,submittedAt:new Date().toISOString()});
-    await set(ref(db,`workshops/${wsId}/attendance/${tid}/${day}`),'present');
-    await set(ref(db,`workshops/${wsId}/quiz_progress/${tid}/${day}`),null);
-  }catch(e){ console.error(e.message); }
+    const result={quizScore:score,exerciseScore:0,correct,total,answers:_answers,submittedAt:new Date().toISOString(),...(ACESCourse.managed(_course)?{contentVersion:_quizRelease.contentVersion,earnedMarks:graded.earnedMarks,totalMarks:graded.totalMarks}:{})};
+    const saved=await runTransaction(ref(db,`workshops/${wsId}/results/${tid}/${day}`),current=>current&&!current.absent?undefined:result,{applyLocally:false});
+    await update(ref(db,`workshops/${wsId}`),{[`attendance/${tid}/${day}`]:'present',[`quiz_progress/${tid}/${day}`]:null});
+    if(!saved.committed){_submitted=true;_submitting=false;const r=saved.snapshot.val();showDone(r.quizScore,r.correct||0,r.total||total);if(day>=LAST_DAY)initLastDayUI();return;}
+    _submitted=true;
+  }catch(e){ console.error(e.message);_submitting=false;alert(t('تعذر حفظ النتيجة. تحقق من الاتصال وأعد التسليم؛ لا تغلق الصفحة.','Could not save your result. Check the connection and submit again. Keep this page open.'));return; }
+  _submitting=false;
   showDone(score,correct,total);
   if(day>=LAST_DAY) setTimeout(initLastDayUI, 800);
 };
@@ -568,13 +607,13 @@ function showDone(score,correct,total){
   const el=document.getElementById('done-score');
   el.textContent=score+'%';
   el.style.color=score>=80?'#059669':score>=60?'#d97706':'#dc2626';
-  const label=score>=85?'ممتاز 🏆':score>=70?'جيد 👍':score>=60?'مقبول ✓':'يحتاج مراجعة 📚';
+  const label=score>=85?t('ممتاز 🏆','Excellent 🏆'):score>=70?t('جيد 👍','Good 👍'):score>=60?t('مقبول ✓','Acceptable ✓'):t('يحتاج مراجعة 📚','Needs improvement 📚');
   const isLast=day>=LAST_DAY;
   document.getElementById('done-details').innerHTML=`
     <div style="font-size:1rem;font-weight:700;margin-bottom:8px">${label}</div>
-    <div style="font-size:.88rem">إجابات صحيحة: <strong>${correct}</strong> من ${total}</div>
-    <div style="margin-top:4px;font-size:.8rem;color:var(--muted)">تم تسجيل نتيجتك ✅</div>
-    ${isLast?'<div style="margin-top:12px;font-size:.88rem;color:var(--g1);font-weight:700">⭐ قيّم المدرب لفتح المادة العلمية</div>':'<div style="margin-top:10px;font-size:.82rem;color:var(--muted)">امسح QR اليوم التالي 📱</div>'}`;
+    <div style="font-size:.88rem">${t('إجابات صحيحة:','Correct answers:')} <strong>${correct}</strong> ${t('من','of')} ${total}</div>
+    <div style="margin-top:4px;font-size:.8rem;color:var(--muted)">${t('تم تسجيل نتيجتك ✅','Your result has been recorded ✅')}</div>
+    ${isLast?'<div style="margin-top:12px;font-size:.88rem;color:var(--g1);font-weight:700">'+t('⭐ قيّم المدرب لفتح المادة العلمية','⭐ Evaluate the trainer to access the training material')+'</div>':'<div style="margin-top:10px;font-size:.82rem;color:var(--muted)">'+t('امسح QR اليوم التالي 📱','Scan the QR code for the next day 📱')+'</div>'}`;
 }
 
 // ════════════════════════════════════════════
@@ -598,7 +637,7 @@ function initLastDayUI(){
 function buildEvalForm(){
   _evalRatings = [0,0,0,0,0];
 
-  const criteria=[
+  const criteria=CourseUI.isEnglish()?['Clarity and delivery','Organization and preparation','Interaction with trainees','Subject knowledge','Overall satisfaction']:[
     'وضوح الشرح والأسلوب',
     'التنظيم والتحضير',
     'التفاعل مع المتدربين',
@@ -648,7 +687,7 @@ async function checkEvalStatus(){
 // ✅ الإصلاح الرئيسي: حفظ التقييم داخل scores{} لتتوافق مع لوحة المشرف
 window.submitEval=async function(){
   if(_evalRatings.some(r=>r===0)){
-    alert('يرجى تقييم جميع المحاور');
+    alert(t('يرجى تقييم جميع المحاور','Please rate all evaluation criteria.'));
     return;
   }
 
@@ -667,7 +706,7 @@ window.submitEval=async function(){
   try{
     await set(ref(db,'workshops/'+wsId+'/evaluations/'+tid), data);
     unlockMaterial();
-  }catch(e){ alert('حدث خطأ. حاول مرة أخرى.'); }
+  }catch(e){ alert(t('حدث خطأ. حاول مرة أخرى.','Could not save. Please try again.')); }
 };
 
 function unlockMaterial(){
@@ -695,6 +734,19 @@ function unlockMaterial(){
 
 async function loadMaterial(){
   try{
+    if(ACESCourse.managed(_course)){
+      const currentContent=await get(ref(db,`workshops/${wsId}/courseContent`));_course.courseContent=currentContent.val()||{};
+      const days=ACESCourse.DAYS.filter(d=>ACESCourse.getMaterial(_course,d));
+      if(!days.length)throw new Error('none');
+      let select=document.getElementById('course-material-day');
+      if(!select){
+        select=document.createElement('select');select.id='course-material-day';select.setAttribute('aria-label',t('اختر اليوم','Select training day'));
+        select.style.cssText='margin:12px;padding:10px;max-width:90%;border:1px solid var(--border);border-radius:8px';
+        select.innerHTML=days.map(d=>'<option value="'+d+'">'+esc(t('اليوم ','Day ')+d+' — '+ACESCourse.getDay(_course,d).title)+'</option>').join('');
+        document.getElementById('mat-embed').before(select);select.addEventListener('change',()=>displayCourseMaterial(Number(select.value)));
+      }
+      displayCourseMaterial(Number(select.value)||days[0]);return;
+    }
     const snap=await get(ref(db,'workshops/'+wsId+'/materials'));
     if(!snap.exists()) throw new Error('none');
     const mats=snap.val();
@@ -720,8 +772,19 @@ async function loadMaterial(){
   }
 }
 
+function displayCourseMaterial(d){
+  const url=ACESCourse.getMaterial(_course,d);if(!url)return;
+  const fileId=(url.match(/\/d\/([a-zA-Z0-9_-]+)/)||[])[1];
+  const iframe=document.getElementById('mat-iframe'),link=document.getElementById('mat-dl-link');
+  iframe.src=fileId?'https://drive.google.com/file/d/'+fileId+'/preview':url;
+  iframe.title=t('المادة التدريبية لليوم ','Training material — Day ')+d;
+  link.href=fileId?'https://drive.google.com/uc?export=download&id='+fileId:url;link.rel='noopener noreferrer';link.style.display='inline-flex';
+  document.getElementById('mat-loading').style.display='none';document.getElementById('mat-none').style.display='none';document.getElementById('mat-embed').style.display='block';
+}
+
 // ════════════════════════════════════════════
 init().catch(e=>{ console.error(e); show('notfound'); });
 </script>
 </body>
 </html>
+

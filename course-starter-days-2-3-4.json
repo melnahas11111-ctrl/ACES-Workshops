@@ -1,0 +1,804 @@
+{
+  "schemaVersion": 1,
+  "language": "en",
+  "days": {
+    "2": {
+      "title": "Day 2",
+      "materialUrl": "",
+      "questions": [
+        {
+          "id": "d2_q1",
+          "type": "tf",
+          "q": "Inspection is a control procedure aimed only at identifying defective products after production.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q2",
+          "type": "tf",
+          "q": "Physical examination is one of the inspection tools that relies on document analysis.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q3",
+          "type": "tf",
+          "q": "The main objective of inspection in the food chain is to prevent hazards that harm consumer health.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q4",
+          "type": "tf",
+          "q": "Random sampling ensures that all units have an equal chance of being selected.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q5",
+          "type": "tf",
+          "q": "The traditional inspection system is more effective and less costly than the risk-based system.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q6",
+          "type": "tf",
+          "q": "One of the duties of an ideal inspector is the ability to ignore unimportant observations.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q7",
+          "type": "tf",
+          "q": "A representative sample is an unbiased random sample that accurately represents the quality and characteristics of the food population.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q8",
+          "type": "tf",
+          "q": "Unannounced inspection is a type of inspection that follows a predetermined schedule.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q9",
+          "type": "tf",
+          "q": "One objective of quality control is to enhance and improve quality at the lowest possible cost.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q10",
+          "type": "tf",
+          "q": "The field technique known as “opening an aisle” aims to reach cartons located deep inside shipments.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q11",
+          "type": "mc",
+          "q": "Which of the following is NOT considered one of the main inspection tools?",
+          "opts": [
+            "Document review",
+            "Physical examination",
+            "Food sampling",
+            "Marketing analysis"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q12",
+          "type": "mc",
+          "q": "Which of the following hazards does food-chain inspection seek to prevent?",
+          "opts": [
+            "Economic hazards",
+            "Biological, chemical, and physical hazards",
+            "Social hazards",
+            "Political hazards"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q13",
+          "type": "mc",
+          "q": "According to the 360-degree quality perspective, what is the trader’s main concern?",
+          "opts": [
+            "Meeting needs and price suitability",
+            "The best-selling product and financial return",
+            "The lowest number of defective units and complaints",
+            "Compliance of results with scientifically acceptable limits"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q14",
+          "type": "mc",
+          "q": "What is the main difference between control and quality control?",
+          "opts": [
+            "Control focuses on programming, while quality control focuses on organization and direction.",
+            "Control is an organizational and directing process, while quality control is a set of processes that includes programming, coordination, and implementation.",
+            "There is no substantial difference between them.",
+            "Control applies only to finished products, while quality control applies to all production stages."
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q15",
+          "type": "mc",
+          "q": "Which type of inspection is based on unexpected timing?",
+          "opts": [
+            "Periodic inspection",
+            "Regular inspection",
+            "Unannounced inspection",
+            "Official inspection"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q16",
+          "type": "mc",
+          "q": "Which sample is retained as a reference in case of a dispute or re-examination?",
+          "opts": [
+            "Random sample",
+            "Representative sample",
+            "Reserve/backup sample",
+            "Expanded sample"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q17",
+          "type": "mc",
+          "q": "What is the term for opening a passage between packages in a container to reach cartons located deep inside?",
+          "opts": [
+            "Laboratory funnel model",
+            "Sampling-plan design",
+            "Field technique (“opening an aisle”)",
+            "Expanded sample"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q18",
+          "type": "mc",
+          "q": "Which of the following is NOT a characteristic of an ideal inspector?",
+          "opts": [
+            "Scientific knowledge",
+            "Practical skill",
+            "Ethics and communication",
+            "The ability to ignore observations"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q19",
+          "type": "mc",
+          "q": "Which system focuses on classifying according to risk level and directing inspection efforts toward critical points?",
+          "opts": [
+            "Traditional system",
+            "Risk-based system",
+            "Total quality system",
+            "Periodic inspection system"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d2_q20",
+          "type": "mc",
+          "q": "Which stage of the laboratory funnel model comes after the aggregate sample?",
+          "opts": [
+            "Sample unit portion",
+            "Subsample",
+            "Analytical sample",
+            "Random sample"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        }
+      ]
+    },
+    "3": {
+      "title": "Day 3",
+      "materialUrl": "",
+      "questions": [
+        {
+          "id": "d3_q1",
+          "type": "tf",
+          "q": "The purpose of a sampling strategy is to transform inspection from a laboratory procedure alone into a tool for risk assessment and management.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q2",
+          "type": "tf",
+          "q": "Absolute certainty (100% inspection) is the best and most economical option for ensuring the quality of every lot.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q3",
+          "type": "tf",
+          "q": "Critical defects are those that cause definite product failure and harm consumer health.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q4",
+          "type": "tf",
+          "q": "The Acceptable Quality Level (AQL) is the minimum number of defective units that can be accepted in a product.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q5",
+          "type": "tf",
+          "q": "Tightened inspection is applied when the risk is lower and the AQL is low.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q6",
+          "type": "tf",
+          "q": "The acceptance number [Ac] is the number that, if reached or exceeded, means the entire lot must be rejected.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q7",
+          "type": "tf",
+          "q": "A common misconception is that AQL is a quality target that we aim to achieve.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q8",
+          "type": "tf",
+          "q": "Limiting Quality [LQ] is used for isolated lots and represents an acceptable quality level with a low probability of acceptance.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q9",
+          "type": "tf",
+          "q": "A Sampling Plan consists of the sample size [n] and the acceptance and rejection criteria [Ac] and [Re].",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q10",
+          "type": "tf",
+          "q": "In the specification, the symbol [d] refers to the actual number of nonconforming items in the sample.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q11",
+          "type": "mc",
+          "q": "Which option represents the optimal strategic solution between absolute certainty and complete absence of quality inspection?",
+          "opts": [
+            "Absolute certainty",
+            "Complete absence",
+            "The mathematical bridge (sampling)",
+            "Simple random inspection"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q12",
+          "type": "mc",
+          "q": "Which category of defects includes commercial fraud and misleading practices?",
+          "opts": [
+            "Critical defects",
+            "Major defects",
+            "Other defects",
+            "Minor defects"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q13",
+          "type": "mc",
+          "q": "Which inspection level is usually applied when the process average [p] is within a defined period and under statistical control?",
+          "opts": [
+            "Reduced inspection",
+            "Normal inspection",
+            "Tightened inspection",
+            "Special inspection"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q14",
+          "type": "mc",
+          "q": "Which symbol indicates the rejection number in the acceptance/rejection limits?",
+          "opts": [
+            "[Ac]",
+            "[Re]",
+            "[AQL]",
+            "[n]"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q15",
+          "type": "mc",
+          "q": "Which statement about AQL is correct?",
+          "opts": [
+            "It is a quality target that we aim to achieve.",
+            "It is the worst acceptable process average when a continuous series of lots is submitted.",
+            "It gives the supplier the right to supply nonconforming items as long as they are within the permitted percentage.",
+            "It is a measure of consumer satisfaction."
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q16",
+          "type": "mc",
+          "q": "Which symbol indicates the total lot size in the specification symbols?",
+          "opts": [
+            "[n]",
+            "[N]",
+            "[Ac]",
+            "[Re]"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q17",
+          "type": "mc",
+          "q": "A Sampling Plan consists of sample size [n] and which of the following?",
+          "opts": [
+            "Process average [p]",
+            "Acceptance and rejection criteria [Ac] and [Re]",
+            "Number of nonconforming items [d]",
+            "Limiting Quality [LQ]"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q18",
+          "type": "mc",
+          "q": "Which concept represents a comprehensive set of sampling plans, schemes, and criteria used together?",
+          "opts": [
+            "Sampling Plan",
+            "Sampling Scheme",
+            "Sampling System",
+            "Acceptable Quality Level [AQL]"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q19",
+          "type": "mc",
+          "q": "If there are minor violations in the product label, which defect category do they belong to?",
+          "opts": [
+            "Critical defects",
+            "Major defects",
+            "Other defects",
+            "Minor defects"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d3_q20",
+          "type": "mc",
+          "q": "Which symbol indicates the process average (quality level) in the specification symbols?",
+          "opts": [
+            "[d]",
+            "[p]",
+            "[AQL]",
+            "[LQ]"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        }
+      ]
+    },
+    "4": {
+      "title": "Day 4",
+      "materialUrl": "",
+      "questions": [
+        {
+          "id": "d4_q1",
+          "type": "tf",
+          "q": "The ISO 12859 guide follows the quality engineer’s workflow step by step, from receiving the product to the final acceptance or rejection decision.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q2",
+          "type": "tf",
+          "q": "When forming random samples, every unit must have an equal chance of being selected.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q3",
+          "type": "tf",
+          "q": "The most common sampling error is systematic bias caused by convenience sampling.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q4",
+          "type": "tf",
+          "q": "The “percent nonconforming (defective units)” method is suitable for counting the number of defects in textiles.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q5",
+          "type": "tf",
+          "q": "Risk Class A indicates low risk and has a higher AQL value.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q6",
+          "type": "tf",
+          "q": "The switch from normal to tightened inspection occurs after five consecutive lots are accepted.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q7",
+          "type": "tf",
+          "q": "The maximum penalty (discontinuation of inspection) occurs if the cumulative number of non-accepted lots reaches five during tightened inspection.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q8",
+          "type": "tf",
+          "q": "When calculating the switching score, 3 points are added if the lot is accepted under a single-sampling plan.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q9",
+          "type": "tf",
+          "q": "The fragility of reduced inspection means that only one condition is needed to cancel reduced inspection and immediately return to normal inspection.",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q10",
+          "type": "tf",
+          "q": "In the decision tree, the lot is accepted if the number of nonconforming items [d] is greater than or equal to the rejection number [Re].",
+          "opts": [
+            "True",
+            "False"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q11",
+          "type": "mc",
+          "q": "In the quality engineer’s workflow, which step comes after “determine AQL”?",
+          "opts": [
+            "Form the lot",
+            "Select the inspection level",
+            "Select the plan",
+            "Make the decision"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q12",
+          "type": "mc",
+          "q": "What is the purpose of using stratified random sampling for sublots?",
+          "opts": [
+            "To reduce the sample size",
+            "To maintain proportional representation",
+            "To speed up inspection",
+            "To increase systematic bias"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q13",
+          "type": "mc",
+          "q": "Which AQL counting method counts each unit only once regardless of the number of defects, and is suitable for testing electronic circuit boards?",
+          "opts": [
+            "Number of defects per 100 units",
+            "Percent nonconforming (defective units)",
+            "Pareto method",
+            "Mathematical bridge method"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q14",
+          "type": "mc",
+          "q": "Which risk classification indicates safety requirements and has the smallest AQL value?",
+          "opts": [
+            "Class A",
+            "Class B",
+            "Class C",
+            "Class D"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q15",
+          "type": "mc",
+          "q": "When do you switch from tightened inspection to normal inspection?",
+          "opts": [
+            "If two out of five consecutive lots are not accepted",
+            "If five consecutive lots are accepted",
+            "If the cumulative number of non-accepted lots reaches five",
+            "When the switching score reaches 30 points"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q16",
+          "type": "mc",
+          "q": "What is one condition for switching from normal inspection to reduced inspection?",
+          "opts": [
+            "One lot is not accepted",
+            "Production is disrupted",
+            "The switching score reaches 30 points or more",
+            "Two consecutive lots are rejected"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q17",
+          "type": "mc",
+          "q": "What happens when the cumulative number of non-accepted lots reaches five during tightened inspection?",
+          "opts": [
+            "Switch to reduced inspection",
+            "Discontinue inspection completely",
+            "Return to normal inspection",
+            "Take samples again"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q18",
+          "type": "mc",
+          "q": "How many points are added to the switching score if a lot is accepted under tightened inspection with a single-sampling plan?",
+          "opts": [
+            "1 point",
+            "2 points",
+            "3 points",
+            "5 points"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q19",
+          "type": "mc",
+          "q": "Which of the following causes reduced inspection to be discontinued and an immediate return to normal inspection?",
+          "opts": [
+            "Stable production",
+            "Approval from the responsible management",
+            "One lot is not accepted",
+            "The switching score reaches 30 points"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        },
+        {
+          "id": "d4_q20",
+          "type": "mc",
+          "q": "In the decision tree, when is a lot rejected?",
+          "opts": [
+            "When d ≤ Ac",
+            "When d ≥ Re",
+            "When d = 0",
+            "When d < Ac"
+          ],
+          "ans": null,
+          "exp": "",
+          "marks": 1
+        }
+      ]
+    }
+  }
+}

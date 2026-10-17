@@ -178,10 +178,12 @@ body.viewer-mode #s-trainer .card{box-shadow:0 2px 8px rgba(30,64,175,.05)}
 </style>
 
 <!-- Firebase -->
+<script src="course-core.js"></script>
+<script src="course-xlsx.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, set, get, remove, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, set, get, remove, onValue, update, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 const cfg = {
 apiKey: "AIzaSyDgRH8Slr3uk0RRZOFZ5LDu1WDBWtgtTRY",
 databaseURL: "https://qr-training-2026-default-rtdb.firebaseio.com",
@@ -189,7 +191,7 @@ projectId: "qr-training-2026"
 };
 const app = initializeApp(cfg);
 const db  = getDatabase(app);
-window.FB2 = {db,ref,set,get,remove,onValue,update};
+window.FB2 = {db,ref,set,get,remove,onValue,update,runTransaction};
 window._fb2Ready = true;
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -367,6 +369,7 @@ window._fb2Ready = true;
 
 <!-- ══════ TRAINER ══════ -->
 <div id="s-trainer" class="screen">
+  <button id="course-admin-back" class="btn btn-s" style="display:none;margin-bottom:12px" onclick="document.getElementById('course-admin-back').style.display='none';go('admin');loadAdmin()">↩ العودة إلى لوحة المشرف</button>
   <div id="viewer-banner" style="display:none;margin-bottom:14px;background:#eff6ff;border:1.5px solid #93c5fd;color:#1e40af;border-radius:12px;padding:11px 15px;font-size:.84rem;font-weight:800">👁️ وضع المراقب — يمكنك مشاهدة جميع بيانات الورشة، ولا يمكنك إضافة أو تعديل أو حذف أي بيانات.</div>
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px">
     <div>
@@ -390,6 +393,7 @@ window._fb2Ready = true;
     <button class="snbtn" onclick="trTab('attendance',this)">✅ الحضور</button>
     <button class="snbtn" onclick="trTab('performance',this)">📈 الأداء</button>
     <button class="snbtn" onclick="trTab('materials',this)">📚 المواد التعليمية</button>
+    <button class="snbtn" onclick="CourseManager.open(_wsId)">📝 المحتوى والأسئلة</button>
     <button class="snbtn" onclick="trTab('photos',this)">🖼️ صور الورشة</button>
     <button class="snbtn" onclick="trTab('evaluations',this)">⭐ تقييماتي</button>
     <button class="snbtn" onclick="trTab('report',this)">📋 التقرير النهائي</button>
@@ -532,6 +536,8 @@ window._fb2Ready = true;
 
   <!-- Materials -->
   <div id="tt-materials" style="display:none">
+    <div id="custom-materials-summary" style="display:none"></div>
+    <div id="legacy-materials-controls">
     <div class="card" style="margin-bottom:14px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:8px">
         <div>
@@ -577,6 +583,7 @@ window._fb2Ready = true;
     </div>
   </div>
 
+  </div><!-- legacy-materials-controls -->
   <!-- Photos -->
   <div id="tt-photos" style="display:none">
     <div class="card">
@@ -660,10 +667,8 @@ const ACES_URL = 'https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Work
 const MOPH_URL = 'https://raw.githubusercontent.com/melnahas11111-ctrl/ACES-Workshops/main/moph_logo.png';
 const GH_OWNER = 'melnahas11111-ctrl';
 const GH_REPO  = 'ACES-Workshops';
-// Token stored encoded — decoded at runtime only
-const _t1='Z2hwX0ht';const _t2='TkNKT2NO';const _t3='U0ZZOFVl';
-const _t4='VE9uTk8x';const _t5='TEFqMUI5';const _t6='WnIwTzF3Y3BRdw==';
-function _getToken(){ return atob(_t1+_t2+_t3+_t4+_t5+_t6); }
+// Never embed GitHub credentials in this public page. Upload releases via GitHub.
+function _getToken(){ return ''; }
 let GH_TOKEN = '';
 const DAYS = [1,2,3,4,5];
 const DAY_NAMES = {1:'التقييم المبدئي',2:'التفتيش ومراقبة الجودة',3:'استراتيجيات سحب العينات',4:'التطبيق الميداني',5:'التقييم الشامل'};
@@ -678,6 +683,11 @@ const EVAL_CRIT = [
 let _role=null, _wsId=null, _ws=null, _allWs={};
 let _trainees=[], _results={}, _attendance={}, _evaluations={}, _materials={}, _photos=[];
 let _fbLive=false;
+function courseQuizData(day,attempt=null){return ACESCourse.getDay(_ws,day,window.QUIZ_DATA||{},attempt);}
+function courseQuizHTML(day,attempt=null){
+  const data=courseQuizData(day,attempt);if(!ACESCourse.managed(_ws))return data;
+  return {...data,title:htmlEscape(data.title),questions:(data.questions||[]).map(q=>({...q,q:htmlEscape(q.q),opts:q.opts.map(htmlEscape),exp:htmlEscape(q.exp||'')}))};
+}
 function canEdit(){ return _role==='admin' || _role==='trainer'; }
 function requireEdit(){ if(canEdit()) return true; toast('👁️ هذا الحساب للمشاهدة فقط'); return false; }
 function applyViewerMode(){
@@ -779,6 +789,10 @@ function openCreateWS(){
   openModal('➕ إنشاء ورشة جديدة',`
     <div class="form-g"><label class="inp-label">اسم الورشة *</label><input class="inp" id="ws-n" placeholder="مثال: ورشة يناير 2026"></div>
     <div class="form-row">
+      <div class="form-g"><label class="inp-label">مصدر الأسئلة</label><select class="inp" id="ws-content-mode"><option value="legacy">النظام الحالي — أسئلة سحب العينات العربية</option><option value="custom-v1">محتوى مخصص — إدارة الأسئلة من اللوحة</option></select></div>
+      <div class="form-g"><label class="inp-label">لغة واجهة المتدرب للمحتوى المخصص</label><select class="inp" id="ws-language"><option value="en">English</option><option value="ar">العربية</option></select></div>
+    </div>
+    <div class="form-row">
       <div class="form-g"><label class="inp-label">اسم المدرب *</label><input class="inp" id="ws-tr" placeholder="الاسم الكامل"></div>
       <div class="form-g"><label class="inp-label">كلمة مرور المدرب *</label><input class="inp" id="ws-pw" type="password" placeholder="كلمة سر خاصة"></div>
       <div class="form-g"><label class="inp-label">كلمة مرور المراقب <span style="font-size:.7rem;color:var(--muted)">(اختياري)</span></label><input class="inp" id="ws-view-pw" type="password" placeholder="حساب مشاهدة فقط"></div>
@@ -801,7 +815,9 @@ async function createWS(){
   const pwd=document.getElementById('ws-pw').value.trim();
   if(!name||!trainer||!pwd){toast('⚠️ يرجى ملء الحقول المطلوبة');return;}
   const id='ws_'+Date.now().toString(36);
-  await fbSet('workshops/'+id,{
+  const custom=document.getElementById('ws-content-mode')?.value==='custom-v1';
+  const language=document.getElementById('ws-language')?.value==='ar'?'ar':'en';
+  const newWorkshop={
     id,name,trainerName:trainer,trainerPassword:pwd,viewerPassword:document.getElementById('ws-view-pw')?.value.trim()||'',
     startDate:document.getElementById('ws-s').value||'',
     endDate:document.getElementById('ws-e').value||'',
@@ -811,8 +827,12 @@ async function createWS(){
     objectives:document.getElementById('ws-obj')?.value.trim()||'',
     createdAt:new Date().toISOString(),
     trainees:{},results:{},attendance:{},evaluations:{},
-    materials:{},photos:[],downloadRequests:{}
-  });
+    materials:{},photos:[],downloadRequests:{},
+    ...(custom?{contentMode:'custom-v1',courseLanguage:language,courseContent:{schemaVersion:1,revision:0,draft:ACESCourse.emptyDraft(language)}}:{})
+  };
+  if(_role!=='admin'){toast('⚠️ إنشاء الدورة للمشرف فقط');return;}
+  try { const f=fb();if(!f)throw new Error('Firebase غير متصل');await f.set(f.ref(f.db,'workshops/'+id),newWorkshop); }
+  catch(e){toast('❌ لم تُنشأ الدورة: '+e.message);return;}
   toast('✅ تم إنشاء الورشة!'); closeModal(); loadAdmin();
 }
 
@@ -1058,6 +1078,8 @@ function renderWSGrid(wsList=null){
           <button class="btn btn-s" style="flex:1;font-size:.76rem;padding:7px" onclick="openEditWS(${inlineArg(w.id)})">✏️ تعديل الورشة</button>
           <button class="btn btn-s" style="flex:1;font-size:.76rem;padding:7px" onclick="openAdminRoster(${inlineArg(w.id)})">👥 المتدربون</button>
         </div>
+        ${w.contentMode==='custom-v1'?`<button class="btn btn-b btn-wide" style="font-size:.78rem" onclick="CourseManager.open(${inlineArg(w.id)})">📚 المحتوى والأسئلة — ${w.courseLanguage==='en'?'English':'العربية'}</button>`:''}
+        ${w.contentMode==='custom-v1'?`<button class="btn btn-s btn-wide" style="font-size:.78rem" onclick="openCourseReport(${inlineArg(w.id)})">📋 تقرير الدورة والحضور وأهلية الشهادات</button>`:''}
         <div style="display:flex;gap:6px;margin-top:8px">
           <button class="btn btn-p" style="flex:1;font-size:.76rem;padding:7px" onclick="viewWS(${inlineArg(w.id)})">📊 عرض</button>
           <button class="btn" style="font-size:.76rem;padding:7px 10px;background:#ede9fe;color:#6d28d9;border:1.5px solid #c4b5fd" onclick="openCertificatesModal(${inlineArg(w.id)})">🎓</button>
@@ -1488,6 +1510,14 @@ function viewWS(id){
   `);
 }
 
+async function openCourseReport(id){
+  if(_role!=='admin')return;
+  _wsId=id;await loadTrainer();
+  document.getElementById('tr-title').textContent='📋 '+(_ws?.name||'');
+  document.getElementById('course-admin-back').style.display='inline-flex';
+  go('trainer');trTab('report',document.querySelector('.snbtn[onclick*="trTab(\'report\'"]'));
+}
+
 async function changeTrainerPwd(wsId, trainerName){
   openModal(`🔑 تغيير كلمة مرور المدرب`,`
     <div style="background:var(--gold2);border:1.5px solid #fde68a;border-radius:12px;padding:14px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
@@ -1621,6 +1651,7 @@ function trTab(tab,btn){
   if(tab!=='monitor')stopMonitor();
   if(tab==='report')renderFinalReport();
   if(tab==='photos')renderPhotos();
+  if(tab==='materials')buildMaterialsForm();
   if(tab==='monitor'){
     renderLiveMonitor();
     // Clear old interval and set new one
@@ -1973,6 +2004,10 @@ function renderPerformance(){
 //  MATERIALS (PDF)
 // ══════════════════════════════════════════════
 function buildMaterialsForm(){
+  const custom=ACESCourse.managed(_ws),summary=document.getElementById('custom-materials-summary'),legacy=document.getElementById('legacy-materials-controls');
+  if(legacy)legacy.style.display=custom?'none':'';
+  if(summary){summary.style.display=custom?'block':'none';if(custom)summary.innerHTML='<div class="card"><h3>المواد التدريبية لكل يوم</h3><p style="font-size:.8rem;color:var(--muted);margin:10px 0">تُدار روابط هذه الدورة من محرر المحتوى. يمكن للمشرف نشر الرابط مستقلاً دون تعديل أسئلة اليوم.</p>'+DAYS.map(d=>{const url=ACESCourse.getMaterial(_ws,d);return '<p style="padding:10px;border-bottom:1px solid var(--border)">Day '+d+' — '+htmlEscape(courseQuizData(d).title||'')+' · '+(url?'<a target="_blank" rel="noopener noreferrer" href="'+htmlEscape(url)+'">فتح المادة</a>':'لم تُنشر مادة')+'</p>';}).join('')+(_role==='admin'||_role==='trainer'?'<button class="btn btn-p" onclick="CourseManager.open(_wsId)">إدارة المواد والأسئلة</button>':'')+'</div>';}
+  if(custom)return;
   // Legacy per-day form replaced by single material URL
   // Load single material URL if exists
   const singleUrl = _materials?.singleUrl || _materials?.[1]?.url || '';
@@ -2177,7 +2212,7 @@ function renderFinalReport(){
   const teiTxtC=teiScore>=85?'#7ef7c0':teiScore>=70?'#93d9ff':teiScore>=55?'#fde68a':'#fca5a5';
   const _daf=dayAvgs.filter(a=>a!==null);
   const lcTrend=_daf.length>=2?(()=>{const d=_daf[_daf.length-1]-_daf[0];if(d>=10)return{icon:'📈',text:`تحسّن +${d}%`};if(d>=-5)return{icon:'➡️',text:`مستقر (${d>0?'+':''}${d}%)`};return{icon:'📉',text:`تراجع ${d}%`};})():null;
-  const hardQ=(()=>{const res=[];DAYS.forEach(d=>{const qd=window.QUIZ_DATA?.[d];if(!qd?.questions)return;const qs=qd.questions.map((q,i)=>{const w=_trainees.filter(t=>{const a=(_results[t.id]?.[d]?.progress?.answers||[])[i];return a!==undefined&&a!==null&&a!==q.ans;}).length;const tot=_trainees.filter(t=>(_results[t.id]?.[d]?.progress?.answers||[])[i]!=null).length;return{i,q:q.q||'س'+(i+1),pct:tot?Math.round(w/tot*100):0};});const h=qs.sort((a,b)=>b.pct-a.pct).slice(0,3).filter(q=>q.pct>0);if(h.length)res.push({day:d,title:qd.title||'اليوم '+d,questions:h});});return res;})();
+  const hardQ=(()=>{const res=[];DAYS.forEach(d=>{const qd=courseQuizHTML(d);if(!qd?.questions)return;const qs=qd.questions.map((q,i)=>{const answers=_trainees.map(t=>{const r=_results[t.id]?.[d];return (r?.answers||r?.progress?.answers||[])[i];}).filter(a=>a!==undefined&&a!==null);const wrong=answers.filter(a=>a!==q.ans).length;return{i,q:q.q||'س'+(i+1),pct:answers.length?Math.round(wrong/answers.length*100):0};});const h=qs.sort((a,b)=>b.pct-a.pct).slice(0,3).filter(q=>q.pct>0);if(h.length)res.push({day:d,title:qd.title||'اليوم '+d,questions:h});});return res;})();
   const _rptSig=localStorage.getItem('aces_rpt_sig')||'';
 rpt.innerHTML=`
 <div style="font-family:'Tajawal',sans-serif;direction:rtl;color:#1a1a1a;max-width:920px;margin:0 auto" id="rpt-root">
@@ -2240,6 +2275,7 @@ rpt.innerHTML=`
 </div>
 
 <!-- ════ WORKSHOP INTRO ════ -->
+${ACESCourse.managed(_ws)?`<div class="card" style="margin-bottom:20px"><h3 style="margin-bottom:12px">محتوى الدورة وإصدارات الاختبارات</h3><table><thead><tr><th>اليوم</th><th>عنوان المحتوى</th><th>عدد الأسئلة</th><th>الإصدار</th></tr></thead><tbody>${DAYS.map(d=>{const q=courseQuizData(d);return '<tr><td>'+d+'</td><td dir="auto">'+htmlEscape(q.title||'—')+'</td><td>'+(q.questions?.length||0)+'</td><td>'+htmlEscape(q.contentVersion||'غير منشور')+'</td></tr>';}).join('')}</tbody></table></div>`:''}
 ${(_ws?.description||_ws?.objectives)?`
 <div style="background:#fff;border-radius:16px;padding:28px 32px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,.06)">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #f5c000">
@@ -2750,7 +2786,7 @@ function traineeURL(tid, day){
   // Priority: explicit day arg → active open exam day → 1
   const d = day || window._activeQRDay || 1;
   // Use short URL — less data = denser QR = easier to scan
-  return 'https://melnahas11111-ctrl.github.io/ACES-Workshops/scan.html?w=' + _wsId + '&t=' + tid + '&d=' + d;
+  const url=new URL('scan.html',window.location.href);url.search=new URLSearchParams({w:_wsId,t:tid,d:String(d)});return url.href;
 }
 
 
@@ -2880,7 +2916,7 @@ function exportCSV(){
 }
 
 function exportAnswersCSV(){
-  const qData = window.QUIZ_DATA || {};
+  const qData = Object.fromEntries(DAYS.map(d=>[d,courseQuizData(d)]));
   const rows = [];
   const BOM = '﻿';
 
@@ -2974,6 +3010,7 @@ async function pushToGitHub(filename, content, commitMsg) {
 
 async function updateGitHub() {
   if(!requireEdit()) return;
+  toast('ارفع الحزمة من GitHub مباشرة. لا تُدخل رمز وصول داخل الصفحة العامة.',6000); return;
   if (!GH_TOKEN) GH_TOKEN = _getToken();
 
   const btn = document.getElementById('gh-update-btn') || document.getElementById('gh-update-btn-tr');
@@ -4267,13 +4304,12 @@ async function confirmSetTimer(dayId){
   if(!requireEdit()) return;
   const mins = parseInt(document.getElementById('timer-minutes')?.value||30);
   if(mins<1||mins>180){ toast('⚠️ مدة غير صالحة'); return; }
+  try{await CourseManager.lockForExam(_wsId,dayId);}catch(e){toast('❌ '+e.message,6000);return;}
   const endTime = Date.now() + mins*60*1000;
-  await fbSet(`workshops/${_wsId}/exam_approvals/${dayId}`, 'open');
-  await fbSet(`workshops/${_wsId}/exam_timer/${dayId}`, {
-    minutes: mins,
-    endTime: endTime,
-    startedAt: new Date().toISOString()
-  });
+  try{const f=fb();if(!f)throw new Error('Firebase غير متصل');await f.update(f.ref(f.db,'workshops/'+_wsId),{
+    [`exam_approvals/${dayId}`]:'open',
+    [`exam_timer/${dayId}`]:{minutes:mins,endTime,startedAt:new Date().toISOString()}
+  });}catch(e){toast('❌ لم يُفتح الاختبار: '+e.message);return;}
   closeModal();
   updateExamBtns();
   toast(`✅ اليوم ${dayId}: الاختبار مفتوح لمدة ${mins} دقيقة`);
@@ -4414,11 +4450,11 @@ async function renderLiveMonitor(){
       const res  =results?.[t.id]?.[selDay];
       const prog =progress?.[t.id]?.[selDay];
       const done =res?.quizScore!==undefined;
-      const ans  =prog?.answers||(done?[]:[]); 
+      const ans  =prog?.answers||res?.answers||[]; 
       const total=ans.length;
       const answered=ans.filter(a=>a!==null).length;
       const score=done?res.quizScore:null;
-      const qData=window.QUIZ_DATA?.[selDay];
+      const qData=courseQuizHTML(selDay,done?res:prog);
       const questions=qData?.questions||[];
       const [bg,border,statusIcon,statusText]=done
         ?['#d1fae5','#059669','✅',`انتهى — ${score}%`]
@@ -4815,7 +4851,7 @@ async function viewTraineeAnswers(tid, name, dayId){
   else if(result?.answers && result.answers.length > 0) answers = result.answers; // saved answers
   else if(result) answers = new Array(result.total || 26).fill(null); // legacy: no answers saved
   
-  const questions = (window.QUIZ_DATA||{})[dayId]?.questions || [];
+  const questions = courseQuizHTML(dayId,result&&!result.absent?result:progress).questions || [];
   const hasQuestions = questions.length > 0;
   const totalQ = hasQuestions ? questions.length : answers.length || 26;
   
@@ -4978,7 +5014,7 @@ async function generateWordReport(lang="ar") {
     const T2 = TT[lang] || TT.ar;
     const FONT2 = RTL ? 'Arial' : 'Calibri';
     const ALIGN2 = RTL ? AlignmentType.RIGHT : AlignmentType.LEFT;
-    const DAY_NAMES = {1:'التقييم المبدئي',2:'التفتيش ومراقبة الجودة',3:'استراتيجيات سحب العينات',4:'التطبيق الميداني',5:'التقييم الشامل'};
+    const DAY_NAMES = ACESCourse.managed(WS)?Object.fromEntries(DAYS.map(d=>[d,courseQuizData(d).title||('Day '+d)])):{1:'التقييم المبدئي',2:'التفتيش ومراقبة الجودة',3:'استراتيجيات سحب العينات',4:'التطبيق الميداني',5:'التقييم الشامل'};
     const EVAL_CRIT = ['وضوح الشرح والأسلوب','التنظيم والتحضير','التفاعل مع المتدربين','الإلمام بالمادة العلمية','الرضا العام'];
     const EVAL_KEYS = ['clarity','organization','interaction','knowledge','overall'];
 
@@ -5050,6 +5086,13 @@ async function generateWordReport(lang="ar") {
     children.push(SP());
 
     // Trainees performance
+    if(ACESCourse.managed(WS)){
+      children.push(H(RTL?'محتوى الدورة وإصدارات الاختبارات':'Course Content and Assessment Versions'));
+      children.push(new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[700,4326,1000,3000],rows:[
+        new TableRow({children:[C(RTL?'اليوم':'Day',700,{bold:true}),C(RTL?'عنوان المحتوى':'Day Title',4326,{bold:true}),C(RTL?'الأسئلة':'Questions',1000,{bold:true}),C(RTL?'الإصدار':'Version',3000,{bold:true})]}),
+        ...DAYS.map(d=>{const q=courseQuizData(d);return new TableRow({children:[C(d,700),C(q.title||'—',4326),C(q.questions?.length||0,1000),C(q.contentVersion||(RTL?'غير منشور':'Not published'),3000,{sz:14})]});})
+      ]}));children.push(SP());
+    }
     children.push(new Paragraph({children:[new PageBreak()]}));
     children.push(H(T2.traineesList));
     children.push(new Table({
@@ -5308,4 +5351,6 @@ async function saveEditTrainee(){
     </div>
   </div>
 </div>
+<script src="course-admin.js"></script>
 </body>
+

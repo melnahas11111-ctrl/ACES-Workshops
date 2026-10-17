@@ -71,6 +71,7 @@ nav h1{font-size:.88rem;font-weight:900;color:var(--g1)}
 .info-box h3{font-size:.92rem;font-weight:900;margin-bottom:5px}
 .info-box p{font-size:.78rem;line-height:1.6}
 </style>
+<script src="course-i18n.js"></script>
 </head>
 <body>
 <nav>
@@ -172,6 +173,7 @@ async function loadFirebase(){
   const p=new URLSearchParams(location.search);
   const wsId=p.get('w')||p.get('wsid');
   const tid =p.get('t')||p.get('tid');
+  const t=(ar,en)=>CourseUI.t(ar,en);
 
   // ═══════════════════════════════════════════════════════════════
   // الإصلاح الرئيسي: مسار الطلب مرتبط باليوم
@@ -191,7 +193,7 @@ async function loadFirebase(){
 
   function validPhone(v){return /^[0-9+\-\s]{7,15}$/.test(v.trim());}
   function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());}
-  function examURL(){return 'https://melnahas11111-ctrl.github.io/ACES-Workshops/trainee.html?wsid='+wsId+'&tid='+tid+'&day='+day;}
+  function examURL(){const url=new URL('trainee.html',location.href);url.search=new URLSearchParams({wsid:wsId,tid,day:String(day)});return url.href;}
 
   async function loadMaterial(){
     // ═══════════════════════════════════════════════════════════════
@@ -309,12 +311,14 @@ async function loadFirebase(){
   async function init(){
     if(!wsId || !tid){ show('state-notfound'); return; }
     try{
-      const [traineeSnap, resultsSnap, approvalsSnap, wsNameSnap] = await Promise.all([
+      const [traineeSnap, resultsSnap, approvalsSnap, wsNameSnap, languageSnap] = await Promise.all([
         get(ref(db,'workshops/'+wsId+'/trainees/'+tid)),
         get(ref(db,'workshops/'+wsId+'/results/'+tid)),
         get(ref(db,'workshops/'+wsId+'/exam_approvals')),
-        get(ref(db,'workshops/'+wsId+'/name'))
+        get(ref(db,'workshops/'+wsId+'/name')),
+        get(ref(db,'workshops/'+wsId+'/courseLanguage'))
       ]);
+      CourseUI.init(languageSnap.val());
 
       const trainee   = traineeSnap.exists()   ? traineeSnap.val()   : null;
       if(!trainee){ show('state-notfound'); return; }
@@ -343,7 +347,7 @@ if(!nextDay){
               <h3 style="color:#92400e">⭐ تقييم المدرب</h3>
               <p style="color:#78350f;margin-bottom:14px">رأيك يساعدنا على تحسين البرنامج</p>
               <button class="btn-exam" style="background:linear-gradient(135deg,#c8830a,#d97706)"
-                onclick="location.href='https://melnahas11111-ctrl.github.io/ACES-Workshops/trainee.html?wsid=${wsId}&tid=${tid}&day=5&eval=1'">
+                onclick="goToExam()">
                 ⭐ تقييم المدرب الآن
               </button>
             </div>`;
@@ -395,8 +399,8 @@ if(!nextDay){
       document.getElementById('t-avatar').textContent = ini || '👤';
       document.getElementById('t-name').textContent   = trainee.name || '—';
       document.getElementById('t-dept').textContent   = trainee.dept || '';
-      document.getElementById('t-day').textContent    = 'اليوم '+day+' — '+wsName;
-      document.title = 'ACES — اليوم '+day+' — '+wsName;
+      document.getElementById('t-day').textContent    = t('اليوم ','Day ')+day+' — '+wsName;
+      document.title = t('ACES — اليوم ','ACES — Day ')+day+' — '+wsName;
 
       show('state-form');
 
@@ -410,7 +414,7 @@ if(!nextDay){
     document.getElementById('already-msg').textContent   = 'في انتظار فتح الاختبار من المدرب.';
     document.getElementById('already-extra').innerHTML   =
       '<div class="info-box green" style="margin-top:14px">'+
-      '<h3 style="color:var(--g1)">✅ حضورك مسجّل — اليوم '+day+'</h3>'+
+      '<h3 style="color:var(--g1)">'+t('✅ حضورك مسجّل — اليوم ','✅ Attendance registered — Day ')+day+'</h3>'+
       '<p style="color:var(--muted)">في انتظار فتح الاختبار'+
       '<br><span style="display:inline-flex;align-items:center;gap:5px;margin-top:6px">'+
       '<span class="spinner-sm"></span> مراقبة مستمرة — لا تغلق الصفحة</span></p></div>';
@@ -483,7 +487,7 @@ if(!nextDay){
       console.error(e);
       btn.disabled = false;
       btn.textContent = '✅ تسجيل الحضور';
-      alert('حدث خطأ أثناء الإرسال. حاول مرة أخرى.');
+      alert(t('حدث خطأ أثناء الإرسال. حاول مرة أخرى.','Could not send your request. Please try again.'));
     }
   };
 
@@ -504,3 +508,4 @@ if(!nextDay){
 </script>
 </body>
 </html>
+
