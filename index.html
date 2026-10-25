@@ -3809,9 +3809,9 @@ function _drawCert(t,w,i){
             <div style="font-size:7.5px;color:#bbb;font-style:italic;margin-top:1px">Issued on ${_fd2(w.endDate)}</div>
           </div>
           <div style="width:1px;height:36px;background:rgba(107,28,36,.12);flex-shrink:0"></div>
-          <div style="text-align:center">
-            <div id="_qr_box_${cid}" style="display:inline-block;line-height:0"></div>
-            <div style="font-size:6px;color:#ccc;letter-spacing:.06em;text-transform:uppercase;font-family:sans-serif">Scan to verify</div>
+          <div style="text-align:center;min-width:104px">
+            <div id="_qr_box_${cid}" style="display:inline-block;line-height:0;background:#fff;padding:3px"></div>
+            <div style="font-size:6.5px;color:#888;letter-spacing:.06em;text-transform:uppercase;font-family:sans-serif">Scan to verify</div>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:6px;border-top:1px solid rgba(107,28,36,.15);padding-top:8px;">
@@ -3851,23 +3851,14 @@ function _drawCert(t,w,i){
             if(parts[parts.length-1].includes('.')) parts.pop();
             return location.origin+parts.join('/')+'/';
           })();
+          // Certificate QR: print-safe size, high error correction, and no centre overlay.
+          // The former 58px code was too small and the logo covered data modules.
           new window.QRCode(qBox,{
             text:_base+'index.html?vc='+encodeURIComponent(cid),
-            width:58,height:58,
-            colorDark:'#6b1c24',colorLight:'#ffffff',
-            correctLevel:window.QRCode.CorrectLevel.M
+            width:96,height:96,
+            colorDark:'#000000',colorLight:'#ffffff',
+            correctLevel:window.QRCode.CorrectLevel.H
           });
-          // Add ACES label in QR center (ECC H allows 30% obstruction — safe to scan)
-          setTimeout(()=>{
-            const qrImg=qBox.querySelector('img')||qBox.querySelector('canvas');
-            if(qrImg){
-              const overlay=document.createElement('div');
-              overlay.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:3px;padding:1px 3px;font-family:Cinzel,serif;font-size:7px;font-weight:900;color:#6b1c24;line-height:1;letter-spacing:.05em;pointer-events:none';
-              overlay.textContent='ACES';
-              qBox.style.position='relative';
-              qBox.appendChild(overlay);
-            }
-          },120);
         }catch(e){qBox.innerHTML='<div style="font-size:.65rem;color:#888">'+cid+'</div>';}
       }
     },80);
